@@ -1,0 +1,11 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Shelf Server (Debug)",
+      "type": "dart",
+      "request": "launch",
+      "program": "bin/server.dart" // Path to your main server file (e.g., bin/server.dart)
+    }
+  ]
+}
