@@ -1,15 +1,21 @@
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
+import 'package:u_puli_api/src/features/events/presentation/router/events_router.dart';
 
 class AppRouter {
-  AppRouter() : _router = Router() {
+  AppRouter({required EventsRouter eventsRouter}) : _router = Router() {
     _router.get('/', _rootHandler);
     _router.get('/echo/<message>', _echoHandler);
+
+    // our routes
+    _router.mount('/events', eventsRouter.router.call);
   }
 
   final Router _router;
+  Router get router => _router;
 
-  Response _rootHandler(Request req) {
+  // controllers
+  Response _rootHandler(Request request) {
     return Response.ok('Hello, World!\n');
   }
 
@@ -17,6 +23,4 @@ class AppRouter {
     final message = request.params['message'];
     return Response.ok('$message\n');
   }
-
-  Router get router => _router;
 }
