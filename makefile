@@ -12,5 +12,7 @@ generate:
 
 
 run_dev: 
-	dart run bin/server.dart
+	@set -a && source .env && set +a && dart run bin/server.dart
+	dart run bin/server.dart 
+
 
