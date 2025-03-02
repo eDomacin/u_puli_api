@@ -1,6 +1,7 @@
 import 'package:u_puli_api/src/features/events/data/entities/event_entity.dart';
+import 'package:u_puli_api/src/features/events/domain/values/event_entity_value.dart';
 
 abstract interface class EventsDataSource {
-  Future<EventEntity> getEvent(int id);
-  Future<List<EventEntity>> getEvents();
+  Future<EventEntityValue> getEvent(int id);
+  Future<List<EventEntityValue>> getEvents();
 }

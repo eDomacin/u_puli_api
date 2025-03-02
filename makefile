@@ -10,3 +10,7 @@ dart_version:
 generate:
 	dart run build_runner build --delete-conflicting-outputs
 
+
+run_dev: 
+	dart run bin/server.dart
+

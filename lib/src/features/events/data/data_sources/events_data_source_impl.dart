@@ -1,23 +1,23 @@
 import 'package:u_puli_api/src/features/events/data/data_sources/events_data_source.dart';
-import 'package:u_puli_api/src/features/events/data/entities/event_entity.dart';
+import 'package:u_puli_api/src/features/events/domain/values/event_entity_value.dart';
 
 class EventsDataSourceImpl implements EventsDataSource {
   @override
-  Future<EventEntity> getEvent(int id) async {
+  Future<EventEntityValue> getEvent(int id) async {
     final event = events.firstWhere((event) => event.id == id);
 
     return event;
   }
 
   @override
-  Future<List<EventEntity>> getEvents() async {
+  Future<List<EventEntityValue>> getEvents() async {
     return events;
   }
 }
 
-final List<EventEntity> events = List.generate(
+final List<EventEntityValue> events = List.generate(
   10,
-  (index) => EventEntity(
+  (index) => EventEntityValue(
     id: index + 1,
     title: 'Event ${index + 1}',
     date: DateTime.now().add(Duration(days: index)),

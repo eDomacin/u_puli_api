@@ -1,25 +1,25 @@
-import 'package:u_puli_api/src/features/events/data/entities/event_entity.dart';
 import 'package:u_puli_api/src/features/events/domain/models/event_model.dart';
+import 'package:u_puli_api/src/features/events/domain/values/event_entity_value.dart';
 
 abstract class EventsConverter {
-  static EventModel modelFromEntity({
-    required EventEntity entity,
+  static EventModel modelFromEntityValue({
+    required EventEntityValue value,
   }) {
     final model = EventModel(
-      id: entity.id,
-      title: entity.title,
-      date: entity.date,
-      location: entity.location,
+      id: value.id,
+      title: value.title,
+      date: value.date,
+      location: value.location,
     );
 
     return model;
   }
 
-  static List<EventModel> modelsFromEntities({
-    required List<EventEntity> entities,
+  static List<EventModel> modelsFromEntityValues({
+    required List<EventEntityValue> values,
   }) {
     final models =
-        entities.map((entity) => modelFromEntity(entity: entity)).toList();
+        values.map((value) => modelFromEntityValue(value: value)).toList();
 
     return models;
   }
