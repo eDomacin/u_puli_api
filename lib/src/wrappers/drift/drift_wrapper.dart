@@ -10,7 +10,6 @@ part "drift_wrapper.g.dart";
   "current_timestamp": "SELECT CURRENT_TIMESTAMP;",
 })
 class DriftWrapper extends _$DriftWrapper {
-  // TODO check if this can be constant
   DriftWrapper(super.e);
 
   final DriftMigratorWrapper _migratorWrapper = DriftMigratorWrapper();

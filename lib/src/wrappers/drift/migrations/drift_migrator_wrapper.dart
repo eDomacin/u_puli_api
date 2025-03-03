@@ -1,5 +1,11 @@
 import 'package:drift/drift.dart';
 
 class DriftMigratorWrapper {
-  final MigrationStrategy migrationStrategy = MigrationStrategy();
+  DriftMigratorWrapper();
+
+  final MigrationStrategy migrationStrategy = MigrationStrategy(
+    beforeOpen: (details) async {},
+    onCreate: (m) async {},
+    onUpgrade: (m, from, to) async {},
+  );
 }
