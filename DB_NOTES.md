@@ -158,6 +158,25 @@ generate_db_migration_steps:
 - and then run it
 
 
+- adjust migrator
+
+class DriftMigratorWrapper {
+  DriftMigratorWrapper(DriftWrapper driftWrapper)
+      : _driftWrapper = driftWrapper;
+
+  final DriftWrapper _driftWrapper;
+
+  late final MigrationStrategy migrationStrategy = MigrationStrategy(
+      beforeOpen: (details) async {
+      },
+      onCreate: (m) async {
+        await m.createAll();
+      },
+      onUpgrade: stepByStep());
+}
+
+
+
 
 - add migrations
 -- need create migration for version 1
