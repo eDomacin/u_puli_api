@@ -132,8 +132,32 @@ class DatabaseWrapper {
   $EventEntityTable get eventsRepo => driftWrapper.eventEntity;
 }
 
+!!! IMPORTANT !!!
+- have to make this initial migration steps first, before connecting to db first time
+- if not, when try to insert firest data, it will say no table present
+- if this happen, delete schema table from db, and start over
 
+
+- make initial migration
+- prepare first sczema from here - https://drift.simonbinder.eu/Migrations/exports/
+- create folder for drfit schemas 
+-- somwhere in migrations folder
+- create folder for scheam versions
+-- somwhere in migrations folder
+
+- then you have command to generate db schema
+generate_db_schema:
+	dart run drift_dev schema dump lib/src/wrappers/drift/drift_wrapper.dart lib/src/wrappers/drift/migrations/schemas/
+
+
+
+- now command for migrations steps
+generate_db_migration_steps: 
+	dart run drift_dev schema steps lib/src/wrappers/drift/migrations/schemas/ lib/src/wrappers/drift/migrations/schemas_versions/schema_versions.dart
+
+- and then run it
 
 
 
 - add migrations
+-- need create migration for version 1

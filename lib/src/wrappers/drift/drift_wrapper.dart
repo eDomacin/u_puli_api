@@ -12,7 +12,7 @@ part "drift_wrapper.g.dart";
 class DriftWrapper extends _$DriftWrapper {
   DriftWrapper(super.e);
 
-  final DriftMigratorWrapper _migratorWrapper = DriftMigratorWrapper();
+  late final DriftMigratorWrapper _migratorWrapper = DriftMigratorWrapper(this);
 
   @override
   int get schemaVersion => 1;
