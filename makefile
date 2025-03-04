@@ -14,6 +14,13 @@ generate:
 run_dev: 
 	@set -a && source .env && set +a && dart run bin/server.dart
 
+build_prod:
+	mkdir -p build && dart compile exe bin/server.dart -o build/server
+
+# this expects the server to be built
+run_prod:
+	@set -a && source .env && set +a && ./build/server
+
 # db
 generate_db_schema:
 	dart run drift_dev schema dump lib/src/wrappers/drift/drift_wrapper.dart lib/src/wrappers/drift/migrations/schemas/
@@ -23,4 +30,6 @@ generate_db_migration_steps:
 
 start_tests_db:
 	docker-compose -f test/helpers/database/docker-compose.yml up -d
+
+
 
