@@ -27,6 +27,11 @@
 
 7. connect db to data source
 
+8. tests
+- test database 
+- data source test
+
+
 7. add events post request
 
 8. authentication
@@ -35,7 +40,6 @@
 
 8. other middleware 
 
-8. tests
 
 9. DI - service locator
 
