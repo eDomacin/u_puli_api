@@ -21,5 +21,6 @@ generate_db_schema:
 generate_db_migration_steps: 
 	dart run drift_dev schema steps lib/src/wrappers/drift/migrations/schemas/ lib/src/wrappers/drift/migrations/schemas_versions/schema_versions.dart
 
-
+start_tests_db:
+	docker-compose -f test/helpers/database/docker-compose.yml up -d
 

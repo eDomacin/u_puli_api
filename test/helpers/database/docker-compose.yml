@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  postgres:
+    container_name: container_postgres_u_puli_test
+    image: postgres:15.7
+    hostname: localhost
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: postgres
