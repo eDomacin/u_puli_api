@@ -15,7 +15,7 @@ class DriftWrapper extends _$DriftWrapper {
   late final DriftMigratorWrapper _migratorWrapper = DriftMigratorWrapper(this);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => _migratorWrapper.migrationStrategy;

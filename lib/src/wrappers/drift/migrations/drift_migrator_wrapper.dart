@@ -8,20 +8,32 @@ class DriftMigratorWrapper {
 
   final DriftWrapper _driftWrapper;
 
-  late final MigrationStrategy migrationStrategy = MigrationStrategy(
-      beforeOpen: (details) async {
-        final EventEntityCompanion companion = EventEntityCompanion.insert(
-          title: "title test",
-          date: DateTime.now(),
-          location: "location test",
-        );
+  late final MigrationStrategy migrationStrategy =
+      MigrationStrategy(beforeOpen: (details) async {
+    final EventEntityCompanion companion = EventEntityCompanion.insert(
+      title: "title test",
+      date: DateTime(2022, 1, 1),
+      location: "location test",
+    );
 
-        final id = await _driftWrapper.eventEntity.insertOne(companion);
+    final id = await _driftWrapper.eventEntity.insertOne(
+      companion,
+      onConflict: DoNothing(target: [
+        _driftWrapper.eventEntity.title,
+        _driftWrapper.eventEntity.date,
+        _driftWrapper.eventEntity.location,
+      ]),
+    );
 
-        print("Inserted event entity with id: $id");
-      },
-      onCreate: (m) async {
-        await m.createAll();
-      },
-      onUpgrade: stepByStep());
+    print("Inserted id: $id");
+  }, onCreate: (m) async {
+    await m.createAll();
+  }, onUpgrade: stepByStep(
+    from1To2: (m, schema) async {
+      // NOTE: manual migration because `alterTable` is not available for postgres
+      await _driftWrapper.customStatement(
+        "ALTER TABLE event_entity ADD UNIQUE (title, date, location);",
+      );
+    },
+  ));
 }
