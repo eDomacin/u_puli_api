@@ -12,8 +12,12 @@ class EventsRepositoryImpl implements EventsRepository {
   final EventsDataSource _eventsDataSource;
 
   @override
-  Future<EventModel> getEvent(int id) async {
-    final EventEntityValue value = await _eventsDataSource.getEvent(id);
+  Future<EventModel?> getEvent(int id) async {
+    final EventEntityValue? value = await _eventsDataSource.getEvent(id);
+    if (value == null) {
+      return null;
+    }
+
     final EventModel model = EventsConverter.modelFromEntityValue(value: value);
 
     return model;

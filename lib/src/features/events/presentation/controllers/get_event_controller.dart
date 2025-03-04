@@ -25,32 +25,65 @@ class GetEventController {
       throw ArgumentError("Invalid 'id' parameter");
     }
 
-    final EventModel event = await _getEventUseCase(id);
+    final EventModel? event = await _getEventUseCase(id);
+    if (event == null) {
+      final Response notFoundResponse = _generateNotFoundResponse();
 
-    final Map<String, dynamic> eventData = {
-      "id": event.id,
-      "title": event.title,
-      "date": event.date.millisecondsSinceEpoch,
-      "location": event.location,
-    };
+      return notFoundResponse;
+    }
 
-    final Map<String, dynamic> responseBody = {
-      "ok": true,
-      "message": "Data retrieved successfully",
-      "data": {
-        "event": eventData,
-      },
-    };
-    final responseBodyJson = jsonEncode(responseBody);
-
-    final response = Response(
-      HttpStatus.ok,
-      body: responseBodyJson,
-      headers: {
-        HttpHeaders.contentTypeHeader: ContentType.json.value,
-      },
+    final Response successResponse = _generateSuccessResponse(
+      event: event,
     );
 
-    return response;
+    return successResponse;
   }
+}
+
+Response _generateNotFoundResponse() {
+  final Map<String, dynamic> responseBody = {
+    "ok": false,
+    "message": "Data not found",
+  };
+  final responseBodyJson = jsonEncode(responseBody);
+
+  final response = Response(
+    HttpStatus.notFound,
+    body: responseBodyJson,
+    headers: {
+      HttpHeaders.contentTypeHeader: ContentType.json.value,
+    },
+  );
+
+  return response;
+}
+
+Response _generateSuccessResponse({
+  required EventModel event,
+}) {
+  final Map<String, dynamic> eventData = {
+    "id": event.id,
+    "title": event.title,
+    "date": event.date.millisecondsSinceEpoch,
+    "location": event.location,
+  };
+
+  final Map<String, dynamic> responseBody = {
+    "ok": true,
+    "message": "Data retrieved successfully",
+    "data": {
+      "event": eventData,
+    },
+  };
+  final responseBodyJson = jsonEncode(responseBody);
+
+  final response = Response(
+    HttpStatus.ok,
+    body: responseBodyJson,
+    headers: {
+      HttpHeaders.contentTypeHeader: ContentType.json.value,
+    },
+  );
+
+  return response;
 }

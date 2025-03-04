@@ -8,8 +8,8 @@ class GetEventUseCase {
 
   final EventsRepository _eventsRepository;
 
-  Future<EventModel> call(int id) async {
-    final EventModel event = await _eventsRepository.getEvent(id);
+  Future<EventModel?> call(int id) async {
+    final EventModel? event = await _eventsRepository.getEvent(id);
 
     return event;
   }

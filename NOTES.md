@@ -25,10 +25,19 @@
 -- this now 
 
 
+7. connect db to data source
+
+7. add events post request
+
+8. authentication
 
 7. error handling 
 
 8. other middleware 
+
+8. tests
+
+9. DI - service locator
 
 9. maybe add kafka
 - try to at least

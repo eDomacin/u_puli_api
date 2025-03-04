@@ -54,7 +54,9 @@ AppRouter _getInitializedAppRouter({
   required DatabaseWrapper databaseWrapper,
 }) {
   // data surces
-  final EventsDataSource eventsDataSource = EventsDataSourceImpl();
+  final EventsDataSource eventsDataSource = EventsDataSourceImpl(
+    databaseWrapper: databaseWrapper,
+  );
 
   // repositories
   final EventsRepository eventsRepository =
