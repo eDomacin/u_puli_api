@@ -45,3 +45,16 @@
 
 9. maybe add kafka
 - try to at least
+
+
+<!-- reminders -->
+1. list containers
+- docker ps -a
+
+2. enter container bash 
+- docker exec -it <container_id> /bin/bash
+
+
+3. cron jobs inside linux
+- crontab -l - lists all 
+- crontab -e - edit
