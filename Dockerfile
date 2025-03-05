@@ -8,6 +8,9 @@ RUN dart pub get
 
 # Copy app source code (except anything in .dockerignore) and AOT compile app.
 COPY . .
+
+RUN mkdir -p build
+
 RUN dart compile exe bin/server/server.dart -o build/server
 RUN dart compile exe bin/scraper/scraper.dart -o build/scraper
 
@@ -15,9 +18,9 @@ RUN dart compile exe bin/scraper/scraper.dart -o build/scraper
 # and the pre-built AOT-runtime in the `/runtime/` directory of the base image.
 FROM scratch
 COPY --from=build /runtime/ /
-COPY --from=build /app/bin/server /app/bin/
+COPY --from=build /app/build/server /app/build/
 # TODO will also need to copy from
-COPY --from=build /app/bin/scraper /app/bin/
+COPY --from=build /app/build/scraper /app/build/
 
 # Start server.
 EXPOSE 8080

@@ -21,6 +21,12 @@ build_prod:
 run_prod:
 	@set -a && source .env && set +a && ./build/server
 
+build_prod_docker:
+	docker build . -t myserver
+
+run_prod_docker:
+	docker run -it -p 8080:8080 --env-file .env  myserver
+
 # db
 generate_db_schema:
 	dart run drift_dev schema dump lib/src/wrappers/drift/drift_wrapper.dart lib/src/wrappers/drift/migrations/schemas/
