@@ -13,6 +13,7 @@ import 'package:u_puli_api/src/features/events/presentation/controllers/get_even
 import 'package:u_puli_api/src/features/events/presentation/router/events_router.dart';
 import 'package:u_puli_api/src/wrappers/database/database_wrapper.dart';
 import 'package:u_puli_api/src/wrappers/env_vars/env_vars_wrapper.dart';
+import 'package:u_puli_api/src/wrappers/get_id/get_it_wrapper.dart';
 
 Future<void> bootstrap() async {
   final EnvVarsWrapper envVarsWrapper = EnvVarsWrapper();
@@ -45,6 +46,12 @@ DatabaseWrapper _getInitializedDatabaseWrapper({
   );
 
   databaseWrapper.initialize();
+
+  getIt.registerSingleton<DatabaseWrapper>(databaseWrapper);
+
+  final anotherDbWrapper = getIt.get<DatabaseWrapper>();
+
+  print('anotherDbWrapper: $anotherDbWrapper');
 
   return databaseWrapper;
 }

@@ -7,3 +7,7 @@
 -- https://neon.tech/postgresql/postgresql-tutorial/postgresql-unique-constraint
 
 2. also, i cannot just insert. i should insert with on conflict update, or do nothing really
+
+1. scraper should probably be a package
+- so it would not meedle with features of the server
+2. database wrapper should probably also be a package

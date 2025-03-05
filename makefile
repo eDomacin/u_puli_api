@@ -41,10 +41,11 @@ start_tests_db:
 
 # scraper 
 run_scraper_dev:
-	dart run bin/scraper/scraper.dart
+	@set -a && source .env && set +a && dart run bin/scraper/scraper.dart
 
 build_scraper_prod:
 	mkdir -p build && dart compile exe bin/scraper/scraper.dart -o build/scraper
 
+# this expects the scraper to be built
 run_scraper_prod:
-	./build/scraper
+	@set -a && source .env && ./build/scraper
