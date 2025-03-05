@@ -12,10 +12,10 @@ generate:
 
 
 run_dev: 
-	@set -a && source .env && set +a && dart run bin/server.dart
+	@set -a && source .env && set +a && dart run bin/server/server.dart
 
 build_prod:
-	mkdir -p build && dart compile exe bin/server.dart -o build/server
+	mkdir -p build && dart compile exe bin/server/server.dart -o build/server
 
 # this expects the server to be built
 run_prod:
