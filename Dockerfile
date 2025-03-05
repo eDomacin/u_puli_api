@@ -27,6 +27,12 @@ COPY --from=build /app/build/scraper /app/build/
 # Install necessary utilities
 RUN apk add --no-cache bash
 
+# it would be good to write this to some logs
+# RUN mkdir -p /var/log
+# RUN echo "* * * * * /app/build/scraper >> /var/log/scraper.log 2>&1" > /etc/crontabs/root
+
+RUN echo '*  *  *  *  *   /app/build/scraper' >/etc/crontabs/root
+
 # Start server.
 EXPOSE 8080
-CMD ["/app/build/server"]
+CMD ["sh", "-c", "crond && /app/build/server"]
