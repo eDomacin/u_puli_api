@@ -15,6 +15,7 @@ RUN dart compile exe bin/server/server.dart -o build/server
 FROM scratch
 COPY --from=build /runtime/ /
 COPY --from=build /app/bin/server /app/bin/
+# TODO will also need to copy from scraper
 
 # Start server.
 EXPOSE 8080
