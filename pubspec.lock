@@ -129,14 +129,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
-  cli_util:
-    dependency: transitive
-    description:
-      name: cli_util
-      sha256: ff6785f7e9e3c38ac98b2fb035701789de90154024a75b6cb926445e83197d1c
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.2"
   code_builder:
     dependency: transitive
     description:
@@ -185,30 +177,36 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
-  drift:
+  database_wrapper:
     dependency: "direct main"
+    description:
+      path: "packages/database_wrapper"
+      relative: true
+    source: path
+    version: "1.0.0"
+  drift:
+    dependency: transitive
     description:
       name: drift
       sha256: "97d5832657d49f26e7a8e07de397ddc63790b039372878d5117af816d0fdb5cb"
       url: "https://pub.dev"
     source: hosted
     version: "2.25.1"
-  drift_dev:
-    dependency: "direct dev"
-    description:
-      name: drift_dev
-      sha256: f1db88482dbb016b9bbddddf746d5d0a6938b156ff20e07320052981f97388cc
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.25.2"
   drift_postgres:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: drift_postgres
       sha256: ce1fe060b2d329b45423892501355f1982e099faba9e75bcba307f390b1b20a3
       url: "https://pub.dev"
     source: hosted
     version: "1.3.0"
+  env_vars_wrapper:
+    dependency: "direct main"
+    description:
+      path: "packages/env_vars_wrapper"
+      relative: true
+    source: path
+    version: "1.0.0"
   equatable:
     dependency: "direct main"
     description:
@@ -410,7 +408,7 @@ packages:
     source: hosted
     version: "1.5.1"
   postgres:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: postgres
       sha256: "7a7f9805d33e41cb14fa22535959f3af51843a792015cdbd8f2fa78bcd1b501b"
@@ -433,14 +431,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
-  recase:
-    dependency: transitive
-    description:
-      name: recase
-      sha256: e4eb4ec2dcdee52dcf99cb4ceabaffc631d7424ee55e56f280bc039737f89213
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.1.0"
   sasl_scram:
     dependency: transitive
     description:
@@ -497,14 +487,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
-  source_gen:
-    dependency: transitive
-    description:
-      name: source_gen
-      sha256: "35c8150ece9e8c8d263337a265153c3329667640850b9304861faea59fc98f6b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
   source_map_stack_trace:
     dependency: transitive
     description:
@@ -545,14 +527,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.7.4"
-  sqlparser:
-    dependency: transitive
-    description:
-      name: sqlparser
-      sha256: "27dd0a9f0c02e22ac0eb42a23df9ea079ce69b52bb4a3b478d64e0ef34a263ee"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.41.0"
   stack_trace:
     dependency: transitive
     description:

@@ -1,7 +1,6 @@
 import 'package:drift/drift.dart';
-import 'package:drift_postgres/drift_postgres.dart';
-import 'package:postgres/postgres.dart';
-import 'package:u_puli_api/src/wrappers/database/database_wrapper.dart';
+// import 'package:u_puli_api/src/wrappers/database/database_wrapper.dart';
+import "package:database_wrapper/database_wrapper.dart";
 
 class TestDatabaseWrapper {
   TestDatabaseWrapper(this.databaseWrapper);
@@ -25,7 +24,7 @@ class TestDatabaseWrapper {
 
 TestDatabaseWrapper getTestDatabaseWrapper() {
   final QueryExecutor queryExecutor =
-      _TestPsqlQueryExecutorWrapper().queryExecuter;
+      TestPsqlQueryExecutorWrapper().queryExecuter;
   final DatabaseWrapper databaseWrapper = DatabaseWrapper(queryExecutor);
 
   databaseWrapper.initialize();
@@ -33,19 +32,19 @@ TestDatabaseWrapper getTestDatabaseWrapper() {
   return TestDatabaseWrapper(databaseWrapper);
 }
 
-class _TestPsqlQueryExecutorWrapper {
-  final QueryExecutor queryExecuter = PgDatabase(
-      endpoint: Endpoint(
-        host: 'localhost',
-        port: 5432,
-        username: 'admin',
-        password: 'root',
-        database: 'postgres',
-      ),
-      settings: ConnectionSettings(
-        sslMode: SslMode.disable,
-        onOpen: (connection) async {
-          print("Connected to test database");
-        },
-      ));
-}
+// class _TestPsqlQueryExecutorWrapper {
+//   final QueryExecutor queryExecuter = PgDatabase(
+//       endpoint: Endpoint(
+//         host: 'localhost',
+//         port: 5432,
+//         username: 'admin',
+//         password: 'root',
+//         database: 'postgres',
+//       ),
+//       settings: ConnectionSettings(
+//         sslMode: SslMode.disable,
+//         onOpen: (connection) async {
+//           print("Connected to test database");
+//         },
+//       ));
+// }

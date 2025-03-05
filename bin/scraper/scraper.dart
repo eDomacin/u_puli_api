@@ -1,7 +1,8 @@
+import 'package:database_wrapper/database_wrapper.dart';
+import 'package:env_vars_wrapper/env_vars_wrapper.dart';
 import 'package:u_puli_api/src/features/scraper/temp_scraper_db_storer.dart';
-import 'package:u_puli_api/src/wrappers/database/database_wrapper.dart';
-import 'package:u_puli_api/src/wrappers/env_vars/env_vars_wrapper.dart';
-import 'package:u_puli_api/src/wrappers/get_id/get_it_wrapper.dart';
+// import 'package:u_puli_api/src/wrappers/database/database_wrapper.dart';
+// import 'package:u_puli_api/src/wrappers/env_vars/env_vars_wrapper.dart';
 
 Future<void> main(List<String> args) async {
   final events = List.generate(10, (i) {
@@ -15,10 +16,16 @@ Future<void> main(List<String> args) async {
     return event;
   });
 
-  final envVarsDBWrapper = EnvVarsWrapper().envVarsDBWrapper;
+  final envVarsWrapper = EnvVarsWrapper();
 
   final databaseWrapper = DatabaseWrapper.app(
-    envVarsDBWrapper: envVarsDBWrapper,
+    endpointData: DatabaseEndpointDataValue(
+      pgHost: envVarsWrapper.pgHost,
+      pgDatabase: envVarsWrapper.pgDatabase,
+      pgUser: envVarsWrapper.pgUser,
+      pgPassword: envVarsWrapper.pgPassword,
+      pgPort: envVarsWrapper.pgPort,
+    ),
   );
 
   databaseWrapper.initialize();

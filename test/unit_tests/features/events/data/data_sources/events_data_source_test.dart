@@ -1,10 +1,10 @@
-import 'package:drift/drift.dart' hide isNull;
+// import 'package:drift/drift.dart' hide isNull;
+import 'package:database_wrapper/database_wrapper.dart' hide isNull;
 import 'package:test/test.dart';
 import 'package:u_puli_api/src/features/events/data/data_sources/events_data_source.dart';
 import 'package:u_puli_api/src/features/events/data/data_sources/events_data_source_impl.dart';
 import 'package:u_puli_api/src/features/events/domain/values/event_entity_value.dart';
 import 'package:u_puli_api/src/features/events/utils/converters/events_converter.dart';
-import 'package:u_puli_api/src/wrappers/drift/drift_wrapper.dart';
 
 import '../../../../../helpers/database/test_database_wrapper.dart';
 

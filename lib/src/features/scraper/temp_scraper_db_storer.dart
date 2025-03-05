@@ -1,6 +1,8 @@
-import 'package:drift/drift.dart';
-import 'package:u_puli_api/src/wrappers/database/database_wrapper.dart';
-import 'package:u_puli_api/src/wrappers/drift/drift_wrapper.dart';
+// import 'package:drift/drift.dart';
+// import 'package:u_puli_api/src/wrappers/database/database_wrapper.dart';
+// import 'package:u_puli_api/src/wrappers/drift/drift_wrapper.dart';
+
+import 'package:database_wrapper/database_wrapper.dart';
 
 class TempScraperDbStorer {
   const TempScraperDbStorer(DatabaseWrapper databaseWrapper)

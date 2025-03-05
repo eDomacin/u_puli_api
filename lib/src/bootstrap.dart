@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:database_wrapper/database_wrapper.dart';
+import 'package:env_vars_wrapper/env_vars_wrapper.dart';
 import 'package:u_puli_api/src/app.dart';
 import 'package:u_puli_api/src/app_router.dart';
 import 'package:u_puli_api/src/features/events/data/data_sources/events_data_source.dart';
@@ -11,8 +13,6 @@ import 'package:u_puli_api/src/features/events/domain/use_cases/get_events_use_c
 import 'package:u_puli_api/src/features/events/presentation/controllers/get_event_controller.dart';
 import 'package:u_puli_api/src/features/events/presentation/controllers/get_events_controller.dart';
 import 'package:u_puli_api/src/features/events/presentation/router/events_router.dart';
-import 'package:u_puli_api/src/wrappers/database/database_wrapper.dart';
-import 'package:u_puli_api/src/wrappers/env_vars/env_vars_wrapper.dart';
 import 'package:u_puli_api/src/wrappers/get_id/get_it_wrapper.dart';
 
 Future<void> bootstrap() async {
@@ -41,8 +41,16 @@ Future<void> bootstrap() async {
 DatabaseWrapper _getInitializedDatabaseWrapper({
   required EnvVarsWrapper envVarsWrapper,
 }) {
+  final DatabaseEndpointDataValue endpointData = DatabaseEndpointDataValue(
+    pgHost: envVarsWrapper.pgHost,
+    pgDatabase: envVarsWrapper.pgDatabase,
+    pgUser: envVarsWrapper.pgUser,
+    pgPassword: envVarsWrapper.pgPassword,
+    pgPort: envVarsWrapper.pgPort,
+  );
+
   final DatabaseWrapper databaseWrapper = DatabaseWrapper.app(
-    envVarsDBWrapper: envVarsWrapper.envVarsDBWrapper,
+    endpointData: endpointData,
   );
 
   databaseWrapper.initialize();

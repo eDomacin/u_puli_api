@@ -1,6 +1,7 @@
+import 'package:database_wrapper/database_wrapper.dart';
 import 'package:u_puli_api/src/features/events/domain/models/event_model.dart';
 import 'package:u_puli_api/src/features/events/domain/values/event_entity_value.dart';
-import 'package:u_puli_api/src/wrappers/drift/drift_wrapper.dart';
+// import 'package:u_puli_api/src/wrappers/drift/drift_wrapper.dart';
 
 abstract class EventsConverter {
   static EventEntityValue entityValueFromEntityData({
