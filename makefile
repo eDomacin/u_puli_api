@@ -56,3 +56,27 @@ build_scraper_prod:
 # this expects the scraper to be built
 run_scraper_prod:
 	@set -a && source .env && ./build/scraper
+
+
+
+pubget:
+	for package in $(PACKAGES); do \
+		echo "Getting dependencies for $$package"; \
+		cd $$package && dart pub get; \
+	done
+
+
+
+
+# vars - move to its own file
+CURDIR = $(shell pwd)
+
+
+
+# PACKAGES 
+ENV_WRAPPER = $(CURDIR)/packages/env_wrapper
+DATABASE_WRAPPER = $(CURDIR)/packages/database_wrapper
+EVENTS_SCRAPER = $(CURDIR)/packages/events_scraper
+
+# PACKAGES DIR LIST
+PACKAGES = $(CURDIR) $(ENV_WRAPPER) $(DATABASE_WRAPPER) $(EVENTS_SCRAPER) 
