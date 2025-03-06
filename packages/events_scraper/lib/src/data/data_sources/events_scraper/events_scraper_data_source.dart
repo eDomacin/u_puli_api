@@ -1,6 +1,5 @@
+import 'package:event_scraper/src/data/entities/scraped_event_entity.dart';
+
 abstract interface class EventsScraperDataSource {
-  abstract final Uri url;
-  abstract final String name;
-  // TODO should not be dynamic
-  Future<List<dynamic>> getEvents();
+  Future<Set<ScrapedEventEntity>> getNarancaEvents();
 }

@@ -11,8 +11,8 @@ COPY . .
 
 RUN mkdir -p build
 
-RUN dart compile exe bin/server/server.dart -o build/server
-RUN dart compile exe bin/scraper/scraper.dart -o build/scraper
+RUN dart compile exe bin/server.dart -o build/server
+RUN dart compile exe packages/events_scraper/bin/events_scraper.dart -o build/scraper
 
 # Build minimal serving image from AOT-compiled `/server`
 # and the pre-built AOT-runtime in the `/runtime/` directory of the base image.

@@ -2,12 +2,18 @@ name: event_scraper
 description: A starting point for Dart libraries or applications.
 version: 1.0.0
 # repository: https://github.com/my_org/my_repo
+publish_to: none
 
 environment:
   sdk: ^3.7.0
 
 # Add regular dependencies here.
-# dependencies:
+dependencies:
+  puppeteer: ^3.17.0
+  database_wrapper:
+    path: ../database_wrapper
+  env_vars_wrapper:
+    path: ../env_vars_wrapper
 # path: ^1.8.0
 
 dev_dependencies:

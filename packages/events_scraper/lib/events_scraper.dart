@@ -3,6 +3,6 @@
 /// More dartdocs go here.
 library;
 
-export 'src/scraper_base.dart';
+// export 'src/events_scraper.dart';
 
 // TODO: Export any libraries intended for clients of this package.

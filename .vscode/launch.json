@@ -5,7 +5,7 @@
       "name": "Shelf Server (Debug)",
       "type": "dart",
       "request": "launch",
-      "program": "bin/server/server.dart" // Path to your main server file (e.g., bin/server.dart)
+      "program": "bin/server.dart" // Path to your main server file (e.g., bin/server.dart)
     }
   ]
 }

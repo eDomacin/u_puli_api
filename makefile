@@ -15,10 +15,10 @@ generate:
 
 
 run_dev: 
-	@set -a && source .env && set +a && dart run bin/server/server.dart
+	@set -a && source .env && set +a && dart run bin/server.dart
 
 build_prod:
-	mkdir -p build && dart compile exe bin/server/server.dart -o build/server
+	mkdir -p build && dart compile exe bin/server.dart -o build/server
 
 # this expects the server to be built
 run_prod:
@@ -48,10 +48,10 @@ start_tests_db:
 
 # scraper 
 run_scraper_dev:
-	@set -a && source .env && set +a && dart run bin/scraper/scraper.dart
+	@set -a && source .env && set +a && dart run packages/events_scraper/bin/events_scraper.dart
 
 build_scraper_prod:
-	mkdir -p build && dart compile exe bin/scraper/scraper.dart -o build/scraper
+	mkdir -p build && dart compile exe packages/events_scraper/bin/events_scraper.dart -o build/scraper
 
 # this expects the scraper to be built
 run_scraper_prod:
