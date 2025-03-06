@@ -23,6 +23,9 @@ Future<void> runEventsScraper() async {
     eventsScraperController: eventsScraperController,
   );
 
+  // TODO give some time to the database to initialize
+  await Future.delayed(const Duration(seconds: 5));
+
   await eventsScraper.run();
 
   await databaseWrapper.close();
