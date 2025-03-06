@@ -1,13 +1,28 @@
 
-1. unique constraint built in does not work
-- it throws with pragma error
-- try use only some fields 
-- or try custom add constraint 
--- https://www.tutorialsteacher.com/postgresql/add-constraint 
--- https://neon.tech/postgresql/postgresql-tutorial/postgresql-unique-constraint
 
-2. also, i cannot just insert. i should insert with on conflict update, or do nothing really
 
-1. scraper should probably be a package
-- so it would not meedle with features of the server
-2. database wrapper should probably also be a package
+3. scraper package 
+- which would have data source to get scraped data 
+- and datasource to databasedatasource 
+- and domain with models and such 
+- and repositories for both of those 
+-- make just one repo for all events scrapers
+- and use cases for each source 
+- and have presentation 
+-- i guess we will have a controller in there
+--- it would have handle scrape data 
+--- it would call all use cases for scraping 
+--- it would then call use cases for saving data
+-- it would need to accept database 
+- and then we would have EventsScraper class 
+- this class would initialize
+-- env variables 
+-- database	
+-- repositories
+-- use cases
+-- data sources
+- and it would then intiialize controller
+- and call controllers handle scrape events method 
+-- inside the class we would do all of this 
+-- once the work is done, or error is thrown, dabase needs to be closed 
+- its method will be called run
