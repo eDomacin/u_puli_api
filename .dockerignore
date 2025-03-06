@@ -1,7 +1,7 @@
 .dockerignore
 Dockerfile
 build/
-.dart_tool/
+**/.dart_tool/
 .git/
 .github/
 .gitignore

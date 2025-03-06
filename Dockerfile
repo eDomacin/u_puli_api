@@ -3,7 +3,26 @@ FROM dart:stable AS build
 
 # Resolve app dependencies.
 WORKDIR /app
+# COPY pubspec.* ./
+# NOTE: copying all pubspec files
+# copy root pubspec
 COPY pubspec.* ./
+
+# copy env wrapper
+# COPY packages/**/pubspec.* ./packages/
+# COPY packages/env_wrapper/pubspec.* ./packages/env_wrapper/
+# COPY packages/events_scraper/pubspec.* ./packages/events_scraper/
+# COPY packages/server/pubspec.* ./packages/server/
+
+# copy all pubspec files
+COPY packages/env_vars_wrapper/pubspec.* ./packages/env_vars_wrapper/
+COPY packages/database_wrapper/pubspec.* ./packages/database_wrapper/
+COPY packages/events_scraper/pubspec.* ./packages/events_scraper/
+
+# RUN dart pub get
+RUN dart pub get --directory packages/env_vars_wrapper
+RUN dart pub get --directory packages/database_wrapper
+RUN dart pub get --directory packages/events_scraper
 RUN dart pub get
 
 # Copy app source code (except anything in .dockerignore) and AOT compile app.
