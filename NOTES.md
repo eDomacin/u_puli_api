@@ -43,8 +43,8 @@
 
 9. DI - service locator
 
-9. maybe add kafka
-- try to at least
+
+10. cors
 
 
 <!-- reminders -->

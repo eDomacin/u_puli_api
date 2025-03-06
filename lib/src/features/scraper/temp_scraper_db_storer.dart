@@ -4,6 +4,8 @@
 
 import 'package:database_wrapper/database_wrapper.dart';
 
+// TODO this whole feature can go away
+
 class TempScraperDbStorer {
   const TempScraperDbStorer(DatabaseWrapper databaseWrapper)
       : _databaseWrapper = databaseWrapper;

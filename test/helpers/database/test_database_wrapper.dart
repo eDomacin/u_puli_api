@@ -1,5 +1,3 @@
-import 'package:drift/drift.dart';
-// import 'package:u_puli_api/src/wrappers/database/database_wrapper.dart';
 import "package:database_wrapper/database_wrapper.dart";
 
 class TestDatabaseWrapper {
@@ -12,7 +10,7 @@ class TestDatabaseWrapper {
   ];
 
   Future<void> close() async {
-    await databaseWrapper.driftWrapper.close();
+    await databaseWrapper.close();
   }
 
   Future<void> clearAll() async {
@@ -31,20 +29,3 @@ TestDatabaseWrapper getTestDatabaseWrapper() {
 
   return TestDatabaseWrapper(databaseWrapper);
 }
-
-// class _TestPsqlQueryExecutorWrapper {
-//   final QueryExecutor queryExecuter = PgDatabase(
-//       endpoint: Endpoint(
-//         host: 'localhost',
-//         port: 5432,
-//         username: 'admin',
-//         password: 'root',
-//         database: 'postgres',
-//       ),
-//       settings: ConnectionSettings(
-//         sslMode: SslMode.disable,
-//         onOpen: (connection) async {
-//           print("Connected to test database");
-//         },
-//       ));
-// }

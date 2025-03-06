@@ -1,4 +1,4 @@
-import 'package:database_wrapper/database_wrapper.dart';
+import 'package:database_wrapper/database_wrapper.dart' hide EventsConverter;
 import 'package:u_puli_api/src/features/events/data/data_sources/events_data_source.dart';
 import 'package:u_puli_api/src/features/events/domain/values/event_entity_value.dart';
 import 'package:u_puli_api/src/features/events/utils/converters/events_converter.dart';

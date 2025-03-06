@@ -1,5 +1,6 @@
 // import 'package:drift/drift.dart' hide isNull;
-import 'package:database_wrapper/database_wrapper.dart' hide isNull;
+import 'package:database_wrapper/database_wrapper.dart'
+    hide isNull, EventsConverter;
 import 'package:test/test.dart';
 import 'package:u_puli_api/src/features/events/data/data_sources/events_data_source.dart';
 import 'package:u_puli_api/src/features/events/data/data_sources/events_data_source_impl.dart';

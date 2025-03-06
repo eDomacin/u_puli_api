@@ -2,6 +2,8 @@ import 'package:database_wrapper/database_wrapper.dart';
 import 'package:env_vars_wrapper/env_vars_wrapper.dart';
 import 'package:event_scraper/src/data/data_sources/events_scraper/events_scraper_data_source.dart';
 import 'package:event_scraper/src/data/data_sources/events_scraper/events_scraper_data_source_impl.dart';
+import 'package:event_scraper/src/data/data_sources/events_storer/events_storer_data_source.dart';
+import 'package:event_scraper/src/data/data_sources/events_storer/events_storer_data_source_impl.dart';
 import 'package:event_scraper/src/domain/repositories/events_loader_repository.dart';
 import 'package:event_scraper/src/domain/repositories/events_loader_repository_impl.dart';
 import 'package:event_scraper/src/domain/use_cases/load_naranca_events_use_case.dart';
@@ -15,7 +17,7 @@ Future<void> runEventsScraper() async {
     envVarsWrapper: envVarsWrapper,
   );
   final EventsScraperController eventsScraperController =
-      _getInitializedEventsScraperController();
+      _getInitializedEventsScraperController(databaseWrapper: databaseWrapper);
 
   final EventsScraper eventsScraper = EventsScraper(
     eventsScraperController: eventsScraperController,
@@ -23,7 +25,7 @@ Future<void> runEventsScraper() async {
 
   await eventsScraper.run();
 
-  await databaseWrapper.driftWrapper.close();
+  await databaseWrapper.close();
 }
 
 DatabaseWrapper _getInitializedDatabaseWrapper({
@@ -44,7 +46,9 @@ DatabaseWrapper _getInitializedDatabaseWrapper({
   return databaseWrapper;
 }
 
-EventsScraperController _getInitializedEventsScraperController() {
+EventsScraperController _getInitializedEventsScraperController({
+  required DatabaseWrapper databaseWrapper,
+}) {
   // puppeteer wrappers
   final NarancaPuppeteerScraperWrapper narancaPuppeteerScraperWrapper =
       NarancaPuppeteerScraperWrapper();
@@ -55,10 +59,14 @@ EventsScraperController _getInitializedEventsScraperController() {
         narancaPuppeteerScraperWrapper: narancaPuppeteerScraperWrapper,
       );
 
+  final EventsStorerDataSource eventsStorerDataSource =
+      EventsStorerDataSourceImpl(databaseWrapper: databaseWrapper);
+
   // repositories
   final EventsLoaderRepository eventsLoaderRepository =
       EventsLoaderRepositoryImpl(
         eventsScraperDataSource: eventsScraperDataSource,
+        eventsStorerDataSource: eventsStorerDataSource,
       );
 
   // use cases
