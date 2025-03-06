@@ -12,3 +12,6 @@
 build
 
 .DS_Store
+
+# puppeteer
+.local-chrome
