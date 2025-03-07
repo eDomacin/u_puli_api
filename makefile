@@ -74,7 +74,7 @@ CURDIR = $(shell pwd)
 
 
 # PACKAGES 
-ENV_WRAPPER = $(CURDIR)/packages/env_wrapper
+ENV_WRAPPER = $(CURDIR)/packages/env_vars_wrapper
 DATABASE_WRAPPER = $(CURDIR)/packages/database_wrapper
 EVENTS_SCRAPER = $(CURDIR)/packages/events_scraper
 
