@@ -9,7 +9,7 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
-  puppeteer: ^3.17.0
+  puppeteer: 3.16.0
   database_wrapper:
     path: ../database_wrapper
   env_vars_wrapper:
