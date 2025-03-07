@@ -12,45 +12,28 @@ class $EventEntityTable extends EventEntity
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-    'id',
-    aliasedName,
-    false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
   static const VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
-    'title',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
+      'title', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
   late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
-    'date',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _locationMeta = const VerificationMeta(
-    'location',
-  );
+      'date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _locationMeta =
+      const VerificationMeta('location');
   @override
   late final GeneratedColumn<String> location = GeneratedColumn<String>(
-    'location',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
+      'location', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [id, title, date, location];
   @override
@@ -59,10 +42,8 @@ class $EventEntityTable extends EventEntity
   String get actualTableName => $name;
   static const String $name = 'event_entity';
   @override
-  VerificationContext validateIntegrity(
-    Insertable<EventEntityData> instance, {
-    bool isInserting = false,
-  }) {
+  VerificationContext validateIntegrity(Insertable<EventEntityData> instance,
+      {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -70,25 +51,19 @@ class $EventEntityTable extends EventEntity
     }
     if (data.containsKey('title')) {
       context.handle(
-        _titleMeta,
-        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
-      );
+          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
     } else if (isInserting) {
       context.missing(_titleMeta);
     }
     if (data.containsKey('date')) {
       context.handle(
-        _dateMeta,
-        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
-      );
+          _dateMeta, date.isAcceptableOrUnknown(data['date']!, _dateMeta));
     } else if (isInserting) {
       context.missing(_dateMeta);
     }
     if (data.containsKey('location')) {
-      context.handle(
-        _locationMeta,
-        location.isAcceptableOrUnknown(data['location']!, _locationMeta),
-      );
+      context.handle(_locationMeta,
+          location.isAcceptableOrUnknown(data['location']!, _locationMeta));
     } else if (isInserting) {
       context.missing(_locationMeta);
     }
@@ -99,32 +74,20 @@ class $EventEntityTable extends EventEntity
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   List<Set<GeneratedColumn>> get uniqueKeys => [
-    {title, date, location},
-  ];
+        {title, date, location},
+      ];
   @override
   EventEntityData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return EventEntityData(
-      id:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
-            data['${effectivePrefix}id'],
-          )!,
-      title:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}title'],
-          )!,
-      date:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.dateTime,
-            data['${effectivePrefix}date'],
-          )!,
-      location:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}location'],
-          )!,
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      title: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
+      date: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
+      location: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}location'])!,
     );
   }
 
@@ -139,12 +102,11 @@ class EventEntityData extends DataClass implements Insertable<EventEntityData> {
   final String title;
   final DateTime date;
   final String location;
-  const EventEntityData({
-    required this.id,
-    required this.title,
-    required this.date,
-    required this.location,
-  });
+  const EventEntityData(
+      {required this.id,
+      required this.title,
+      required this.date,
+      required this.location});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -164,10 +126,8 @@ class EventEntityData extends DataClass implements Insertable<EventEntityData> {
     );
   }
 
-  factory EventEntityData.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
+  factory EventEntityData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return EventEntityData(
       id: serializer.fromJson<int>(json['id']),
@@ -187,17 +147,14 @@ class EventEntityData extends DataClass implements Insertable<EventEntityData> {
     };
   }
 
-  EventEntityData copyWith({
-    int? id,
-    String? title,
-    DateTime? date,
-    String? location,
-  }) => EventEntityData(
-    id: id ?? this.id,
-    title: title ?? this.title,
-    date: date ?? this.date,
-    location: location ?? this.location,
-  );
+  EventEntityData copyWith(
+          {int? id, String? title, DateTime? date, String? location}) =>
+      EventEntityData(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        date: date ?? this.date,
+        location: location ?? this.location,
+      );
   EventEntityData copyWithCompanion(EventEntityCompanion data) {
     return EventEntityData(
       id: data.id.present ? data.id.value : this.id,
@@ -246,9 +203,9 @@ class EventEntityCompanion extends UpdateCompanion<EventEntityData> {
     required String title,
     required DateTime date,
     required String location,
-  }) : title = Value(title),
-       date = Value(date),
-       location = Value(location);
+  })  : title = Value(title),
+        date = Value(date),
+        location = Value(location);
   static Insertable<EventEntityData> custom({
     Expression<int>? id,
     Expression<String>? title,
@@ -263,12 +220,11 @@ class EventEntityCompanion extends UpdateCompanion<EventEntityData> {
     });
   }
 
-  EventEntityCompanion copyWith({
-    Value<int>? id,
-    Value<String>? title,
-    Value<DateTime>? date,
-    Value<String>? location,
-  }) {
+  EventEntityCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? title,
+      Value<DateTime>? date,
+      Value<String>? location}) {
     return EventEntityCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
@@ -312,11 +268,9 @@ abstract class _$DriftWrapper extends GeneratedDatabase {
   $DriftWrapperManager get managers => $DriftWrapperManager(this);
   late final $EventEntityTable eventEntity = $EventEntityTable(this);
   Selectable<String> current_timestamp() {
-    return customSelect(
-      'SELECT CURRENT_TIMESTAMP AS _c0',
-      variables: [],
-      readsFrom: {},
-    ).map((QueryRow row) => row.read<String>('_c0'));
+    return customSelect('SELECT CURRENT_TIMESTAMP AS _c0',
+        variables: [],
+        readsFrom: {}).map((QueryRow row) => row.read<String>('_c0'));
   }
 
   @override
@@ -326,20 +280,20 @@ abstract class _$DriftWrapper extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [eventEntity];
 }
 
-typedef $$EventEntityTableCreateCompanionBuilder =
-    EventEntityCompanion Function({
-      Value<int> id,
-      required String title,
-      required DateTime date,
-      required String location,
-    });
-typedef $$EventEntityTableUpdateCompanionBuilder =
-    EventEntityCompanion Function({
-      Value<int> id,
-      Value<String> title,
-      Value<DateTime> date,
-      Value<String> location,
-    });
+typedef $$EventEntityTableCreateCompanionBuilder = EventEntityCompanion
+    Function({
+  Value<int> id,
+  required String title,
+  required DateTime date,
+  required String location,
+});
+typedef $$EventEntityTableUpdateCompanionBuilder = EventEntityCompanion
+    Function({
+  Value<int> id,
+  Value<String> title,
+  Value<DateTime> date,
+  Value<String> location,
+});
 
 class $$EventEntityTableFilterComposer
     extends Composer<_$DriftWrapper, $EventEntityTable> {
@@ -351,24 +305,16 @@ class $$EventEntityTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
+      column: $table.id, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get title => $composableBuilder(
-    column: $table.title,
-    builder: (column) => ColumnFilters(column),
-  );
+      column: $table.title, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get date => $composableBuilder(
-    column: $table.date,
-    builder: (column) => ColumnFilters(column),
-  );
+      column: $table.date, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get location => $composableBuilder(
-    column: $table.location,
-    builder: (column) => ColumnFilters(column),
-  );
+      column: $table.location, builder: (column) => ColumnFilters(column));
 }
 
 class $$EventEntityTableOrderingComposer
@@ -381,24 +327,16 @@ class $$EventEntityTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
+      column: $table.id, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get title => $composableBuilder(
-    column: $table.title,
-    builder: (column) => ColumnOrderings(column),
-  );
+      column: $table.title, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<DateTime> get date => $composableBuilder(
-    column: $table.date,
-    builder: (column) => ColumnOrderings(column),
-  );
+      column: $table.date, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get location => $composableBuilder(
-    column: $table.location,
-    builder: (column) => ColumnOrderings(column),
-  );
+      column: $table.location, builder: (column) => ColumnOrderings(column));
 }
 
 class $$EventEntityTableAnnotationComposer
@@ -423,92 +361,77 @@ class $$EventEntityTableAnnotationComposer
       $composableBuilder(column: $table.location, builder: (column) => column);
 }
 
-class $$EventEntityTableTableManager
-    extends
-        RootTableManager<
-          _$DriftWrapper,
-          $EventEntityTable,
-          EventEntityData,
-          $$EventEntityTableFilterComposer,
-          $$EventEntityTableOrderingComposer,
-          $$EventEntityTableAnnotationComposer,
-          $$EventEntityTableCreateCompanionBuilder,
-          $$EventEntityTableUpdateCompanionBuilder,
-          (
-            EventEntityData,
-            BaseReferences<_$DriftWrapper, $EventEntityTable, EventEntityData>,
-          ),
-          EventEntityData,
-          PrefetchHooks Function()
-        > {
+class $$EventEntityTableTableManager extends RootTableManager<
+    _$DriftWrapper,
+    $EventEntityTable,
+    EventEntityData,
+    $$EventEntityTableFilterComposer,
+    $$EventEntityTableOrderingComposer,
+    $$EventEntityTableAnnotationComposer,
+    $$EventEntityTableCreateCompanionBuilder,
+    $$EventEntityTableUpdateCompanionBuilder,
+    (
+      EventEntityData,
+      BaseReferences<_$DriftWrapper, $EventEntityTable, EventEntityData>
+    ),
+    EventEntityData,
+    PrefetchHooks Function()> {
   $$EventEntityTableTableManager(_$DriftWrapper db, $EventEntityTable table)
-    : super(
-        TableManagerState(
+      : super(TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer:
-              () => $$EventEntityTableFilterComposer($db: db, $table: table),
-          createOrderingComposer:
-              () => $$EventEntityTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer:
-              () =>
-                  $$EventEntityTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<String> title = const Value.absent(),
-                Value<DateTime> date = const Value.absent(),
-                Value<String> location = const Value.absent(),
-              }) => EventEntityCompanion(
-                id: id,
-                title: title,
-                date: date,
-                location: location,
-              ),
-          createCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                required String title,
-                required DateTime date,
-                required String location,
-              }) => EventEntityCompanion.insert(
-                id: id,
-                title: title,
-                date: date,
-                location: location,
-              ),
-          withReferenceMapper:
-              (p0) =>
-                  p0
-                      .map(
-                        (e) => (
-                          e.readTable(table),
-                          BaseReferences(db, table, e),
-                        ),
-                      )
-                      .toList(),
+          createFilteringComposer: () =>
+              $$EventEntityTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$EventEntityTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$EventEntityTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> title = const Value.absent(),
+            Value<DateTime> date = const Value.absent(),
+            Value<String> location = const Value.absent(),
+          }) =>
+              EventEntityCompanion(
+            id: id,
+            title: title,
+            date: date,
+            location: location,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String title,
+            required DateTime date,
+            required String location,
+          }) =>
+              EventEntityCompanion.insert(
+            id: id,
+            title: title,
+            date: date,
+            location: location,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
           prefetchHooksCallback: null,
-        ),
-      );
+        ));
 }
 
-typedef $$EventEntityTableProcessedTableManager =
-    ProcessedTableManager<
-      _$DriftWrapper,
-      $EventEntityTable,
+typedef $$EventEntityTableProcessedTableManager = ProcessedTableManager<
+    _$DriftWrapper,
+    $EventEntityTable,
+    EventEntityData,
+    $$EventEntityTableFilterComposer,
+    $$EventEntityTableOrderingComposer,
+    $$EventEntityTableAnnotationComposer,
+    $$EventEntityTableCreateCompanionBuilder,
+    $$EventEntityTableUpdateCompanionBuilder,
+    (
       EventEntityData,
-      $$EventEntityTableFilterComposer,
-      $$EventEntityTableOrderingComposer,
-      $$EventEntityTableAnnotationComposer,
-      $$EventEntityTableCreateCompanionBuilder,
-      $$EventEntityTableUpdateCompanionBuilder,
-      (
-        EventEntityData,
-        BaseReferences<_$DriftWrapper, $EventEntityTable, EventEntityData>,
-      ),
-      EventEntityData,
-      PrefetchHooks Function()
-    >;
+      BaseReferences<_$DriftWrapper, $EventEntityTable, EventEntityData>
+    ),
+    EventEntityData,
+    PrefetchHooks Function()>;
 
 class $DriftWrapperManager {
   final _$DriftWrapper _db;
