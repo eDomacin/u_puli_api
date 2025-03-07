@@ -26,12 +26,14 @@ class EventsScraperDataSourceImpl implements EventsScraperDataSource {
       );
 
       return events;
-    } catch (e) {
-      _printFailedScrapeMessage(
-        name: _narancaPuppeteerScraperWrapper.name,
-        uri: _narancaPuppeteerScraperWrapper.uri,
-        error: e.toString(),
-      );
+    } catch (e, s) {
+      // _printFailedScrapeMessage(
+      //   name: _narancaPuppeteerScraperWrapper.name,
+      //   uri: _narancaPuppeteerScraperWrapper.uri,
+      //   error: e.toString(),
+      // );
+
+      print("error: $e, stacktrace: $s");
 
       return <ScrapedEventEntity>{};
     }

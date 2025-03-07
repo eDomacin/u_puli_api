@@ -3,6 +3,7 @@ Dockerfile
 build/
 **/.dart_tool/
 **/pubspec.lock
+**/.local-chrome
 .git/
 .github/
 .gitignore
