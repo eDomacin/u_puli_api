@@ -12,6 +12,7 @@ abstract class PuppeteerScraperWrapper with _PuppeteerScraperWrapperMixin {
 }
 
 mixin _PuppeteerScraperWrapperMixin {
+  // TODO make this available only inside - maybe used sealed classes or part files - or maybe irrelevant
   Future<Browser> getBrowser() async {
     final Browser browser = await puppeteer.launch(
       // NOTE: Not working on linux, or in docker. "args" works tho

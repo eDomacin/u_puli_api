@@ -16,6 +16,23 @@ class EventsLoaderRepositoryImpl implements EventsLoaderRepository {
   final EventsStorerDataSource _eventsStorerDataSource;
 
   @override
+  Future<void> loadInkEvents() async {
+    final Set<ScrapedEventEntity> events =
+        await _eventsScraperDataSource.getInkEvents();
+
+    print("Scraped event entities: $events");
+
+    final List<StoreEventEntityValue> storeEntityValues =
+        EventsConverter.storeEntityValuesFromScrapedEntities(
+          scrapedEventEntities: events,
+        );
+
+    await _eventsStorerDataSource.storeEvents(storeEntityValues);
+
+    print("Stored event entities: $storeEntityValues");
+  }
+
+  @override
   Future<void> loadNarancaEvents() async {
     final Set<ScrapedEventEntity> events =
         await _eventsScraperDataSource.getNarancaEvents();
@@ -30,8 +47,6 @@ class EventsLoaderRepositoryImpl implements EventsLoaderRepository {
     await _eventsStorerDataSource.storeEvents(storeEntityValues);
 
     print("Stored event entities: $storeEntityValues");
-
-    // TODO will be storing it from here
   }
 
   @override
@@ -49,7 +64,5 @@ class EventsLoaderRepositoryImpl implements EventsLoaderRepository {
     await _eventsStorerDataSource.storeEvents(storeEntityValues);
 
     print("Stored event entities: $storeEntityValues");
-
-    // TODO will be storing it from here
   }
 }

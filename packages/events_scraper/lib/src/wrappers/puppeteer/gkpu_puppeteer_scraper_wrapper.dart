@@ -138,6 +138,7 @@ class GkpuPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
 
     await page.close();
     await browser.close();
+
     return allEvents.toSet();
   }
 
