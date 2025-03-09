@@ -1,28 +1,16 @@
+1. login and register
 
+2. access and refresh tokens
 
+3. middlewares 
 
-3. scraper package 
-- which would have data source to get scraped data 
-- and datasource to databasedatasource 
-- and domain with models and such 
-- and repositories for both of those 
--- make just one repo for all events scrapers
-- and use cases for each source 
-- and have presentation 
--- i guess we will have a controller in there
---- it would have handle scrape data 
---- it would call all use cases for scraping 
---- it would then call use cases for saving data
--- it would need to accept database 
-- and then we would have EventsScraper class 
-- this class would initialize
--- env variables 
--- database	
--- repositories
--- use cases
--- data sources
-- and it would then intiialize controller
-- and call controllers handle scrape events method 
--- inside the class we would do all of this 
--- once the work is done, or error is thrown, dabase needs to be closed 
-- its method will be called run
+4. cors
+- https://appvesto.medium.com/how-to-add-cors-to-the-dart-server-9d55a2835397
+- https://gist.github.com/graphicbeacon/e9186517767f7a86c9d24e79a09b8c3a
+- https://stackoverflow.com/questions/71639338/how-to-add-cors-middleware-in-shelf-with-router 
+- https://stackoverflow.com/questions/78888063/the-client-side-doesnt-recognizes-the-cors-from-a-dart-server
+- https://www.reddit.com/r/dartlang/comments/n4m9mm/shelf_cors_headers_library/
+- https://oldmetalmind.medium.com/dart-shelf-backend-with-dart-f068d4f37a7a
+
+5. shelf static
+- https://oldmetalmind.medium.com/dart-shelf-backend-with-dart-f068d4f37a7a
