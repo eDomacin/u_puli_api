@@ -4,8 +4,8 @@ import 'package:event_scraper/src/data/entities/scraped_event_entity.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/puppeteer_scraper_wrapper.dart';
 import 'package:puppeteer/puppeteer.dart';
 
-class NarancaPuppeteerScraperWrapper implements PuppeteerScraperWrapper {
-  const NarancaPuppeteerScraperWrapper();
+class NarancaPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
+  const NarancaPuppeteerScraperWrapper() : super();
 
   @override
   String get name => "Teatar Naranča";
@@ -18,18 +18,9 @@ class NarancaPuppeteerScraperWrapper implements PuppeteerScraperWrapper {
   Future<Set<ScrapedEventEntity>> getEvents() async {
     final allEvents = <ScrapedEventEntity>[];
 
-    final browser = await puppeteer.launch(
-      // NOTE: Not working on linux, or in docker. "args" works tho
-      // headless: true,
-      // noSandboxFlag: true,
-      args: [
-        // list of flags that worked - # https://github.com/puppeteer/puppeteer/issues/11028
-        // TODO this probably should not be enabled - i guess in docker, will need to run as non-root
-        '--no-sandbox',
-        '--headless',
-      ],
-    );
-    final page = await browser.newPage();
+    final browser = await getBrowser();
+
+    final Page page = await browser.newPage();
 
     await _navigateToCalendarPage(page);
     await Future.delayed(Duration(seconds: 1));
