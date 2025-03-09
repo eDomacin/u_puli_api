@@ -10,3 +10,4 @@ build/
 .idea/
 .packages
 .DS_Store
+.env

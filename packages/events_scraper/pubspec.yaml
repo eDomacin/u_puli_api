@@ -9,6 +9,7 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
+  # TODO hardcoded version for now
   puppeteer: 3.16.0
   database_wrapper:
     path: ../database_wrapper

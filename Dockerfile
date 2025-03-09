@@ -4,16 +4,8 @@ FROM dart:3.7.0 AS build
 
 # Resolve app dependencies.
 WORKDIR /app
-# COPY pubspec.* ./
-# NOTE: copying all pubspec files
-# copy root pubspec
-COPY pubspec.* ./
 
-# copy env wrapper
-# COPY packages/**/pubspec.* ./packages/
-# COPY packages/env_wrapper/pubspec.* ./packages/env_wrapper/
-# COPY packages/events_scraper/pubspec.* ./packages/events_scraper/
-# COPY packages/server/pubspec.* ./packages/server/
+COPY pubspec.* ./
 
 # copy all pubspec files
 COPY packages/env_vars_wrapper/pubspec.* ./packages/env_vars_wrapper/
@@ -41,17 +33,22 @@ FROM alpine:latest
 
 COPY --from=build /runtime/ /
 COPY --from=build /app/build/server /app/build/
-# TODO will also need to copy from
 COPY --from=build /app/build/scraper /app/build/
 
 # Install necessary utilities
 RUN apk add --no-cache bash
+RUN apk add --no-cache chromium
+
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+# https://github.com/puppeteer/puppeteer/issues/11028
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 # it would be good to write this to some logs
 # RUN mkdir -p /var/log
 # RUN echo "* * * * * /app/build/scraper >> /var/log/scraper.log 2>&1" > /etc/crontabs/root
-
 RUN echo '*  *  *  *  *   /app/build/scraper' >/etc/crontabs/root
+
+# TODO create a user and run as that user
 
 # Start server.
 EXPOSE 8080
