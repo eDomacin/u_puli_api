@@ -6,9 +6,11 @@ import 'package:event_scraper/src/data/data_sources/events_storer/events_storer_
 import 'package:event_scraper/src/data/data_sources/events_storer/events_storer_data_source_impl.dart';
 import 'package:event_scraper/src/domain/repositories/events_loader_repository.dart';
 import 'package:event_scraper/src/domain/repositories/events_loader_repository_impl.dart';
+import 'package:event_scraper/src/domain/use_cases/load_gkpu_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_naranca_events_use_case.dart';
 import 'package:event_scraper/src/events_scraper.dart';
 import 'package:event_scraper/src/presentation/controllers/events_scraper_controller.dart';
+import 'package:event_scraper/src/wrappers/puppeteer/gkpu_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/naranca_puppeteer_scrapper_wrapper.dart';
 
 Future<void> runEventsScraper() async {
@@ -49,17 +51,21 @@ DatabaseWrapper _getInitializedDatabaseWrapper({
   return databaseWrapper;
 }
 
+// TODO separate this for different dependency types, or use some DI
 EventsScraperController _getInitializedEventsScraperController({
   required DatabaseWrapper databaseWrapper,
 }) {
   // puppeteer wrappers
   final NarancaPuppeteerScraperWrapper narancaPuppeteerScraperWrapper =
       NarancaPuppeteerScraperWrapper();
+  final GkpuPuppeteerScraperWrapper gkpuPuppeteerScraperWrapper =
+      GkpuPuppeteerScraperWrapper();
 
   // data sources
   final EventsScraperDataSource eventsScraperDataSource =
       EventsScraperDataSourceImpl(
         narancaPuppeteerScraperWrapper: narancaPuppeteerScraperWrapper,
+        gkpuPuppeteerScraperWrapper: gkpuPuppeteerScraperWrapper,
       );
 
   final EventsStorerDataSource eventsStorerDataSource =
@@ -76,10 +82,15 @@ EventsScraperController _getInitializedEventsScraperController({
   final LoadNarancaEventsUseCase loadNarancaEventsUseCase =
       LoadNarancaEventsUseCase(eventsLoaderRepository: eventsLoaderRepository);
 
+  final LoadGkpuEventsUseCase loadGkpuEventsUseCase = LoadGkpuEventsUseCase(
+    eventsLoaderRepository: eventsLoaderRepository,
+  );
+
   // controller
   final EventsScraperController eventsScraperController =
       EventsScraperController(
         loadNarancaEventsUseCase: loadNarancaEventsUseCase,
+        loadGkpuEventsUseCase: loadGkpuEventsUseCase,
       );
 
   return eventsScraperController;

@@ -7,18 +7,12 @@ import 'package:puppeteer/puppeteer.dart';
 class NarancaPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
   const NarancaPuppeteerScraperWrapper() : super();
 
-  @override
-  String get name => "Teatar Naranča";
-
-  @override
-  Uri get uri => Uri.parse('https://www.teatarnaranca.hr/');
-
   // TODO this needs cleanup
   @override
   Future<Set<ScrapedEventEntity>> getEvents() async {
-    final allEvents = <ScrapedEventEntity>[];
+    final List<ScrapedEventEntity> allEvents = <ScrapedEventEntity>[];
 
-    final browser = await getBrowser();
+    final Browser browser = await getBrowser();
 
     final Page page = await browser.newPage();
 
@@ -135,6 +129,7 @@ class NarancaPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
       final hours = int.parse(timeSections[0]);
       final minutes = int.parse(timeSections[1]);
 
+      // TODO for some reason, we have issue with timezone here when we run this in docker or locally
       final date = DateTime(year, month, day, hours, minutes);
 
       final regex = RegExp(r'^(.*),\s([^,]+)$');
@@ -176,6 +171,12 @@ class NarancaPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
 
     return events;
   }
+
+  @override
+  String get name => "Teatar Naranča";
+
+  @override
+  Uri get uri => Uri.parse('https://www.teatarnaranca.hr/');
 
   // TODO this is only for testing - do not use it
   // ignore: unused_element, non_constant_identifier_names

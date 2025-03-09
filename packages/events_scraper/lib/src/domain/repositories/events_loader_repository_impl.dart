@@ -33,4 +33,23 @@ class EventsLoaderRepositoryImpl implements EventsLoaderRepository {
 
     // TODO will be storing it from here
   }
+
+  @override
+  Future<void> loadGkpuEvents() async {
+    final Set<ScrapedEventEntity> events =
+        await _eventsScraperDataSource.getGkpuEvents();
+
+    print("Scraped event entities: $events");
+
+    final List<StoreEventEntityValue> storeEntityValues =
+        EventsConverter.storeEntityValuesFromScrapedEntities(
+          scrapedEventEntities: events,
+        );
+
+    await _eventsStorerDataSource.storeEvents(storeEntityValues);
+
+    print("Stored event entities: $storeEntityValues");
+
+    // TODO will be storing it from here
+  }
 }

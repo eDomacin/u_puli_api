@@ -1,6 +1,9 @@
 import 'package:event_scraper/src/data/entities/scraped_event_entity.dart';
 import 'package:puppeteer/puppeteer.dart';
 
+/// Interface for Puppeteer scraper wrappers.
+///
+/// NOTE: This class should be **extended** rather than *implemented*.
 abstract class PuppeteerScraperWrapper with _PuppeteerScraperWrapperMixin {
   const PuppeteerScraperWrapper();
   abstract final Uri uri;
