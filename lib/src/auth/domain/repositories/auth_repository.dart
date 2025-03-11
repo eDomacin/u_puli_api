@@ -6,6 +6,8 @@ abstract interface class AuthRepository {
     CreateEmailPasswordAuthEntityDataValue data,
   );
 
+  Future<AuthModel?> getAuthByEmail(String email);
+
   Future<AuthModel?> getAuthByEmailAndPassword({
     required String email,
     required String password,

@@ -46,6 +46,25 @@ class AuthDataSourceImpl implements AuthDataSource {
   }
 
   @override
+  Future<AuthEntityValue?> getAuthByEmail(String email) async {
+    final AuthEntity? authEntity = _tempAuthEntities.firstWhereOrNull(
+      (auth) => auth.email == email,
+    );
+
+    if (authEntity == null) {
+      return null;
+    }
+
+    // TODO create converter once needed
+    final AuthEntityValue entityValue = AuthEntityValue(
+      id: authEntity.id,
+      email: authEntity.email,
+      authType: authEntity.authType,
+    );
+    return entityValue;
+  }
+
+  @override
   Future<AuthEntityValue?> getAuthByEmailAndPassword({
     required String email,
     required String password,

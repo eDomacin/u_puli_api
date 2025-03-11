@@ -24,4 +24,12 @@ extension RequestExtension on Request {
 
     return changedRequest;
   }
+
+  Map<String, dynamic>? getValidatedBodyData() {
+    final Map<String, dynamic>? validatedBodyData =
+        context[RequestConstants.VALIDATED_BODY_DATA.value]
+            as Map<String, dynamic>?;
+
+    return validatedBodyData;
+  }
 }

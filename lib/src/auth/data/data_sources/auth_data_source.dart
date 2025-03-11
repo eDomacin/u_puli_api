@@ -6,6 +6,7 @@ abstract interface class AuthDataSource {
   ///
   /// Returns the id of the created auth entity.
   Future<int> createAuth(CreateAuthValue data);
+  Future<AuthEntityValue?> getAuthByEmail(String email);
   Future<AuthEntityValue?> getAuthByEmailAndPassword({
     required String email,
     required String password,
