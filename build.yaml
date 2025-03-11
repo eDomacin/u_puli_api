@@ -6,3 +6,4 @@ targets:
           sql:
             dialects:
               - postgres
+# TODO this should probably be in the wrapper

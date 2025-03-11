@@ -1,38 +1,12 @@
-import 'dart:io';
+import 'dart:async';
 
 import 'package:shelf/shelf.dart';
-import 'package:u_puli_api/src/wrappers/middleware/middleware_wrapper.dart';
 
-class CorsMiddlewareWrapper implements MiddlewareWrapper {
-  CorsMiddlewareWrapper();
-
-  @override
-  Middleware get middleware => createMiddleware(
-    requestHandler: _handleRequest,
-    responseHandler: _handleResponse,
-  );
-
-  final _corsHeaders = {
-    HttpHeaders.accessControlAllowOriginHeader: '*',
-    // HttpHeaders.accessControlAllowOriginHeader: 'http://localhost:3000',
-    HttpHeaders.accessControlAllowMethodsHeader:
-        'GET, POST, PUT, DELETE, OPTIONS',
-    HttpHeaders.accessControlAllowHeadersHeader: '*',
-  };
-
-  Response? _handleRequest(Request request) {
-    if (request.method == "OPTIONS") {
-      return Response.ok(null, headers: _corsHeaders);
-    }
-
-    // go through to the next handler
-    return null;
-  }
-
-  Response _handleResponse(Response response) {
-    // attach cors headers to the response
-    return response.change(headers: _corsHeaders);
-  }
+/// Helper class that provides methods to be used with [shelf]'s 'createMiddleware' function.
+abstract interface class CreateMiddlewareHelper {
+  FutureOr<Response?> requestHandler(Request request);
+  FutureOr<Response> responseHandler(Response response);
+  FutureOr<Response> errorHandler(Object error, StackTrace stackTrace);
 }
 
 /* just examples */

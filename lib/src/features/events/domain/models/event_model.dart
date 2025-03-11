@@ -14,11 +14,8 @@ class EventModel extends Equatable {
 
   final String location;
 
+  // TODO this should probably have toJson method to use when sending to client
+
   @override
-  List<Object?> get props => [
-        id,
-        title,
-        date,
-        location,
-      ];
+  List<Object?> get props => [id, title, date, location];
 }
