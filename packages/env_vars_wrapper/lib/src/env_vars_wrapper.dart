@@ -5,23 +5,27 @@ abstract interface class EnvVarsWrapper {
 
   factory EnvVarsWrapper() => _EnvVarsWrapperImpl();
 
+  // db
   String get pgHost;
   String get pgDatabase;
   String get pgUser;
   String get pgPassword;
   int get pgPort;
+
+  // auth
+  String get jwtSecret;
 }
 
 class _EnvVarsWrapperImpl implements EnvVarsWrapper {
   _EnvVarsWrapperImpl();
 
+  // db
   final String _pgHost = Platform.environment['PG_HOST']!;
   final String _pgDatabase = Platform.environment['PG_DATABASE']!;
   final String _pgUser = Platform.environment['PG_USER']!;
   final String _pgPassword = Platform.environment['PG_PASSWORD']!;
   final int _pgPort = int.parse(Platform.environment['PG_PORT']!);
 
-  // db
   @override
   String get pgHost => _pgHost;
   @override
@@ -32,6 +36,12 @@ class _EnvVarsWrapperImpl implements EnvVarsWrapper {
   String get pgPassword => _pgPassword;
   @override
   int get pgPort => _pgPort;
+
+  // auth
+  final String _jwtSecret = Platform.environment['JWT_SECRET']!;
+
+  @override
+  String get jwtSecret => _jwtSecret;
 
   // @override
   // EnvVarsDBWrapper get envVarsDBWrapper => EnvVarsDBWrapper(

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:u_puli_api/src/app_router.dart';
-import 'package:u_puli_api/src/core/utils/helpers/middleware/create_middleware_helper/cors_create_middleware_helper.dart';
+import 'package:u_puli_api/src/features/core/utils/helpers/middleware/create_middleware_helper/cors_create_middleware_helper.dart';
 
 class App {
   App({required this.ip, required this.port, required AppRouter appRouter})

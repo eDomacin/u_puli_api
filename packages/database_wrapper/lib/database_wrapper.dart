@@ -13,3 +13,8 @@ export "src/values/store_event_entity_value.dart";
 export "src/utils/converters/events_converter.dart";
 
 // TODO: Export any libraries intended for clients of this package.
+
+
+// TODO this should not be called database_wrapper - it should be called database helper 
+// - wrappers are wrappers around libraries
+// - helpers are helpers that use wrappers - or maybe they dont use wrappers - but they are local to the project, created by the project
