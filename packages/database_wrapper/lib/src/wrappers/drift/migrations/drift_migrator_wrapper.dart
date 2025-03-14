@@ -10,24 +10,24 @@ class DriftMigratorWrapper {
 
   late final MigrationStrategy migrationStrategy = MigrationStrategy(
     beforeOpen: (details) async {
-      final EventEntityCompanion companion = EventEntityCompanion.insert(
-        title: "title test",
-        date: DateTime(2022, 1, 1),
-        location: "location test",
-      );
+      // final EventEntityCompanion companion = EventEntityCompanion.insert(
+      //   title: "title test",
+      //   date: DateTime(2022, 1, 1),
+      //   location: "location test",
+      // );
 
-      final id = await _driftWrapper.eventEntity.insertOne(
-        companion,
-        onConflict: DoNothing(
-          target: [
-            _driftWrapper.eventEntity.title,
-            _driftWrapper.eventEntity.date,
-            _driftWrapper.eventEntity.location,
-          ],
-        ),
-      );
+      // final id = await _driftWrapper.eventEntity.insertOne(
+      //   companion,
+      //   onConflict: DoNothing(
+      //     target: [
+      //       _driftWrapper.eventEntity.title,
+      //       _driftWrapper.eventEntity.date,
+      //       _driftWrapper.eventEntity.location,
+      //     ],
+      //   ),
+      // );
 
-      print("Inserted id: $id");
+      // print("Inserted id: $id");
     },
     onCreate: (m) async {
       await m.createAll();
@@ -38,6 +38,9 @@ class DriftMigratorWrapper {
         await _driftWrapper.customStatement(
           "ALTER TABLE event_entity ADD UNIQUE (title, date, location);",
         );
+      },
+      from2To3: (m, schema) async {
+        await m.createTable(schema.authEntity);
       },
     ),
   );
