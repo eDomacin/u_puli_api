@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:shelf/shelf.dart';
+import 'package:u_puli_api/src/features/auth/utils/constants/auth_reg_exp_validation_constants.dart';
 import 'package:u_puli_api/src/features/auth/utils/constants/register_with_user_and_password_request_body_constants.dart';
 import 'package:u_puli_api/src/utils/extensions/request_extension.dart';
 import 'package:u_puli_api/src/utils/helpers/middleware/middleware_helper/middleware_helper.dart';
@@ -90,10 +91,7 @@ class ValidateRegisterWithEmailAndPasswordRequestBodyMiddlewareHelper
             return response;
           }
 
-          final emailRegExp = RegExp(
-            r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-          );
-          if (!emailRegExp.hasMatch(email)) {
+          if (!AuthRegExpValidationConstants.EMAIL.hasMatch(email)) {
             final Response response = _generateFailureResponse(
               message: "Invalid 'email' format",
               statusCode: HttpStatus.badRequest,
@@ -121,10 +119,7 @@ class ValidateRegisterWithEmailAndPasswordRequestBodyMiddlewareHelper
             return response;
           }
 
-          final passwordRegExp = RegExp(
-            r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%\^&\*])[A-Za-z\d!@#\$%\^&\*]{8,}$',
-          );
-          if (!passwordRegExp.hasMatch(password)) {
+          if (!AuthRegExpValidationConstants.PASSWORD.hasMatch(password)) {
             final Response response = _generateFailureResponse(
               message:
                   "Invalid 'password' format. Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character",

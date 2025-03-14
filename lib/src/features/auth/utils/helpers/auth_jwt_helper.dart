@@ -15,6 +15,7 @@ class AuthJWTHelper {
     final String token = _dartJsonwebtokenWrapper.sign(
       payload: payload,
       expiresIn: AuthJwtDurationConstants.ACCESS_JWT_DURATION.value,
+      isAccessToken: true,
     );
 
     return token;
@@ -26,6 +27,7 @@ class AuthJWTHelper {
     final String token = _dartJsonwebtokenWrapper.sign(
       payload: payload,
       expiresIn: AuthJwtDurationConstants.REFRESH_JWT_DURATION.value,
+      isAccessToken: false,
     );
 
     return token;
@@ -40,8 +42,33 @@ class AuthJWTHelper {
   }
 
   AuthJwtPayloadValue? verifyAccessJWT(String token) {
+    final AuthJwtPayloadValue? authJwtPayloadValue = _verifyJWT(
+      token: token,
+      isAccessToken: true,
+    );
+
+    return authJwtPayloadValue;
+  }
+
+  AuthJwtPayloadValue? verifyRefreshJWT(String token) {
+    final AuthJwtPayloadValue? authJwtPayloadValue = _verifyJWT(
+      token: token,
+      isAccessToken: false,
+    );
+
+    return authJwtPayloadValue;
+  }
+
+  // extract commong logic from verifyAccessJWT and verifyRefreshJWT
+  AuthJwtPayloadValue? _verifyJWT({
+    required String token,
+    required bool isAccessToken,
+  }) {
     final Map<String, dynamic> payload = _dartJsonwebtokenWrapper
-        .verify<Map<String, dynamic>>(token);
+        .verify<Map<String, dynamic>>(
+          token: token,
+          isAccessToken: isAccessToken,
+        );
 
     final int? authId =
         payload[AuthJwtPayloadKeysConstants.AUTH_ID.value] as int?;

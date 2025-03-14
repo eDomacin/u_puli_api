@@ -16,3 +16,9 @@
 
 5. shelf static
 - https://oldmetalmind.medium.com/dart-shelf-backend-with-dart-f068d4f37a7a
+
+
+6. just continue doing the same 
+-- have function to get auth user
+--- this will be used for all three login functions 
+--- and auth id will be taken care of elsewhere

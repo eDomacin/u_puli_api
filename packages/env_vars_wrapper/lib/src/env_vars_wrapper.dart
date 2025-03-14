@@ -13,7 +13,8 @@ abstract interface class EnvVarsWrapper {
   int get pgPort;
 
   // auth
-  String get jwtSecret;
+  String get jwtAccessSecret;
+  String get jwtRefreshSecret;
 }
 
 class _EnvVarsWrapperImpl implements EnvVarsWrapper {
@@ -38,10 +39,13 @@ class _EnvVarsWrapperImpl implements EnvVarsWrapper {
   int get pgPort => _pgPort;
 
   // auth
-  final String _jwtSecret = Platform.environment['JWT_SECRET']!;
+  final String _jwtAccessSecret = Platform.environment['JWT_ACCESS_SECRET']!;
+  final String _jwtRefreshSecret = Platform.environment['JWT_REFRESH_SECRET']!;
 
   @override
-  String get jwtSecret => _jwtSecret;
+  String get jwtAccessSecret => _jwtAccessSecret;
+  @override
+  String get jwtRefreshSecret => _jwtRefreshSecret;
 
   // @override
   // EnvVarsDBWrapper get envVarsDBWrapper => EnvVarsDBWrapper(

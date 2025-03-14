@@ -3,23 +3,33 @@ import 'package:u_puli_api/src/features/core/domain/exceptions/jwt_exceptions.da
 
 // TODO: This is very hard to test
 class DartJsonwebtokenWrapper {
-  const DartJsonwebtokenWrapper(this._jwtSecret);
+  const DartJsonwebtokenWrapper({
+    required String jwtAccessSecret,
+    required String jwtRefreshSecret,
+  }) : _jwtAccessSecret = jwtAccessSecret,
+       _jwtRefreshSecret = jwtRefreshSecret;
 
-  final String _jwtSecret;
+  final String _jwtAccessSecret;
+  final String _jwtRefreshSecret;
 
   String sign({
     required Map<String, dynamic> payload,
     required Duration expiresIn,
+    required bool isAccessToken,
   }) {
+    final String secret = isAccessToken ? _jwtAccessSecret : _jwtRefreshSecret;
+
     final JWT jwt = JWT(payload);
-    final String token = jwt.sign(SecretKey(_jwtSecret), expiresIn: expiresIn);
+    final String token = jwt.sign(SecretKey(secret), expiresIn: expiresIn);
 
     return token;
   }
 
-  T verify<T>(String token) {
+  T verify<T>({required String token, required bool isAccessToken}) {
+    final String secret = isAccessToken ? _jwtAccessSecret : _jwtRefreshSecret;
+
     try {
-      final JWT jwt = JWT.verify(token, SecretKey(_jwtSecret));
+      final JWT jwt = JWT.verify(token, SecretKey(secret));
       final payload = jwt.payload as T;
 
       return payload;

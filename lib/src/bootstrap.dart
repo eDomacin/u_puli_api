@@ -9,11 +9,14 @@ import 'package:u_puli_api/src/features/auth/data/data_sources/auth_data_source_
 import 'package:u_puli_api/src/features/auth/domain/repositories/auth_repository.dart';
 import 'package:u_puli_api/src/features/auth/domain/repositories/auth_repository_impl.dart';
 import 'package:u_puli_api/src/features/auth/domain/use_cases/get_auth_by_email_use_case.dart';
+import 'package:u_puli_api/src/features/auth/domain/use_cases/get_auth_user_use_case.dart';
 import 'package:u_puli_api/src/features/auth/domain/use_cases/register_with_user_and_password_use_case.dart';
+import 'package:u_puli_api/src/features/auth/presentation/controllers/login_with_email_and_password_controller.dart';
 import 'package:u_puli_api/src/features/auth/presentation/controllers/register_with_email_and_password_controller.dart';
 import 'package:u_puli_api/src/features/auth/presentation/router/auth_router.dart';
 import 'package:u_puli_api/src/features/auth/utils/helpers/auth_jwt_helper.dart';
 import 'package:u_puli_api/src/features/auth/utils/helpers/encode_password_helper.dart';
+import 'package:u_puli_api/src/features/auth/utils/helpers/middleware/middleware_helper/validate_login_with_email_and_password_request_body_middleware_helper.dart';
 import 'package:u_puli_api/src/features/auth/utils/helpers/middleware/middleware_helper/validate_register_with_email_and_password_request_body_middleware_helper.dart';
 import 'package:u_puli_api/src/features/core/utils/helpers/cookies_helper.dart';
 import 'package:u_puli_api/src/features/events/data/data_sources/events_data_source.dart';
@@ -37,7 +40,8 @@ Future<void> bootstrap() async {
   );
   final AppRouter appRouter = _getInitializedAppRouter(
     databaseWrapper: databaseWrapper,
-    jwtSecret: envVarsWrapper.jwtSecret,
+    jwtAccessSecret: envVarsWrapper.jwtAccessSecret,
+    jwtRefreshSecret: envVarsWrapper.jwtRefreshSecret,
   );
   // TODO move to env vars wrapper
   final int port = int.parse(Platform.environment['PORT'] ?? '8080');
@@ -79,12 +83,16 @@ DatabaseWrapper _getInitializedDatabaseWrapper({
 // TODO clean up this function
 AppRouter _getInitializedAppRouter({
   required DatabaseWrapper databaseWrapper,
-  required String jwtSecret,
+  required String jwtAccessSecret,
+  required String jwtRefreshSecret,
 }) {
   // wrappers
   final HashlibWrapper hashlibWrapper = HashlibWrapper();
   final DartJsonwebtokenWrapper dartJsonwebtokenWrapper =
-      DartJsonwebtokenWrapper(jwtSecret);
+      DartJsonwebtokenWrapper(
+        jwtAccessSecret: jwtAccessSecret,
+        jwtRefreshSecret: jwtRefreshSecret,
+      );
 
   // helpers
   final EncodePasswordHelper encodePasswordHelper = EncodePasswordHelper(
@@ -99,6 +107,9 @@ AppRouter _getInitializedAppRouter({
   final ValidateRegisterWithEmailAndPasswordRequestBodyMiddlewareHelper
   validateRegisterWithEmailAndPasswordRequestBodyMiddlewareHelper =
       ValidateRegisterWithEmailAndPasswordRequestBodyMiddlewareHelper();
+  final ValidateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper
+  validateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper =
+      ValidateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper();
 
   // data surces
   final EventsDataSource eventsDataSource = EventsDataSourceImpl(
@@ -126,6 +137,9 @@ AppRouter _getInitializedAppRouter({
   final GetAuthByEmailUseCase getAuthByEmailUseCase = GetAuthByEmailUseCase(
     authRepository: authRepository,
   );
+  final GetAuthUserUseCase getAuthUserUseCase = GetAuthUserUseCase(
+    authRepository: authRepository,
+  );
 
   // controllers
   final GetEventController getEventController = GetEventController(
@@ -138,11 +152,20 @@ AppRouter _getInitializedAppRouter({
   registerWithEmailAndPasswordController =
       RegisterWithEmailAndPasswordController(
         registerWithUserAndPasswordUseCase: registerWithUserAndPasswordUseCase,
+        getAuthUserUseCase: getAuthUserUseCase,
         getAuthByEmailUseCase: getAuthByEmailUseCase,
         encodePasswordHelper: encodePasswordHelper,
         authJWTHelper: authJWTHelper,
         cookiesHelper: cookiesHelper,
       );
+  final LoginWithEmailAndPasswordController
+  loginWithEmailAndPasswordController = LoginWithEmailAndPasswordController(
+    getAuthUserUseCase: getAuthUserUseCase,
+    getAuthByEmailUseCase: getAuthByEmailUseCase,
+    encodePasswordHelper: encodePasswordHelper,
+    authJWTHelper: authJWTHelper,
+    cookiesHelper: cookiesHelper,
+  );
 
   // routers
   final EventsRouter eventsRouter = EventsRouter(
@@ -152,8 +175,11 @@ AppRouter _getInitializedAppRouter({
   final AuthRouter authRouter = AuthRouter(
     registerWithEmailAndPasswordController:
         registerWithEmailAndPasswordController,
+    loginWithEmailAndPasswordController: loginWithEmailAndPasswordController,
     validateRegisterWithEmailAndPasswordRequestBodyMiddlewareHelper:
         validateRegisterWithEmailAndPasswordRequestBodyMiddlewareHelper,
+    validateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper:
+        validateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper,
   );
 
   final AppRouter appRouter = AppRouter(

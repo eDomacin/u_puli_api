@@ -6,31 +6,26 @@ import 'package:u_puli_api/src/features/auth/domain/models/auth_model.dart';
 import 'package:u_puli_api/src/features/auth/domain/models/auth_user_model.dart';
 import 'package:u_puli_api/src/features/auth/domain/use_cases/get_auth_by_email_use_case.dart';
 import 'package:u_puli_api/src/features/auth/domain/use_cases/get_auth_user_use_case.dart';
-import 'package:u_puli_api/src/features/auth/domain/use_cases/register_with_user_and_password_use_case.dart';
-import 'package:u_puli_api/src/features/auth/utils/constants/register_with_user_and_password_request_body_constants.dart';
+import 'package:u_puli_api/src/features/auth/utils/constants/login_with_user_and_password_request_body_constants.dart';
 import 'package:u_puli_api/src/features/auth/utils/extensions/cookies_helper_auth_extension.dart';
 import 'package:u_puli_api/src/features/auth/utils/helpers/auth_jwt_helper.dart';
+import 'package:u_puli_api/src/features/auth/utils/helpers/encode_password_helper.dart';
 import 'package:u_puli_api/src/features/core/utils/helpers/cookies_helper.dart';
 import 'package:u_puli_api/src/utils/extensions/request_extension.dart';
-import 'package:u_puli_api/src/features/auth/utils/helpers/encode_password_helper.dart';
 
-class RegisterWithEmailAndPasswordController {
-  const RegisterWithEmailAndPasswordController({
-    required RegisterWithUserAndPasswordUseCase
-    registerWithUserAndPasswordUseCase,
+class LoginWithEmailAndPasswordController {
+  const LoginWithEmailAndPasswordController({
     required GetAuthUserUseCase getAuthUserUseCase,
     required GetAuthByEmailUseCase getAuthByEmailUseCase,
     required EncodePasswordHelper encodePasswordHelper,
     required AuthJWTHelper authJWTHelper,
     required CookiesHelper cookiesHelper,
-  }) : _registerWithUserAndPasswordUseCase = registerWithUserAndPasswordUseCase,
-       _getAuthUserUseCase = getAuthUserUseCase,
+  }) : _getAuthUserUseCase = getAuthUserUseCase,
        _getAuthByEmailUseCase = getAuthByEmailUseCase,
        _encodePasswordHelper = encodePasswordHelper,
        _authJWTHelper = authJWTHelper,
        _cookiesHelper = cookiesHelper;
 
-  final RegisterWithUserAndPasswordUseCase _registerWithUserAndPasswordUseCase;
   final GetAuthUserUseCase _getAuthUserUseCase;
   final GetAuthByEmailUseCase _getAuthByEmailUseCase;
 
@@ -50,49 +45,60 @@ class RegisterWithEmailAndPasswordController {
       return response;
     }
 
-    final (
-      :firstName,
-      :lastName,
-      :email,
-      :password,
-    ) = _getUserDetailsFromValidatedRequestBody(validatedBodyData);
+    final (:email, :password) = _getLoginDetailsFromValidatedRequestBody(
+      validatedBodyData,
+    );
 
     final AuthModel? auth = await _getAuthByEmailUseCase(email);
-    if (auth != null) {
+
+    // TODO we could extract this to clean up the code
+    if (auth == null) {
       final Response response = _generateFailureResponse(
-        message: "User with email already exists",
-        statusCode: HttpStatus.conflict,
+        message:
+            "Invalid credentials provided. Please try again with valid credentials",
+        statusCode: HttpStatus.badRequest,
       );
       return response;
     }
 
-    final String encodedPassword = _encodePasswordHelper.encodePassword(
+    final String? authPassword = auth.password;
+    if (authPassword == null) {
+      final Response response = _generateFailureResponse(
+        message:
+            'Invalid credentials provided. Please try again with valid credentials',
+        statusCode: HttpStatus.badRequest,
+      );
+      return response;
+    }
+
+    final bool isPasswordMatch = _encodePasswordHelper.verifyEncodedPassword(
+      authPassword,
       password,
     );
+    if (!isPasswordMatch) {
+      final Response response = _generateFailureResponse(
+        message:
+            "Invalid credentials provided. Please try again with valid credentials",
+        statusCode: HttpStatus.badRequest,
+      );
+      return response;
+    }
 
-    final int authId = await _registerWithUserAndPasswordUseCase(
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      password: encodedPassword,
-    );
-
-    /* TODO get authuser model here - this is what we will use to send data  */
-    final AuthUserModel? authUser = await _getAuthUserUseCase(authId);
-    // TODO this should never happen
+    final AuthUserModel? authUser = await _getAuthUserUseCase(auth.id);
+    // this should never happen
     if (authUser == null) {
       final Response response = _generateFailureResponse(
-        message: "There was an issue retrieving the register user",
+        message: "User not found",
         statusCode: HttpStatus.internalServerError,
       );
       return response;
     }
 
-    // TODO all types that are not supposed to be returned to the client - should be converted to value classes
-
-    final String accessToken = _authJWTHelper.generateAccessJWT(authId: authId);
+    final String accessToken = _authJWTHelper.generateAccessJWT(
+      authId: auth.id,
+    );
     final String refreshToken = _authJWTHelper.generateRefreshJWT(
-      authId: authId,
+      authId: auth.id,
     );
 
     final Cookie refreshTokenCookie = _cookiesHelper.createRefreshJWTCookie(
@@ -100,10 +106,9 @@ class RegisterWithEmailAndPasswordController {
     );
 
     final Response response = _generateSuccessResponse(
-      message: "User registered successfully",
+      message: "User logged in successfully",
       statusCode: HttpStatus.ok,
       isOk: true,
-      // TODO this should probably be some constant or some creator of this
       data: authUser.toJson(),
       accessToken: accessToken,
       refreshTokenCookie: refreshTokenCookie,
@@ -113,27 +118,18 @@ class RegisterWithEmailAndPasswordController {
   }
 }
 
-typedef _UserDetailsFromValidatedRequestBody =
-    ({String firstName, String lastName, String email, String password});
+typedef _LoginDetailsFromValidatedRequestBody =
+    ({String email, String password});
 
-_UserDetailsFromValidatedRequestBody _getUserDetailsFromValidatedRequestBody(
+_LoginDetailsFromValidatedRequestBody _getLoginDetailsFromValidatedRequestBody(
   Map<String, dynamic> data,
 ) {
-  final String firstName =
-      data[RegisterWithUserAndPasswordRequestBodyConstants.FIRST_NAME.value];
-  final String lastName =
-      data[RegisterWithUserAndPasswordRequestBodyConstants.LAST_NAME.value];
   final String email =
-      data[RegisterWithUserAndPasswordRequestBodyConstants.EMAIL.value];
+      data[LoginWithUserAndPasswordRequestBodyConstants.EMAIL.value];
   final String password =
-      data[RegisterWithUserAndPasswordRequestBodyConstants.PASSWORD.value];
+      data[LoginWithUserAndPasswordRequestBodyConstants.PASSWORD.value];
 
-  return (
-    firstName: firstName,
-    lastName: lastName,
-    email: email,
-    password: password,
-  );
+  return (email: email, password: password);
 }
 
 Response _generateSuccessResponse({
@@ -179,13 +175,3 @@ Response _generateFailureResponse({
 
   return response;
 }
-
-// TODO add constants for response messages for this controlelr - something like 
-/* 
-
-class ResponseMessages {
-  static const String requestBodyNotValidated = "Request body not validated";
-  static const String userAlreadyExists = "User with email already exists";
-  static const String userRegisteredSuccessfully = "User registered successfully";
-}
- */
