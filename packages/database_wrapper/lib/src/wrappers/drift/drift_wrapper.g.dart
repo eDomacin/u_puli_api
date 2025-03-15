@@ -263,10 +263,280 @@ class EventEntityCompanion extends UpdateCompanion<EventEntityData> {
   }
 }
 
+class $AuthEntityTable extends AuthEntity
+    with TableInfo<$AuthEntityTable, AuthEntityData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AuthEntityTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _emailMeta = const VerificationMeta('email');
+  @override
+  late final GeneratedColumn<String> email = GeneratedColumn<String>(
+      'email', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
+  static const VerificationMeta _passwordMeta =
+      const VerificationMeta('password');
+  @override
+  late final GeneratedColumn<String> password = GeneratedColumn<String>(
+      'password', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _authTypeMeta =
+      const VerificationMeta('authType');
+  @override
+  late final GeneratedColumnWithTypeConverter<AuthType, int> authType =
+      GeneratedColumn<int>('auth_type', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<AuthType>($AuthEntityTable.$converterauthType);
+  @override
+  List<GeneratedColumn> get $columns => [id, email, password, authType];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'auth_entity';
+  @override
+  VerificationContext validateIntegrity(Insertable<AuthEntityData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('email')) {
+      context.handle(
+          _emailMeta, email.isAcceptableOrUnknown(data['email']!, _emailMeta));
+    } else if (isInserting) {
+      context.missing(_emailMeta);
+    }
+    if (data.containsKey('password')) {
+      context.handle(_passwordMeta,
+          password.isAcceptableOrUnknown(data['password']!, _passwordMeta));
+    }
+    context.handle(_authTypeMeta, const VerificationResult.success());
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AuthEntityData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AuthEntityData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      email: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}email'])!,
+      password: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}password']),
+      authType: $AuthEntityTable.$converterauthType.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}auth_type'])!),
+    );
+  }
+
+  @override
+  $AuthEntityTable createAlias(String alias) {
+    return $AuthEntityTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<AuthType, int, int> $converterauthType =
+      const EnumIndexConverter<AuthType>(AuthType.values);
+}
+
+class AuthEntityData extends DataClass implements Insertable<AuthEntityData> {
+  final int id;
+  final String email;
+  final String? password;
+  final AuthType authType;
+  const AuthEntityData(
+      {required this.id,
+      required this.email,
+      this.password,
+      required this.authType});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['email'] = Variable<String>(email);
+    if (!nullToAbsent || password != null) {
+      map['password'] = Variable<String>(password);
+    }
+    {
+      map['auth_type'] =
+          Variable<int>($AuthEntityTable.$converterauthType.toSql(authType));
+    }
+    return map;
+  }
+
+  AuthEntityCompanion toCompanion(bool nullToAbsent) {
+    return AuthEntityCompanion(
+      id: Value(id),
+      email: Value(email),
+      password: password == null && nullToAbsent
+          ? const Value.absent()
+          : Value(password),
+      authType: Value(authType),
+    );
+  }
+
+  factory AuthEntityData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AuthEntityData(
+      id: serializer.fromJson<int>(json['id']),
+      email: serializer.fromJson<String>(json['email']),
+      password: serializer.fromJson<String?>(json['password']),
+      authType: $AuthEntityTable.$converterauthType
+          .fromJson(serializer.fromJson<int>(json['authType'])),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'email': serializer.toJson<String>(email),
+      'password': serializer.toJson<String?>(password),
+      'authType': serializer
+          .toJson<int>($AuthEntityTable.$converterauthType.toJson(authType)),
+    };
+  }
+
+  AuthEntityData copyWith(
+          {int? id,
+          String? email,
+          Value<String?> password = const Value.absent(),
+          AuthType? authType}) =>
+      AuthEntityData(
+        id: id ?? this.id,
+        email: email ?? this.email,
+        password: password.present ? password.value : this.password,
+        authType: authType ?? this.authType,
+      );
+  AuthEntityData copyWithCompanion(AuthEntityCompanion data) {
+    return AuthEntityData(
+      id: data.id.present ? data.id.value : this.id,
+      email: data.email.present ? data.email.value : this.email,
+      password: data.password.present ? data.password.value : this.password,
+      authType: data.authType.present ? data.authType.value : this.authType,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AuthEntityData(')
+          ..write('id: $id, ')
+          ..write('email: $email, ')
+          ..write('password: $password, ')
+          ..write('authType: $authType')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, email, password, authType);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AuthEntityData &&
+          other.id == this.id &&
+          other.email == this.email &&
+          other.password == this.password &&
+          other.authType == this.authType);
+}
+
+class AuthEntityCompanion extends UpdateCompanion<AuthEntityData> {
+  final Value<int> id;
+  final Value<String> email;
+  final Value<String?> password;
+  final Value<AuthType> authType;
+  const AuthEntityCompanion({
+    this.id = const Value.absent(),
+    this.email = const Value.absent(),
+    this.password = const Value.absent(),
+    this.authType = const Value.absent(),
+  });
+  AuthEntityCompanion.insert({
+    this.id = const Value.absent(),
+    required String email,
+    this.password = const Value.absent(),
+    required AuthType authType,
+  })  : email = Value(email),
+        authType = Value(authType);
+  static Insertable<AuthEntityData> custom({
+    Expression<int>? id,
+    Expression<String>? email,
+    Expression<String>? password,
+    Expression<int>? authType,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (email != null) 'email': email,
+      if (password != null) 'password': password,
+      if (authType != null) 'auth_type': authType,
+    });
+  }
+
+  AuthEntityCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? email,
+      Value<String?>? password,
+      Value<AuthType>? authType}) {
+    return AuthEntityCompanion(
+      id: id ?? this.id,
+      email: email ?? this.email,
+      password: password ?? this.password,
+      authType: authType ?? this.authType,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (email.present) {
+      map['email'] = Variable<String>(email.value);
+    }
+    if (password.present) {
+      map['password'] = Variable<String>(password.value);
+    }
+    if (authType.present) {
+      map['auth_type'] = Variable<int>(
+          $AuthEntityTable.$converterauthType.toSql(authType.value));
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AuthEntityCompanion(')
+          ..write('id: $id, ')
+          ..write('email: $email, ')
+          ..write('password: $password, ')
+          ..write('authType: $authType')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$DriftWrapper extends GeneratedDatabase {
   _$DriftWrapper(QueryExecutor e) : super(e);
   $DriftWrapperManager get managers => $DriftWrapperManager(this);
   late final $EventEntityTable eventEntity = $EventEntityTable(this);
+  late final $AuthEntityTable authEntity = $AuthEntityTable(this);
   Selectable<String> current_timestamp() {
     return customSelect('SELECT CURRENT_TIMESTAMP AS _c0',
         variables: [],
@@ -277,7 +547,7 @@ abstract class _$DriftWrapper extends GeneratedDatabase {
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [eventEntity];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [eventEntity, authEntity];
 }
 
 typedef $$EventEntityTableCreateCompanionBuilder = EventEntityCompanion
@@ -432,10 +702,164 @@ typedef $$EventEntityTableProcessedTableManager = ProcessedTableManager<
     ),
     EventEntityData,
     PrefetchHooks Function()>;
+typedef $$AuthEntityTableCreateCompanionBuilder = AuthEntityCompanion Function({
+  Value<int> id,
+  required String email,
+  Value<String?> password,
+  required AuthType authType,
+});
+typedef $$AuthEntityTableUpdateCompanionBuilder = AuthEntityCompanion Function({
+  Value<int> id,
+  Value<String> email,
+  Value<String?> password,
+  Value<AuthType> authType,
+});
+
+class $$AuthEntityTableFilterComposer
+    extends Composer<_$DriftWrapper, $AuthEntityTable> {
+  $$AuthEntityTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get email => $composableBuilder(
+      column: $table.email, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get password => $composableBuilder(
+      column: $table.password, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<AuthType, AuthType, int> get authType =>
+      $composableBuilder(
+          column: $table.authType,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+}
+
+class $$AuthEntityTableOrderingComposer
+    extends Composer<_$DriftWrapper, $AuthEntityTable> {
+  $$AuthEntityTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get email => $composableBuilder(
+      column: $table.email, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get password => $composableBuilder(
+      column: $table.password, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get authType => $composableBuilder(
+      column: $table.authType, builder: (column) => ColumnOrderings(column));
+}
+
+class $$AuthEntityTableAnnotationComposer
+    extends Composer<_$DriftWrapper, $AuthEntityTable> {
+  $$AuthEntityTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get email =>
+      $composableBuilder(column: $table.email, builder: (column) => column);
+
+  GeneratedColumn<String> get password =>
+      $composableBuilder(column: $table.password, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<AuthType, int> get authType =>
+      $composableBuilder(column: $table.authType, builder: (column) => column);
+}
+
+class $$AuthEntityTableTableManager extends RootTableManager<
+    _$DriftWrapper,
+    $AuthEntityTable,
+    AuthEntityData,
+    $$AuthEntityTableFilterComposer,
+    $$AuthEntityTableOrderingComposer,
+    $$AuthEntityTableAnnotationComposer,
+    $$AuthEntityTableCreateCompanionBuilder,
+    $$AuthEntityTableUpdateCompanionBuilder,
+    (
+      AuthEntityData,
+      BaseReferences<_$DriftWrapper, $AuthEntityTable, AuthEntityData>
+    ),
+    AuthEntityData,
+    PrefetchHooks Function()> {
+  $$AuthEntityTableTableManager(_$DriftWrapper db, $AuthEntityTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AuthEntityTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AuthEntityTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AuthEntityTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> email = const Value.absent(),
+            Value<String?> password = const Value.absent(),
+            Value<AuthType> authType = const Value.absent(),
+          }) =>
+              AuthEntityCompanion(
+            id: id,
+            email: email,
+            password: password,
+            authType: authType,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String email,
+            Value<String?> password = const Value.absent(),
+            required AuthType authType,
+          }) =>
+              AuthEntityCompanion.insert(
+            id: id,
+            email: email,
+            password: password,
+            authType: authType,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$AuthEntityTableProcessedTableManager = ProcessedTableManager<
+    _$DriftWrapper,
+    $AuthEntityTable,
+    AuthEntityData,
+    $$AuthEntityTableFilterComposer,
+    $$AuthEntityTableOrderingComposer,
+    $$AuthEntityTableAnnotationComposer,
+    $$AuthEntityTableCreateCompanionBuilder,
+    $$AuthEntityTableUpdateCompanionBuilder,
+    (
+      AuthEntityData,
+      BaseReferences<_$DriftWrapper, $AuthEntityTable, AuthEntityData>
+    ),
+    AuthEntityData,
+    PrefetchHooks Function()>;
 
 class $DriftWrapperManager {
   final _$DriftWrapper _db;
   $DriftWrapperManager(this._db);
   $$EventEntityTableTableManager get eventEntity =>
       $$EventEntityTableTableManager(_db, _db.eventEntity);
+  $$AuthEntityTableTableManager get authEntity =>
+      $$AuthEntityTableTableManager(_db, _db.authEntity);
 }

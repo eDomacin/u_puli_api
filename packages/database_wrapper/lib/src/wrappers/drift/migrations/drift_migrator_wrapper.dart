@@ -34,9 +34,13 @@ class DriftMigratorWrapper {
     onUpgrade: stepByStep(
       from1To2: (m, schema) async {
         // NOTE: manual migration because `alterTable` is not available for postgres
+        // TODO driftWrapper not needed here - we can access customStatement on the m.database object
         await _driftWrapper.customStatement(
           "ALTER TABLE event_entity ADD UNIQUE (title, date, location);",
         );
+      },
+      from2To3: (m, schema) async {
+        await m.createTable(schema.authEntity);
       },
     ),
   );
