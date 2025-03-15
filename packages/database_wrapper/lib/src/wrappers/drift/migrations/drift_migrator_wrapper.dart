@@ -42,6 +42,9 @@ class DriftMigratorWrapper {
       from2To3: (m, schema) async {
         await m.createTable(schema.authEntity);
       },
+      from3To4: (m, schema) async {
+        await m.createTable(schema.userEntity);
+      },
     ),
   );
 }
