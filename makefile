@@ -35,9 +35,15 @@ run_prod_docker:
 generate_db:
 	cd packages/database_wrapper && dart run build_runner build --delete-conflicting-outputs
 
+# migration
+migrate_db: generate_db_schema generate_db_migration_steps
+
+# TODO make this into macros
+# migration steps
+# 1
 generate_db_schema:
 	cd packages/database_wrapper && dart run drift_dev schema dump lib/src/wrappers/drift/drift_wrapper.dart lib/src/wrappers/drift/migrations/schemas/
-
+# 2
 generate_db_migration_steps: 
 	cd packages/database_wrapper && dart run drift_dev schema steps lib/src/wrappers/drift/migrations/schemas/ lib/src/wrappers/drift/migrations/schemas_versions/schema_versions.dart
 

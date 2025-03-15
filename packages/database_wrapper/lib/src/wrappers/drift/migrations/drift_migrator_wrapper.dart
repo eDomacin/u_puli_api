@@ -1,6 +1,5 @@
 import 'package:database_wrapper/src/wrappers/drift/drift_wrapper.dart';
 import 'package:database_wrapper/src/wrappers/drift/migrations/schemas_versions/schema_versions.dart';
-import 'package:drift/drift.dart';
 
 class DriftMigratorWrapper {
   DriftMigratorWrapper(DriftWrapper driftWrapper)
@@ -10,24 +9,24 @@ class DriftMigratorWrapper {
 
   late final MigrationStrategy migrationStrategy = MigrationStrategy(
     beforeOpen: (details) async {
-      // final EventEntityCompanion companion = EventEntityCompanion.insert(
-      //   title: "title test",
-      //   date: DateTime(2022, 1, 1),
-      //   location: "location test",
-      // );
+      final EventEntityCompanion companion = EventEntityCompanion.insert(
+        title: "title test",
+        date: DateTime(2022, 1, 1),
+        location: "location test",
+      );
 
-      // final id = await _driftWrapper.eventEntity.insertOne(
-      //   companion,
-      //   onConflict: DoNothing(
-      //     target: [
-      //       _driftWrapper.eventEntity.title,
-      //       _driftWrapper.eventEntity.date,
-      //       _driftWrapper.eventEntity.location,
-      //     ],
-      //   ),
-      // );
+      final id = await _driftWrapper.eventEntity.insertOne(
+        companion,
+        onConflict: DoNothing(
+          target: [
+            _driftWrapper.eventEntity.title,
+            _driftWrapper.eventEntity.date,
+            _driftWrapper.eventEntity.location,
+          ],
+        ),
+      );
 
-      // print("Inserted id: $id");
+      print("Inserted id: $id");
     },
     onCreate: (m) async {
       await m.createAll();
