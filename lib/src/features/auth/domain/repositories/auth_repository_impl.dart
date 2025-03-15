@@ -44,7 +44,9 @@ class AuthRepositoryImpl implements AuthRepository {
       return null;
     }
 
-    final AuthModel model = AuthConverter.modelFromEntityValue(value: value);
+    final AuthModel model = AuthConverter.authModelFromEntityValue(
+      value: value,
+    );
 
     return model;
   }

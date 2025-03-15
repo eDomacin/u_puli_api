@@ -1,4 +1,4 @@
-import 'package:u_puli_api/src/features/auth/data/entities/auth_entity.dart';
+import 'package:database_wrapper/database_wrapper.dart';
 
 class AuthEntityValue {
   AuthEntityValue({
@@ -13,6 +13,3 @@ class AuthEntityValue {
   final AuthType authType;
   final String? password;
 }
-
-
-// TODO some of these are not needed

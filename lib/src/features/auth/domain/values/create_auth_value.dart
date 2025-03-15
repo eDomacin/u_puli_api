@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:u_puli_api/src/features/auth/data/entities/auth_entity.dart';
+import 'package:database_wrapper/database_wrapper.dart';
 
 sealed class CreateAuthValue extends Equatable {
   const CreateAuthValue({

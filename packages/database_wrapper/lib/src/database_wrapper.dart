@@ -16,11 +16,16 @@ class DatabaseWrapper {
     return DatabaseWrapper(executor.queryExecuter);
   }
 
-  late final DriftWrapper driftWrapper;
+  late final DriftWrapper _driftWrapper;
+
+  // repos
+  $EventEntityTable get eventsRepo => _driftWrapper.eventEntity;
+  $AuthEntityTable get authsRepo => _driftWrapper.authEntity;
+  $UserEntityTable get usersRepo => _driftWrapper.userEntity;
 
   void initialize() {
     try {
-      driftWrapper = DriftWrapper(_executor);
+      _driftWrapper = DriftWrapper(_executor);
       logDbTime();
     } catch (e) {
       print("There was an error initializing the database: $e");
@@ -28,17 +33,27 @@ class DatabaseWrapper {
     }
   }
 
+  Future<int> deleteTableRows<T extends Table, D>(TableInfo<T, D> table) async {
+    final deletedRowsCount = _driftWrapper.delete(table).go();
+
+    return deletedRowsCount;
+  }
+
+  Future<T> transaction<T>(
+    Future<T> Function() action, {
+    bool requireNew = false,
+  }) {
+    return _driftWrapper.transaction(action, requireNew: requireNew);
+  }
+
   Future<void> close() async {
-    await driftWrapper.close();
+    await _driftWrapper.close();
     print("Database closed");
   }
 
-  // repos
-  $EventEntityTable get eventsRepo => driftWrapper.eventEntity;
-
   Future<void> logDbTime() async {
     final List<String> dbCurrentTime =
-        await driftWrapper.current_timestamp().get();
+        await _driftWrapper.current_timestamp().get();
 
     print("Current database time on open: $dbCurrentTime");
   }

@@ -6,7 +6,10 @@ class TestDatabaseWrapper {
   final DatabaseWrapper databaseWrapper;
 
   late final List<TableInfo> _orderedTablesForDeletion = [
-    databaseWrapper.driftWrapper.eventEntity,
+    // databaseWrapper.driftWrapper.eventEntity,
+    databaseWrapper.eventsRepo,
+    databaseWrapper.usersRepo,
+    databaseWrapper.authsRepo,
   ];
 
   Future<void> close() async {
@@ -15,7 +18,7 @@ class TestDatabaseWrapper {
 
   Future<void> clearAll() async {
     for (final table in _orderedTablesForDeletion) {
-      await databaseWrapper.driftWrapper.delete(table).go();
+      await databaseWrapper.deleteTableRows(table);
     }
   }
 }

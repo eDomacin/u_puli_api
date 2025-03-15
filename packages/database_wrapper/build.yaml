@@ -6,7 +6,7 @@ targets:
           sql:
             dialects:
               # NOTE: not need this, but this fixes create index stuff
-              # https://github.com/simolus3/drift/issues/3391
+              # https://github.com/simolus3/drift/issues/3391 - - but it did not work really
               # also: above url shows ref to db in build.yaml
               - postgres
               - sqlite

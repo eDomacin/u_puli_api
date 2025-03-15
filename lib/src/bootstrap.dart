@@ -115,7 +115,9 @@ AppRouter _getInitializedAppRouter({
   final EventsDataSource eventsDataSource = EventsDataSourceImpl(
     databaseWrapper: databaseWrapper,
   );
-  final AuthDataSource authDataSource = AuthDataSourceImpl();
+  final AuthDataSource authDataSource = AuthDataSourceImpl(
+    databaseWrapper: databaseWrapper,
+  );
 
   // repositories
   final EventsRepository eventsRepository = EventsRepositoryImpl(
