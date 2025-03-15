@@ -38,9 +38,6 @@ class DriftMigratorWrapper {
           "ALTER TABLE event_entity ADD UNIQUE (title, date, location);",
         );
       },
-      from2To3: (m, schema) async {
-        await m.createTable(schema.authEntity);
-      },
     ),
   );
 }
