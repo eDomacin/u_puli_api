@@ -5,5 +5,10 @@ targets:
         options:
           sql:
             dialects:
+              # NOTE: not need this, but this fixes create index stuff
+              # https://github.com/simolus3/drift/issues/3391
+              # also: above url shows ref to db in build.yaml
               - postgres
-# TODO this should probably be in the wrapper
+              - sqlite
+          databases:
+            pg_database: lib/src/wrappers/drift/drift_wrapper.dart

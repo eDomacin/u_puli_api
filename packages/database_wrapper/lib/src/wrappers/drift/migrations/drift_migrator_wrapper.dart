@@ -45,6 +45,17 @@ class DriftMigratorWrapper {
       from3To4: (m, schema) async {
         await m.createTable(schema.userEntity);
       },
+      from4To5: (m, schema) async {
+        // index gets generated because we used the `@TableIndex` annotation
+        // TODO but it does not work unfortunately - issues with the generated code - it generates SQLite specific code it seems
+        // await m.createIndex(schema.userEntityAuthIdIdx);
+        m.createIndex(
+          Index.byDialect("user_entity_auth_id_idx", {
+            SqlDialect.postgres:
+                "CREATE INDEX user_entity_auth_id_idx ON user_entity (auth_id);",
+          }),
+        );
+      },
     ),
   );
 }

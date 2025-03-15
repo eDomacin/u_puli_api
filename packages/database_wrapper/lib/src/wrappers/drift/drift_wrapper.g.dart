@@ -795,6 +795,13 @@ abstract class _$DriftWrapper extends GeneratedDatabase {
   late final $EventEntityTable eventEntity = $EventEntityTable(this);
   late final $AuthEntityTable authEntity = $AuthEntityTable(this);
   late final $UserEntityTable userEntity = $UserEntityTable(this);
+  late final Index userEntityAuthIdIdx =
+      Index.byDialect('user_entity_auth_id_idx', {
+    SqlDialect.postgres:
+        'CREATE INDEX user_entity_auth_id_idx ON user_entity (auth_id)',
+    SqlDialect.sqlite:
+        'CREATE INDEX user_entity_auth_id_idx ON user_entity (auth_id)',
+  });
   Selectable<String> current_timestamp() {
     return customSelect('SELECT CURRENT_TIMESTAMP AS _c0',
         variables: [],
@@ -806,7 +813,7 @@ abstract class _$DriftWrapper extends GeneratedDatabase {
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [eventEntity, authEntity, userEntity];
+      [eventEntity, authEntity, userEntity, userEntityAuthIdIdx];
 }
 
 typedef $$EventEntityTableCreateCompanionBuilder = EventEntityCompanion
