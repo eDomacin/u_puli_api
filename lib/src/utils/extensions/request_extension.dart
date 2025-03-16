@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:shelf/shelf.dart';
 import 'package:u_puli_api/src/utils/constants/request_constants.dart';
@@ -17,6 +18,25 @@ extension RequestExtension on Request {
     }
   }
 
+  String? getAccessTokenFromAuthorizationHeader() {
+    final String? authorizationHeader =
+        headers[HttpHeaders.authorizationHeader];
+
+    if (authorizationHeader == null) {
+      return null;
+    }
+
+    final List<String> authorizationHeaderParts = authorizationHeader.split(
+      " ",
+    );
+
+    if (authorizationHeaderParts.length != 2) {
+      return null;
+    }
+
+    return authorizationHeaderParts[1];
+  }
+
   Request getChangedRequestWithValidatedBodyData(Map<String, dynamic> data) {
     final Request changedRequest = change(
       context: {RequestConstants.VALIDATED_BODY_DATA.value: data},
@@ -31,5 +51,20 @@ extension RequestExtension on Request {
             as Map<String, dynamic>?;
 
     return validatedBodyData;
+  }
+
+  Request getChangedRequestWithAuthenticatedAuthId(int authId) {
+    final Request changedRequest = change(
+      context: {RequestConstants.AUTHENTICATED_AUTH_ID.value: authId},
+    );
+
+    return changedRequest;
+  }
+
+  int? getAuthenticatedAuthId() {
+    final int? authenticatedAuthId =
+        context[RequestConstants.AUTHENTICATED_AUTH_ID.value] as int?;
+
+    return authenticatedAuthId;
   }
 }

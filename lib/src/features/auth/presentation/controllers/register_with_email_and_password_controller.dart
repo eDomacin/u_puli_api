@@ -104,7 +104,10 @@ class RegisterWithEmailAndPasswordController {
       statusCode: HttpStatus.ok,
       isOk: true,
       // TODO this should probably be some constant or some creator of this
-      data: {"user": authUser.toJson()},
+      data: {
+        "user": authUser.toJson(),
+        "auth": {"accessToken": accessToken},
+      },
       accessToken: accessToken,
       refreshTokenCookie: refreshTokenCookie,
     );
@@ -155,7 +158,6 @@ Response _generateSuccessResponse({
     body: jsonEncode({"ok": isOk, "message": message, "data": data}),
     headers: {
       HttpHeaders.contentTypeHeader: ContentType.json.value,
-      HttpHeaders.authorizationHeader: "Bearer $accessToken",
       HttpHeaders.setCookieHeader: cookiesStrings,
     },
   );

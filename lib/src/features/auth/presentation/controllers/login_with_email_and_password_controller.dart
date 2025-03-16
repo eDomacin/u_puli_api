@@ -109,7 +109,10 @@ class LoginWithEmailAndPasswordController {
       message: "User logged in successfully",
       statusCode: HttpStatus.ok,
       isOk: true,
-      data: {"user": authUser.toJson()},
+      data: {
+        "user": authUser.toJson(),
+        "auth": {"accessToken": accessToken},
+      },
       accessToken: accessToken,
       refreshTokenCookie: refreshTokenCookie,
     );
@@ -151,7 +154,6 @@ Response _generateSuccessResponse({
     body: jsonEncode({"ok": isOk, "message": message, "data": data}),
     headers: {
       HttpHeaders.contentTypeHeader: ContentType.json.value,
-      HttpHeaders.authorizationHeader: "Bearer $accessToken",
       HttpHeaders.setCookieHeader: cookiesStrings,
     },
   );

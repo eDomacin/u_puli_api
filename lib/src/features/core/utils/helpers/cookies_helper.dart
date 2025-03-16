@@ -20,6 +20,8 @@ class CookiesHelper {
           // TODO not sure about this - will come back to it
           ..maxAge = maxAge?.inSeconds;
 
+    // TODO examine same site
+
     return cookie;
   }
 }

@@ -16,6 +16,7 @@ import 'package:u_puli_api/src/features/auth/presentation/controllers/register_w
 import 'package:u_puli_api/src/features/auth/presentation/router/auth_router.dart';
 import 'package:u_puli_api/src/features/auth/utils/helpers/auth_jwt_helper.dart';
 import 'package:u_puli_api/src/features/auth/utils/helpers/encode_password_helper.dart';
+import 'package:u_puli_api/src/features/auth/utils/helpers/middleware/middleware_helper/authenticate_request_middleware_helper.dart';
 import 'package:u_puli_api/src/features/auth/utils/helpers/middleware/middleware_helper/validate_login_with_email_and_password_request_body_middleware_helper.dart';
 import 'package:u_puli_api/src/features/auth/utils/helpers/middleware/middleware_helper/validate_register_with_email_and_password_request_body_middleware_helper.dart';
 import 'package:u_puli_api/src/features/core/utils/helpers/cookies_helper.dart';
@@ -116,6 +117,10 @@ AppRouter _getInitializedAppRouter({
   final ValidateCreateEventRequestBodyMiddlewareHelper
   validateCreateEventRequestBodyMiddlewareHelper =
       ValidateCreateEventRequestBodyMiddlewareHelper();
+  final AuthenticateRequestMiddlewareHelper
+  authenticateRequestMiddlewareHelper = AuthenticateRequestMiddlewareHelper(
+    authJWTHelper: authJWTHelper,
+  );
 
   // data surces
   final EventsDataSource eventsDataSource = EventsDataSourceImpl(
@@ -191,6 +196,7 @@ AppRouter _getInitializedAppRouter({
     // middleware
     validateCreateEventRequestBodyMiddlewareHelper:
         validateCreateEventRequestBodyMiddlewareHelper,
+    authenticateRequestMiddlewareHelper: authenticateRequestMiddlewareHelper,
   );
   final AuthRouter authRouter = AuthRouter(
     registerWithEmailAndPasswordController:

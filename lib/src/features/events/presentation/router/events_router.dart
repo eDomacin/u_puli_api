@@ -1,5 +1,6 @@
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
+import 'package:u_puli_api/src/features/auth/utils/helpers/middleware/middleware_helper/authenticate_request_middleware_helper.dart';
 import 'package:u_puli_api/src/features/events/presentation/controllers/create_event_controller.dart';
 import 'package:u_puli_api/src/features/events/presentation/controllers/get_event_controller.dart';
 import 'package:u_puli_api/src/features/events/presentation/controllers/get_events_controller.dart';
@@ -15,6 +16,8 @@ class EventsRouter {
     // middleware
     required ValidateCreateEventRequestBodyMiddlewareHelper
     validateCreateEventRequestBodyMiddlewareHelper,
+    required AuthenticateRequestMiddlewareHelper
+    authenticateRequestMiddlewareHelper,
   }) : _router = Router() {
     _router.get("/", getEventsController.call);
     // Dynamic routes have to be last, so as not to catch other routes requests
@@ -22,6 +25,7 @@ class EventsRouter {
     _router.post(
       "/",
       Pipeline()
+          .addMiddleware(authenticateRequestMiddlewareHelper())
           .addMiddleware(validateCreateEventRequestBodyMiddlewareHelper())
           .addHandler(createEventController.call),
     );

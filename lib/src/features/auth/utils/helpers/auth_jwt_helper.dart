@@ -1,5 +1,6 @@
 import 'package:u_puli_api/src/features/auth/domain/values/auth_jwt_payload_value.dart';
 import 'package:u_puli_api/src/features/auth/utils/constants/auth_jwt_constants.dart';
+import 'package:u_puli_api/src/features/core/domain/exceptions/jwt_exceptions.dart';
 import 'package:u_puli_api/src/wrappers/dart_jsonwebtoken/dart_jsonwebtoken_wrapper.dart';
 
 class AuthJWTHelper {
@@ -41,8 +42,8 @@ class AuthJWTHelper {
     return payload;
   }
 
-  AuthJwtPayloadValue? verifyAccessJWT(String token) {
-    final AuthJwtPayloadValue? authJwtPayloadValue = _verifyJWT(
+  AuthJwtPayloadValue verifyAccessJwt(String token) {
+    final AuthJwtPayloadValue authJwtPayloadValue = _verifyJwt(
       token: token,
       isAccessToken: true,
     );
@@ -50,8 +51,8 @@ class AuthJWTHelper {
     return authJwtPayloadValue;
   }
 
-  AuthJwtPayloadValue? verifyRefreshJWT(String token) {
-    final AuthJwtPayloadValue? authJwtPayloadValue = _verifyJWT(
+  AuthJwtPayloadValue verifyRefreshJwt(String token) {
+    final AuthJwtPayloadValue authJwtPayloadValue = _verifyJwt(
       token: token,
       isAccessToken: false,
     );
@@ -59,27 +60,58 @@ class AuthJWTHelper {
     return authJwtPayloadValue;
   }
 
-  // extract commong logic from verifyAccessJWT and verifyRefreshJWT
-  AuthJwtPayloadValue? _verifyJWT({
+  AuthJwtPayloadValue _verifyJwt({
     required String token,
     required bool isAccessToken,
   }) {
-    final Map<String, dynamic> payload = _dartJsonwebtokenWrapper
-        .verify<Map<String, dynamic>>(
-          token: token,
-          isAccessToken: isAccessToken,
-        );
+    try {
+      final Map<String, dynamic> payload = _dartJsonwebtokenWrapper
+          .verify<Map<String, dynamic>>(
+            token: token,
+            isAccessToken: isAccessToken,
+          );
 
-    final int? authId =
-        payload[AuthJwtPayloadKeysConstants.AUTH_ID.value] as int?;
+      final int? authId =
+          payload[AuthJwtPayloadKeysConstants.AUTH_ID.value] as int?;
 
-    if (authId == null) {
-      return null;
+      if (authId == null) {
+        return AuthJwtPayloadMissingDataValue();
+      }
+
+      final AuthJwtPayloadValue authJwtPayloadValue = AuthJwtPayloadValidValue(
+        authId: authId,
+      );
+      return authJwtPayloadValue;
+    } on JwtInvalidException {
+      return AuthJwtPayloadInvalidValue();
+    } on JwtExpiredException {
+      return AuthJwtPayloadExpiredValue();
+    } catch (_) {
+      return AuthJwtPayloadInvalidValue();
     }
-
-    final AuthJwtPayloadValue authJwtPayloadValue = AuthJwtPayloadValue(
-      authId: authId,
-    );
-    return authJwtPayloadValue;
   }
+
+  // extract commong logic from verifyAccessJWT and verifyRefreshJWT
+  // AuthJwtPayloadValue? _verifyJWT({
+  //   required String token,
+  //   required bool isAccessToken,
+  // }) {
+  //   final Map<String, dynamic> payload = _dartJsonwebtokenWrapper
+  //       .verify<Map<String, dynamic>>(
+  //         token: token,
+  //         isAccessToken: isAccessToken,
+  //       );
+
+  //   final int? authId =
+  //       payload[AuthJwtPayloadKeysConstants.AUTH_ID.value] as int?;
+
+  //   if (authId == null) {
+  //     return null;
+  //   }
+
+  //   final AuthJwtPayloadValue authJwtPayloadValue = AuthJwtPayloadValue(
+  //     authId: authId,
+  //   );
+  //   return authJwtPayloadValue;
+  // }
 }
