@@ -22,3 +22,7 @@
 -- have function to get auth user
 --- this will be used for all three login functions 
 --- and auth id will be taken care of elsewhere
+
+<!-- +++++++++++++++++++++ -->
+7. now, how to login when we start the app
+- we dont have access token at the time
