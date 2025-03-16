@@ -1,15 +1,22 @@
 import 'package:u_puli_api/src/features/events/data/data_sources/events_data_source.dart';
 import 'package:u_puli_api/src/features/events/domain/models/event_model.dart';
 import 'package:u_puli_api/src/features/events/domain/repositories/events_repository.dart';
+import 'package:u_puli_api/src/features/events/domain/values/create_event_value.dart';
 import 'package:u_puli_api/src/features/events/domain/values/event_entity_value.dart';
 import 'package:u_puli_api/src/features/events/utils/converters/events_converter.dart';
 
 class EventsRepositoryImpl implements EventsRepository {
-  const EventsRepositoryImpl({
-    required EventsDataSource eventsDataSource,
-  }) : _eventsDataSource = eventsDataSource;
+  const EventsRepositoryImpl({required EventsDataSource eventsDataSource})
+    : _eventsDataSource = eventsDataSource;
 
   final EventsDataSource _eventsDataSource;
+
+  @override
+  Future<int> createEvent(CreateEventValue value) async {
+    final int id = await _eventsDataSource.storeEvent(value);
+
+    return id;
+  }
 
   @override
   Future<EventModel?> getEvent(int id) async {
@@ -26,8 +33,9 @@ class EventsRepositoryImpl implements EventsRepository {
   @override
   Future<List<EventModel>> getEvents() async {
     final List<EventEntityValue> values = await _eventsDataSource.getEvents();
-    final List<EventModel> models =
-        EventsConverter.modelsFromEntityValues(values: values);
+    final List<EventModel> models = EventsConverter.modelsFromEntityValues(
+      values: values,
+    );
 
     return models;
   }

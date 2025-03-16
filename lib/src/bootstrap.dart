@@ -23,11 +23,14 @@ import 'package:u_puli_api/src/features/events/data/data_sources/events_data_sou
 import 'package:u_puli_api/src/features/events/data/data_sources/events_data_source_impl.dart';
 import 'package:u_puli_api/src/features/events/domain/repositories/events_repository.dart';
 import 'package:u_puli_api/src/features/events/domain/repositories/events_repository_impl.dart';
+import 'package:u_puli_api/src/features/events/domain/use_cases/create_event_use_case.dart';
 import 'package:u_puli_api/src/features/events/domain/use_cases/get_event_use_case.dart';
 import 'package:u_puli_api/src/features/events/domain/use_cases/get_events_use_case.dart';
+import 'package:u_puli_api/src/features/events/presentation/controllers/create_event_controller.dart';
 import 'package:u_puli_api/src/features/events/presentation/controllers/get_event_controller.dart';
 import 'package:u_puli_api/src/features/events/presentation/controllers/get_events_controller.dart';
 import 'package:u_puli_api/src/features/events/presentation/router/events_router.dart';
+import 'package:u_puli_api/src/features/events/utils/helpers/middleware/middleware_helper/validate_create_event_request_body_middleware_helper.dart';
 import 'package:u_puli_api/src/wrappers/dart_jsonwebtoken/dart_jsonwebtoken_wrapper.dart';
 import 'package:u_puli_api/src/wrappers/get_id/get_it_wrapper.dart';
 import 'package:u_puli_api/src/wrappers/hashlib/hashlib_wrapper.dart';
@@ -110,6 +113,9 @@ AppRouter _getInitializedAppRouter({
   final ValidateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper
   validateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper =
       ValidateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper();
+  final ValidateCreateEventRequestBodyMiddlewareHelper
+  validateCreateEventRequestBodyMiddlewareHelper =
+      ValidateCreateEventRequestBodyMiddlewareHelper();
 
   // data surces
   final EventsDataSource eventsDataSource = EventsDataSourceImpl(
@@ -143,6 +149,10 @@ AppRouter _getInitializedAppRouter({
     authRepository: authRepository,
   );
 
+  final CreateEventUseCase createEventUseCase = CreateEventUseCase(
+    eventsRepository: eventsRepository,
+  );
+
   // controllers
   final GetEventController getEventController = GetEventController(
     getEventUseCase: getEventUseCase,
@@ -169,10 +179,18 @@ AppRouter _getInitializedAppRouter({
     cookiesHelper: cookiesHelper,
   );
 
+  final CreateEventController createEventController = CreateEventController(
+    createEventUseCase: createEventUseCase,
+  );
+
   // routers
   final EventsRouter eventsRouter = EventsRouter(
     getEventController: getEventController,
     getEventsController: getEventsController,
+    createEventController: createEventController,
+    // middleware
+    validateCreateEventRequestBodyMiddlewareHelper:
+        validateCreateEventRequestBodyMiddlewareHelper,
   );
   final AuthRouter authRouter = AuthRouter(
     registerWithEmailAndPasswordController:

@@ -109,7 +109,7 @@ class LoginWithEmailAndPasswordController {
       message: "User logged in successfully",
       statusCode: HttpStatus.ok,
       isOk: true,
-      data: authUser.toJson(),
+      data: {"user": authUser.toJson()},
       accessToken: accessToken,
       refreshTokenCookie: refreshTokenCookie,
     );

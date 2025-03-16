@@ -30,3 +30,10 @@ class AppRouter {
     return Response.ok('$message\n');
   }
 }
+
+
+// TODO it would be good to have controller hold its own
+// - http method
+// - path
+
+// this way we could have a route that lists all the routes and their methods by just looking at the controllers

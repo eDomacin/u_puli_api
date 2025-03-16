@@ -104,7 +104,7 @@ class RegisterWithEmailAndPasswordController {
       statusCode: HttpStatus.ok,
       isOk: true,
       // TODO this should probably be some constant or some creator of this
-      data: authUser.toJson(),
+      data: {"user": authUser.toJson()},
       accessToken: accessToken,
       refreshTokenCookie: refreshTokenCookie,
     );
