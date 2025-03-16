@@ -52,7 +52,8 @@ class DriftMigratorWrapper {
         m.createIndex(
           Index.byDialect("user_entity_auth_id_idx", {
             SqlDialect.postgres:
-                "CREATE INDEX user_entity_auth_id_idx ON user_entity (auth_id);",
+                // TODO not sure why this needs to be IF NOT EXISTS - this migration should not run if the migraiton index in migration table is higher than this - do research on this
+                "CREATE INDEX IF NOT EXISTS user_entity_auth_id_idx ON user_entity (auth_id);",
           }),
         );
       },

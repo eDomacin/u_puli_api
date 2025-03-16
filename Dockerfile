@@ -46,7 +46,8 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 # it would be good to write this to some logs
 # RUN mkdir -p /var/log
 # RUN echo "* * * * * /app/build/scraper >> /var/log/scraper.log 2>&1" > /etc/crontabs/root
-RUN echo '0  22  *  *  *   /app/build/scraper' >/etc/crontabs/root
+# RUN echo '0  22  *  *  *   /app/build/scraper' >/etc/crontabs/root
+RUN echo '*  *  *  *  *   /app/build/scraper' >/etc/crontabs/root
 
 # TODO create a user and run as that user
 
@@ -54,6 +55,4 @@ RUN echo '0  22  *  *  *   /app/build/scraper' >/etc/crontabs/root
 EXPOSE 8080
 CMD ["sh", "-c", "crond && /app/build/server"]
 
-# TODO
-# 1. add USER after cron tab setup
-# -- this will need to run crond as root, and then set the user to run the server in CMD
+# TODO maybe should cache chromium
