@@ -46,8 +46,8 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 # it would be good to write this to some logs
 # RUN mkdir -p /var/log
 # RUN echo "* * * * * /app/build/scraper >> /var/log/scraper.log 2>&1" > /etc/crontabs/root
-RUN echo '0  23  *  *  *   /app/build/scraper' >/etc/crontabs/root
-# RUN echo '*  *  *  *  *   /app/build/scraper' >/etc/crontabs/root
+# RUN echo '0  23  *  *  *   /app/build/scraper' >/etc/crontabs/root
+RUN echo '*  *  *  *  *   /app/build/scraper' >/etc/crontabs/root
 
 # TODO create a user and run as that user
 
