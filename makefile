@@ -1,4 +1,5 @@
 .PHONY: default dart_version
+# TODO fix this default - this is default only because it is first in the file
 default: welcome
 
 welcome:
@@ -86,3 +87,7 @@ EVENTS_SCRAPER = $(CURDIR)/packages/events_scraper
 
 # PACKAGES DIR LIST
 PACKAGES = $(CURDIR) $(ENV_WRAPPER) $(DATABASE_WRAPPER) $(EVENTS_SCRAPER) 
+
+
+# TODO 
+# 1. split this into multiple files
