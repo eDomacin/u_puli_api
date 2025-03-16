@@ -20,11 +20,11 @@ class LoginWithEmailAndPasswordController {
     required EncodePasswordHelper encodePasswordHelper,
     required AuthJWTHelper authJWTHelper,
     required CookiesHelper cookiesHelper,
-  }) : _getAuthUserUseCase = getAuthUserUseCase,
-       _getAuthByEmailUseCase = getAuthByEmailUseCase,
-       _encodePasswordHelper = encodePasswordHelper,
-       _authJWTHelper = authJWTHelper,
-       _cookiesHelper = cookiesHelper;
+  })  : _getAuthUserUseCase = getAuthUserUseCase,
+        _getAuthByEmailUseCase = getAuthByEmailUseCase,
+        _encodePasswordHelper = encodePasswordHelper,
+        _authJWTHelper = authJWTHelper,
+        _cookiesHelper = cookiesHelper;
 
   final GetAuthUserUseCase _getAuthUserUseCase;
   final GetAuthByEmailUseCase _getAuthByEmailUseCase;
@@ -110,6 +110,8 @@ class LoginWithEmailAndPasswordController {
       statusCode: HttpStatus.ok,
       isOk: true,
       data: {
+        // TODO response dat should always be nested like this as a good practice - then we can split the data into multiple parts by domain
+        // TODO check entire code for this
         "user": authUser.toJson(),
         "auth": {"accessToken": accessToken},
       },
@@ -121,8 +123,10 @@ class LoginWithEmailAndPasswordController {
   }
 }
 
-typedef _LoginDetailsFromValidatedRequestBody =
-    ({String email, String password});
+typedef _LoginDetailsFromValidatedRequestBody = ({
+  String email,
+  String password
+});
 
 _LoginDetailsFromValidatedRequestBody _getLoginDetailsFromValidatedRequestBody(
   Map<String, dynamic> data,

@@ -94,9 +94,9 @@ AppRouter _getInitializedAppRouter({
   final HashlibWrapper hashlibWrapper = HashlibWrapper();
   final DartJsonwebtokenWrapper dartJsonwebtokenWrapper =
       DartJsonwebtokenWrapper(
-        jwtAccessSecret: jwtAccessSecret,
-        jwtRefreshSecret: jwtRefreshSecret,
-      );
+    jwtAccessSecret: jwtAccessSecret,
+    jwtRefreshSecret: jwtRefreshSecret,
+  );
 
   // helpers
   final EncodePasswordHelper encodePasswordHelper = EncodePasswordHelper(
@@ -109,16 +109,16 @@ AppRouter _getInitializedAppRouter({
 
   // middlewares helpers
   final ValidateRegisterWithEmailAndPasswordRequestBodyMiddlewareHelper
-  validateRegisterWithEmailAndPasswordRequestBodyMiddlewareHelper =
+      validateRegisterWithEmailAndPasswordRequestBodyMiddlewareHelper =
       ValidateRegisterWithEmailAndPasswordRequestBodyMiddlewareHelper();
   final ValidateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper
-  validateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper =
+      validateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper =
       ValidateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper();
   final ValidateCreateEventRequestBodyMiddlewareHelper
-  validateCreateEventRequestBodyMiddlewareHelper =
+      validateCreateEventRequestBodyMiddlewareHelper =
       ValidateCreateEventRequestBodyMiddlewareHelper();
   final AuthenticateRequestMiddlewareHelper
-  authenticateRequestMiddlewareHelper = AuthenticateRequestMiddlewareHelper(
+      authenticateRequestMiddlewareHelper = AuthenticateRequestMiddlewareHelper(
     authJWTHelper: authJWTHelper,
   );
 
@@ -166,17 +166,17 @@ AppRouter _getInitializedAppRouter({
     getEventsUseCase: getEventsUseCase,
   );
   final RegisterWithEmailAndPasswordController
-  registerWithEmailAndPasswordController =
+      registerWithEmailAndPasswordController =
       RegisterWithEmailAndPasswordController(
-        registerWithUserAndPasswordUseCase: registerWithUserAndPasswordUseCase,
-        getAuthUserUseCase: getAuthUserUseCase,
-        getAuthByEmailUseCase: getAuthByEmailUseCase,
-        encodePasswordHelper: encodePasswordHelper,
-        authJWTHelper: authJWTHelper,
-        cookiesHelper: cookiesHelper,
-      );
+    registerWithUserAndPasswordUseCase: registerWithUserAndPasswordUseCase,
+    getAuthUserUseCase: getAuthUserUseCase,
+    getAuthByEmailUseCase: getAuthByEmailUseCase,
+    encodePasswordHelper: encodePasswordHelper,
+    authJWTHelper: authJWTHelper,
+    cookiesHelper: cookiesHelper,
+  );
   final LoginWithEmailAndPasswordController
-  loginWithEmailAndPasswordController = LoginWithEmailAndPasswordController(
+      loginWithEmailAndPasswordController = LoginWithEmailAndPasswordController(
     getAuthUserUseCase: getAuthUserUseCase,
     getAuthByEmailUseCase: getAuthByEmailUseCase,
     encodePasswordHelper: encodePasswordHelper,
