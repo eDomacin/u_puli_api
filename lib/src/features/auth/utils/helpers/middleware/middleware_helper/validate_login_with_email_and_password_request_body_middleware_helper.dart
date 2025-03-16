@@ -25,7 +25,7 @@ class ValidateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper
             return response;
           }
 
-          final email =
+          final dynamic email =
               requestBody[LoginWithUserAndPasswordRequestBodyConstants
                   .EMAIL
                   .value];
@@ -52,7 +52,7 @@ class ValidateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper
             return response;
           }
 
-          final password =
+          final dynamic password =
               requestBody[LoginWithUserAndPasswordRequestBodyConstants
                   .PASSWORD
                   .value];
@@ -87,6 +87,8 @@ class ValidateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper
           print(
             "Error in $ValidateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper",
           );
+
+          // TODO we could return response from here - but we will hanve error handler in general
           rethrow;
         }
       }
@@ -96,20 +98,20 @@ class ValidateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper
 
     return middleware;
   }
+}
 
-  Response _generateFailureResponse({
-    required String message,
-    required int statusCode,
-  }) {
-    final Map<String, dynamic> responseBody = {"ok": false, "message": message};
-    final String responseBodyJson = jsonEncode(responseBody);
+Response _generateFailureResponse({
+  required String message,
+  required int statusCode,
+}) {
+  final Map<String, dynamic> responseBody = {"ok": false, "message": message};
+  final String responseBodyJson = jsonEncode(responseBody);
 
-    final Response response = Response(
-      statusCode,
-      body: responseBodyJson,
-      headers: {HttpHeaders.contentTypeHeader: ContentType.json.value},
-    );
+  final Response response = Response(
+    statusCode,
+    body: responseBodyJson,
+    headers: {HttpHeaders.contentTypeHeader: ContentType.json.value},
+  );
 
-    return response;
-  }
+  return response;
 }
