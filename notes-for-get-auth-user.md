@@ -42,3 +42,24 @@ Refresh Token Request:
 
 If refresh token request is successful, store new access token and make get-auth-user request.
 If refresh token request fails, prompt user to log in again.
+
+---------
+for first thing to be refresh token on app start
+--
+Yes, in many modern applications that use refresh tokens for persistent sessions, it's a common and recommended practice for the client app to attempt to refresh the access token as one of its first actions upon startup.
+
+Here's why this approach is generally preferred:
+
+* **Seamless User Experience:** If the refresh token is still valid, the app can silently obtain a new access token in the background. This allows the user to resume using the app without having to manually log in again.
+* **Maintaining Session:** The refresh token is designed to extend the user's session beyond the lifetime of the access token. By attempting to refresh on startup, the app tries to re-establish an authenticated session automatically.
+* **Centralized Authentication Check:** Performing a refresh attempt early in the app's lifecycle allows the app to determine the user's authentication status right away. This can inform how the app initializes its UI and data fetching processes.
+
+**However, there are a few nuances and considerations:**
+
+* **Error Handling:** The app needs to gracefully handle the case where the refresh token has expired or is invalid. In such a scenario, the refresh token request will fail, and the app should then redirect the user to the login screen.
+* **Network Availability:** The refresh token request requires an internet connection. The app should handle cases where there is no network connectivity.
+* **Potential Optimization:** While a refresh attempt on every startup is common, some apps might implement optimizations. For example, they might check the expiration time of the last known access token (if stored locally, though you mentioned it's in memory and lost) or the last time a successful refresh occurred to avoid making unnecessary requests if the app was just recently closed and reopened very quickly. However, for simplicity and ensuring a valid access token is available, a refresh attempt on startup is a solid strategy.
+
+**In summary:**
+
+While not strictly the *absolute* first request in every scenario (the app might need to initialize other components first), attempting to refresh the access token is typically one of the very early network requests the client app should make after it starts. This helps maintain a seamless logged-in experience for the user if their refresh token is still valid.
