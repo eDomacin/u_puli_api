@@ -44,15 +44,17 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 # it would be good to write this to some logs
-# RUN mkdir -p /var/log
-# RUN echo "* * * * * /app/build/scraper >> /var/log/scraper.log 2>&1" > /etc/crontabs/root
-# RUN echo '0  23  *  *  *   /app/build/scraper' >/etc/crontabs/root
-RUN echo '*  *  *  *  *   /app/build/scraper' >/etc/crontabs/root
+RUN mkdir -p /var/log
+RUN touch /var/log/cron.log
+RUN echo "0 23 * * * /app/build/scraper >> /var/log/cron.log 2>&1" > /etc/crontabs/root
+
+# Ensure cron is running
+RUN crond -l 2 -f &
 
 # TODO create a user and run as that user
 
 # Start server.
 EXPOSE 8080
-CMD ["sh", "-c", "crond && /app/build/server"]
+CMD ["sh", "-c", "crond && tail -f /var/log/cron.log & /app/build/server"]
 
 # TODO maybe should cache chromium
