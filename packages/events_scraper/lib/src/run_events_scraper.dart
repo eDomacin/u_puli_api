@@ -8,11 +8,13 @@ import 'package:event_scraper/src/domain/repositories/events_loader_repository.d
 import 'package:event_scraper/src/domain/repositories/events_loader_repository_impl.dart';
 import 'package:event_scraper/src/domain/use_cases/load_gkpu_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_ink_events_use_case.dart';
+import 'package:event_scraper/src/domain/use_cases/load_kotac_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_naranca_events_use_case.dart';
 import 'package:event_scraper/src/events_scraper.dart';
 import 'package:event_scraper/src/presentation/controllers/events_scraper_controller.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/gkpu_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/ink_puppeteer_scraper_wrapper.dart';
+import 'package:event_scraper/src/wrappers/puppeteer/kotac_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/naranca_puppeteer_scrapper_wrapper.dart';
 
 Future<void> runEventsScraper() async {
@@ -64,6 +66,8 @@ EventsScraperController _getInitializedEventsScraperController({
       GkpuPuppeteerScraperWrapper();
   final InkPuppeteerScraperWrapper inkPuppeteerScraperWrapper =
       InkPuppeteerScraperWrapper();
+  final KotacPuppeteerScraperWrapper kotacPuppeteerScraperWrapper =
+      KotacPuppeteerScraperWrapper();
 
   // data sources
   final EventsScraperDataSource eventsScraperDataSource =
@@ -71,6 +75,7 @@ EventsScraperController _getInitializedEventsScraperController({
         narancaPuppeteerScraperWrapper: narancaPuppeteerScraperWrapper,
         gkpuPuppeteerScraperWrapper: gkpuPuppeteerScraperWrapper,
         inkPuppeteerScraperWrapper: inkPuppeteerScraperWrapper,
+        kotacPuppeteerScraperWrapper: kotacPuppeteerScraperWrapper,
       );
 
   final EventsStorerDataSource eventsStorerDataSource =
@@ -92,6 +97,9 @@ EventsScraperController _getInitializedEventsScraperController({
   final LoadInkEventsUseCase loadInkEventsUseCase = LoadInkEventsUseCase(
     eventsLoaderRepository: eventsLoaderRepository,
   );
+  final LoadKotacEventsUseCase loadKotacEventsUseCase = LoadKotacEventsUseCase(
+    eventsLoaderRepository: eventsLoaderRepository,
+  );
 
   // controller
   final EventsScraperController eventsScraperController =
@@ -99,6 +107,7 @@ EventsScraperController _getInitializedEventsScraperController({
         loadNarancaEventsUseCase: loadNarancaEventsUseCase,
         loadGkpuEventsUseCase: loadGkpuEventsUseCase,
         loadInkEventsUseCase: loadInkEventsUseCase,
+        loadKotacEventsUseCase: loadKotacEventsUseCase,
       );
 
   return eventsScraperController;
