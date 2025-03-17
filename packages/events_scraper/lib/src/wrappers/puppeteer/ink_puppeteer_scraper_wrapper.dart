@@ -12,7 +12,7 @@ class InkPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
     final Page page = await browser.newPage();
 
     // goes to helper fucntions
-    await page.goto('https://www.ink.hr/');
+    await page.goto(uri.toString());
 
     final scheduleNavItemSelector =
         'a.header-nav-link[href="https://www.ink.hr/raspored/"]';
