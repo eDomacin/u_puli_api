@@ -11,7 +11,7 @@ class KotacPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
     final Browser browser = await getBrowser();
     final Page page = await browser.newPage();
 
-    await page.goto("https://kotac.eu/");
+    await page.goto(uri.toString());
 
     final programNavItemSelector =
         "a.hfe-menu-item[href='https://kotac.eu/program-2/']";
