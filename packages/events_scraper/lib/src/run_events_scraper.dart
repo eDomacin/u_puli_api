@@ -10,12 +10,14 @@ import 'package:event_scraper/src/domain/use_cases/load_gkpu_events_use_case.dar
 import 'package:event_scraper/src/domain/use_cases/load_ink_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_kotac_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_naranca_events_use_case.dart';
+import 'package:event_scraper/src/domain/use_cases/load_rojc_events_use_case.dart';
 import 'package:event_scraper/src/events_scraper.dart';
 import 'package:event_scraper/src/presentation/controllers/events_scraper_controller.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/gkpu_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/ink_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/kotac_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/naranca_puppeteer_scrapper_wrapper.dart';
+import 'package:event_scraper/src/wrappers/puppeteer/rojc_puppeteer_scraper_wrapper.dart';
 
 Future<void> runEventsScraper() async {
   final EnvVarsWrapper envVarsWrapper = EnvVarsWrapper();
@@ -68,6 +70,8 @@ EventsScraperController _getInitializedEventsScraperController({
       InkPuppeteerScraperWrapper();
   final KotacPuppeteerScraperWrapper kotacPuppeteerScraperWrapper =
       KotacPuppeteerScraperWrapper();
+  final RojcPuppeteerScraperWrapper rojcPuppeteerScraperWrapper =
+      RojcPuppeteerScraperWrapper();
 
   // data sources
   final EventsScraperDataSource eventsScraperDataSource =
@@ -76,6 +80,7 @@ EventsScraperController _getInitializedEventsScraperController({
         gkpuPuppeteerScraperWrapper: gkpuPuppeteerScraperWrapper,
         inkPuppeteerScraperWrapper: inkPuppeteerScraperWrapper,
         kotacPuppeteerScraperWrapper: kotacPuppeteerScraperWrapper,
+        rojcPuppeteerScraperWrapper: rojcPuppeteerScraperWrapper,
       );
 
   final EventsStorerDataSource eventsStorerDataSource =
@@ -100,6 +105,9 @@ EventsScraperController _getInitializedEventsScraperController({
   final LoadKotacEventsUseCase loadKotacEventsUseCase = LoadKotacEventsUseCase(
     eventsLoaderRepository: eventsLoaderRepository,
   );
+  final LoadRojcEventsUseCase loadRojcEventsUseCase = LoadRojcEventsUseCase(
+    eventsLoaderRepository: eventsLoaderRepository,
+  );
 
   // controller
   final EventsScraperController eventsScraperController =
@@ -108,6 +116,7 @@ EventsScraperController _getInitializedEventsScraperController({
         loadGkpuEventsUseCase: loadGkpuEventsUseCase,
         loadInkEventsUseCase: loadInkEventsUseCase,
         loadKotacEventsUseCase: loadKotacEventsUseCase,
+        loadRojcEventsUseCase: loadRojcEventsUseCase,
       );
 
   return eventsScraperController;

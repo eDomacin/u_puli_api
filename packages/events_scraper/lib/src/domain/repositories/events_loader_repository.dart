@@ -3,4 +3,5 @@ abstract class EventsLoaderRepository {
   Future<void> loadGkpuEvents();
   Future<void> loadInkEvents();
   Future<void> loadKotacEvents();
+  Future<void> loadRojcEvents();
 }

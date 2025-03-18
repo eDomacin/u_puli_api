@@ -4,6 +4,7 @@ import 'package:event_scraper/src/wrappers/puppeteer/gkpu_puppeteer_scraper_wrap
 import 'package:event_scraper/src/wrappers/puppeteer/ink_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/kotac_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/naranca_puppeteer_scrapper_wrapper.dart';
+import 'package:event_scraper/src/wrappers/puppeteer/rojc_puppeteer_scraper_wrapper.dart';
 
 class EventsScraperDataSourceImpl implements EventsScraperDataSource {
   const EventsScraperDataSourceImpl({
@@ -11,16 +12,19 @@ class EventsScraperDataSourceImpl implements EventsScraperDataSource {
     required GkpuPuppeteerScraperWrapper gkpuPuppeteerScraperWrapper,
     required InkPuppeteerScraperWrapper inkPuppeteerScraperWrapper,
     required KotacPuppeteerScraperWrapper kotacPuppeteerScraperWrapper,
+    required RojcPuppeteerScraperWrapper rojcPuppeteerScraperWrapper,
   }) : _narancaPuppeteerScraperWrapper = narancaPuppeteerScraperWrapper,
        _gkpuPuppeteerScraperWrapper = gkpuPuppeteerScraperWrapper,
        _inkPuppeteerScraperWrapper = inkPuppeteerScraperWrapper,
-       _kotacPuppeteerScraperWrapper = kotacPuppeteerScraperWrapper;
+       _kotacPuppeteerScraperWrapper = kotacPuppeteerScraperWrapper,
+       _rojcPuppeteerScraperWrapper = rojcPuppeteerScraperWrapper;
 
   // TODO this could accept some kind of reporting service to log potential errors
   final NarancaPuppeteerScraperWrapper _narancaPuppeteerScraperWrapper;
   final GkpuPuppeteerScraperWrapper _gkpuPuppeteerScraperWrapper;
   final InkPuppeteerScraperWrapper _inkPuppeteerScraperWrapper;
   final KotacPuppeteerScraperWrapper _kotacPuppeteerScraperWrapper;
+  final RojcPuppeteerScraperWrapper _rojcPuppeteerScraperWrapper;
 
   @override
   Future<Set<ScrapedEventEntity>> getKotacEvents() async {
@@ -155,5 +159,34 @@ class EventsScraperDataSourceImpl implements EventsScraperDataSource {
     print(
       "Failed scraping of events from $name at $uri, with error: $error and stacktrace: $stackTrace",
     );
+  }
+
+  @override
+  Future<Set<ScrapedEventEntity>> getRojcEvents() async {
+    _printStartScrapeMessage(
+      name: _rojcPuppeteerScraperWrapper.name,
+      uri: _rojcPuppeteerScraperWrapper.uri,
+    );
+
+    try {
+      final Set<ScrapedEventEntity> events =
+          await _rojcPuppeteerScraperWrapper.getEvents();
+
+      _printFinishScrapeMessage(
+        name: _rojcPuppeteerScraperWrapper.name,
+        uri: _rojcPuppeteerScraperWrapper.uri,
+      );
+
+      return events;
+    } catch (e, s) {
+      _printFailedScrapeMessage(
+        name: _rojcPuppeteerScraperWrapper.name,
+        uri: _rojcPuppeteerScraperWrapper.uri,
+        error: e.toString(),
+        stackTrace: s,
+      );
+
+      return <ScrapedEventEntity>{};
+    }
   }
 }
