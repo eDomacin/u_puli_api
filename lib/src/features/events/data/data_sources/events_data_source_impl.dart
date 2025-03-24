@@ -2,6 +2,7 @@ import 'package:database_wrapper/database_wrapper.dart' hide EventsConverter;
 import 'package:u_puli_api/src/features/events/data/data_sources/events_data_source.dart';
 import 'package:u_puli_api/src/features/events/domain/values/create_event_value.dart';
 import 'package:u_puli_api/src/features/events/domain/values/event_entity_value.dart';
+import 'package:u_puli_api/src/features/events/domain/values/update_event_value.dart';
 import 'package:u_puli_api/src/features/events/utils/converters/events_converter.dart';
 // import 'package:u_puli_api/src/wrappers/database/database_wrapper.dart';
 // import 'package:u_puli_api/src/wrappers/drift/drift_wrapper.dart';
@@ -11,6 +12,26 @@ class EventsDataSourceImpl implements EventsDataSource {
     : _databaseWrapper = databaseWrapper;
 
   final DatabaseWrapper _databaseWrapper;
+
+  @override
+  Future<int> updateEvent(UpdateEventValue value) async {
+    final EventEntityCompanion companion = EventEntityCompanion(
+      id: Value(value.id),
+      title: value.title == null ? Value.absent() : Value(value.title!),
+      date: value.date == null ? Value.absent() : Value(value.date!),
+      location:
+          value.location == null ? Value.absent() : Value(value.location!),
+    );
+
+    final UpdateStatement<$EventEntityTable, EventEntityData> update =
+        _databaseWrapper.eventsRepo.update();
+    final UpdateStatement<$EventEntityTable, EventEntityData> updateEvent =
+        update..where((tbl) => tbl.id.equals(value.id));
+
+    final int updatedId = await updateEvent.write(companion);
+
+    return updatedId;
+  }
 
   @override
   Future<int> storeEvent(CreateEventValue value) async {
