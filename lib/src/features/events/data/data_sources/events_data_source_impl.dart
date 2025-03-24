@@ -57,10 +57,16 @@ class EventsDataSourceImpl implements EventsDataSource {
 
     final Expression<bool> fromDateExpression = _databaseWrapper.eventsRepo.date
         .isBiggerOrEqualValue(fromDate);
+    // filter by fromDate
     select = select..where((tbl) => fromDateExpression);
 
-    final List<EventEntityData> events = await select.get();
+    // filter by order - closest event is shown first
+    select =
+        select..orderBy([
+          (tbl) => OrderingTerm(expression: tbl.date, mode: OrderingMode.asc),
+        ]);
 
+    final List<EventEntityData> events = await select.get();
     final eventValues = EventsConverter.entityValuesFromEntityDatas(
       entityDatas: events,
     );
