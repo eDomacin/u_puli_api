@@ -16,6 +16,23 @@ class EventsLoaderRepositoryImpl implements EventsLoaderRepository {
   final EventsStorerDataSource _eventsStorerDataSource;
 
   @override
+  Future<void> loadKotacEvents() async {
+    final Set<ScrapedEventEntity> events =
+        await _eventsScraperDataSource.getKotacEvents();
+
+    print("Scraped event entities: $events");
+
+    final List<StoreEventEntityValue> storeEntityValues =
+        EventsConverter.storeEntityValuesFromScrapedEntities(
+          scrapedEventEntities: events,
+        );
+
+    await _eventsStorerDataSource.storeEvents(storeEntityValues);
+
+    print("Stored event entities: $storeEntityValues");
+  }
+
+  @override
   Future<void> loadInkEvents() async {
     final Set<ScrapedEventEntity> events =
         await _eventsScraperDataSource.getInkEvents();
@@ -53,6 +70,40 @@ class EventsLoaderRepositoryImpl implements EventsLoaderRepository {
   Future<void> loadGkpuEvents() async {
     final Set<ScrapedEventEntity> events =
         await _eventsScraperDataSource.getGkpuEvents();
+
+    print("Scraped event entities: $events");
+
+    final List<StoreEventEntityValue> storeEntityValues =
+        EventsConverter.storeEntityValuesFromScrapedEntities(
+          scrapedEventEntities: events,
+        );
+
+    await _eventsStorerDataSource.storeEvents(storeEntityValues);
+
+    print("Stored event entities: $storeEntityValues");
+  }
+
+  @override
+  Future<void> loadRojcEvents() async {
+    final Set<ScrapedEventEntity> events =
+        await _eventsScraperDataSource.getRojcEvents();
+
+    print("Scraped event entities: $events");
+
+    final List<StoreEventEntityValue> storeEntityValues =
+        EventsConverter.storeEntityValuesFromScrapedEntities(
+          scrapedEventEntities: events,
+        );
+
+    await _eventsStorerDataSource.storeEvents(storeEntityValues);
+
+    print("Stored event entities: $storeEntityValues");
+  }
+
+  @override
+  Future<void> loadPDPUEvents() async {
+    final Set<ScrapedEventEntity> events =
+        await _eventsScraperDataSource.getPDPUEvents();
 
     print("Scraped event entities: $events");
 
