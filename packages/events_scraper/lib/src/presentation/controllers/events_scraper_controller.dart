@@ -33,7 +33,8 @@ class EventsScraperController {
     await _handleLoadInkEvents();
     await _handleLoadKotacEvents();
     await _handleLoadRojcEvents();
-    await _handleLoadPDPUEvents();
+    // TODO skipping this because cannot connect to the site. it could be because of how the chromium browser is created. maybe try different options becasue in scraper POC project it works
+    // await _handleLoadPDPUEvents();
   }
 
   // TODO maybe this can be unified somehow - but i want to be able to log which one failed - so need some field on the use case, if possile
