@@ -46,8 +46,18 @@ class EventsDataSourceImpl implements EventsDataSource {
 
   @override
   Future<List<EventEntityValue>> getEvents() async {
-    final SimpleSelectStatement<$EventEntityTable, EventEntityData> select =
+    // filters
+    final DateTime nowDate = DateTime.now();
+
+    SimpleSelectStatement<$EventEntityTable, EventEntityData> select =
         _databaseWrapper.eventsRepo.select();
+
+    // TODO when we have filters, fromDate could be derived from filters
+    final DateTime fromDate = nowDate;
+
+    final Expression<bool> fromDateExpression = _databaseWrapper.eventsRepo.date
+        .isBiggerOrEqualValue(fromDate);
+    select = select..where((tbl) => fromDateExpression);
 
     final List<EventEntityData> events = await select.get();
 
