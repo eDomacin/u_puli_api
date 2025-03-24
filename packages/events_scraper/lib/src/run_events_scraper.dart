@@ -18,6 +18,7 @@ import 'package:event_scraper/src/wrappers/puppeteer/gkpu_puppeteer_scraper_wrap
 import 'package:event_scraper/src/wrappers/puppeteer/ink_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/kotac_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/naranca_puppeteer_scrapper_wrapper.dart';
+import 'package:event_scraper/src/wrappers/puppeteer/pdpu_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/rojc_puppeteer_scraper_wrapper.dart';
 
 Future<void> runEventsScraper() async {
@@ -73,6 +74,8 @@ EventsScraperController _getInitializedEventsScraperController({
       KotacPuppeteerScraperWrapper();
   final RojcPuppeteerScraperWrapper rojcPuppeteerScraperWrapper =
       RojcPuppeteerScraperWrapper();
+  final PDPUPuppeteerScrapperWrapper pdpuPuppeteerScrapperWrapper =
+      PDPUPuppeteerScrapperWrapper();
 
   // data sources
   final EventsScraperDataSource eventsScraperDataSource =
@@ -82,6 +85,7 @@ EventsScraperController _getInitializedEventsScraperController({
         inkPuppeteerScraperWrapper: inkPuppeteerScraperWrapper,
         kotacPuppeteerScraperWrapper: kotacPuppeteerScraperWrapper,
         rojcPuppeteerScraperWrapper: rojcPuppeteerScraperWrapper,
+        pdpuPuppeteerScrapperWrapper: pdpuPuppeteerScrapperWrapper,
       );
 
   final EventsStorerDataSource eventsStorerDataSource =
