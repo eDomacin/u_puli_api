@@ -2,6 +2,7 @@ import 'package:event_scraper/src/domain/use_cases/load_gkpu_events_use_case.dar
 import 'package:event_scraper/src/domain/use_cases/load_ink_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_kotac_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_naranca_events_use_case.dart';
+import 'package:event_scraper/src/domain/use_cases/load_pdpu_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_rojc_events_use_case.dart';
 
 class EventsScraperController {
@@ -11,17 +12,20 @@ class EventsScraperController {
     required LoadInkEventsUseCase loadInkEventsUseCase,
     required LoadKotacEventsUseCase loadKotacEventsUseCase,
     required LoadRojcEventsUseCase loadRojcEventsUseCase,
+    required LoadPDPUEventsUseCase loadPDPUEventsUseCase,
   }) : _loadNarancaEventsUseCase = loadNarancaEventsUseCase,
        _loadGkpuEventsUseCase = loadGkpuEventsUseCase,
        _loadInkEventsUseCase = loadInkEventsUseCase,
        _loadKotacEventsUseCase = loadKotacEventsUseCase,
-       _loadRojcEventsUseCase = loadRojcEventsUseCase;
+       _loadRojcEventsUseCase = loadRojcEventsUseCase,
+       _loadPDPUEventsUseCase = loadPDPUEventsUseCase;
 
   final LoadNarancaEventsUseCase _loadNarancaEventsUseCase;
   final LoadGkpuEventsUseCase _loadGkpuEventsUseCase;
   final LoadInkEventsUseCase _loadInkEventsUseCase;
   final LoadKotacEventsUseCase _loadKotacEventsUseCase;
   final LoadRojcEventsUseCase _loadRojcEventsUseCase;
+  final LoadPDPUEventsUseCase _loadPDPUEventsUseCase;
 
   Future<void> run() async {
     await _handleLoadNarancaEvents();
@@ -29,6 +33,7 @@ class EventsScraperController {
     await _handleLoadInkEvents();
     await _handleLoadKotacEvents();
     await _handleLoadRojcEvents();
+    await _handleLoadPDPUEvents();
   }
 
   // TODO maybe this can be unified somehow - but i want to be able to log which one failed - so need some field on the use case, if possile
@@ -69,6 +74,14 @@ class EventsScraperController {
       await _loadRojcEventsUseCase();
     } catch (e) {
       print("Failed scraping Rojc events with error: $e");
+    }
+  }
+
+  Future<void> _handleLoadPDPUEvents() async {
+    try {
+      await _loadPDPUEventsUseCase();
+    } catch (e) {
+      print("Failed scraping PDPU events with error: $e");
     }
   }
 }

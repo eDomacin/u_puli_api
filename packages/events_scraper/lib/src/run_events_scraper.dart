@@ -10,6 +10,7 @@ import 'package:event_scraper/src/domain/use_cases/load_gkpu_events_use_case.dar
 import 'package:event_scraper/src/domain/use_cases/load_ink_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_kotac_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_naranca_events_use_case.dart';
+import 'package:event_scraper/src/domain/use_cases/load_pdpu_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_rojc_events_use_case.dart';
 import 'package:event_scraper/src/events_scraper.dart';
 import 'package:event_scraper/src/presentation/controllers/events_scraper_controller.dart';
@@ -108,6 +109,9 @@ EventsScraperController _getInitializedEventsScraperController({
   final LoadRojcEventsUseCase loadRojcEventsUseCase = LoadRojcEventsUseCase(
     eventsLoaderRepository: eventsLoaderRepository,
   );
+  final LoadPDPUEventsUseCase loadPDPUEventsUseCase = LoadPDPUEventsUseCase(
+    eventsLoaderRepository: eventsLoaderRepository,
+  );
 
   // controller
   final EventsScraperController eventsScraperController =
@@ -117,6 +121,7 @@ EventsScraperController _getInitializedEventsScraperController({
         loadInkEventsUseCase: loadInkEventsUseCase,
         loadKotacEventsUseCase: loadKotacEventsUseCase,
         loadRojcEventsUseCase: loadRojcEventsUseCase,
+        loadPDPUEventsUseCase: loadPDPUEventsUseCase,
       );
 
   return eventsScraperController;

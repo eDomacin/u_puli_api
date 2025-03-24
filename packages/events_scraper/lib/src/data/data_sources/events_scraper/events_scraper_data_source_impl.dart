@@ -189,4 +189,33 @@ class EventsScraperDataSourceImpl implements EventsScraperDataSource {
       return <ScrapedEventEntity>{};
     }
   }
+
+  @override
+  Future<Set<ScrapedEventEntity>> getPDPUEvents() async {
+    _printStartScrapeMessage(
+      name: _rojcPuppeteerScraperWrapper.name,
+      uri: _rojcPuppeteerScraperWrapper.uri,
+    );
+
+    try {
+      final Set<ScrapedEventEntity> events =
+          await _rojcPuppeteerScraperWrapper.getEvents();
+
+      _printFinishScrapeMessage(
+        name: _rojcPuppeteerScraperWrapper.name,
+        uri: _rojcPuppeteerScraperWrapper.uri,
+      );
+
+      return events;
+    } catch (e, s) {
+      _printFailedScrapeMessage(
+        name: _rojcPuppeteerScraperWrapper.name,
+        uri: _rojcPuppeteerScraperWrapper.uri,
+        error: e.toString(),
+        stackTrace: s,
+      );
+
+      return <ScrapedEventEntity>{};
+    }
+  }
 }
