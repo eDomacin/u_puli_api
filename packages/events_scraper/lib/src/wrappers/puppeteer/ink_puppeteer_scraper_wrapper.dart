@@ -11,96 +11,100 @@ class InkPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
 
     final Page page = await browser.newPage();
 
-    // goes to helper fucntions
-    await page.goto(uri.toString());
+    try {
+      // goes to helper fucntions
+      await page.goto(uri.toString());
 
-    final scheduleNavItemSelector =
-        'a.header-nav-link[href="https://www.ink.hr/raspored/"]';
-    await page.waitForSelector(scheduleNavItemSelector);
-    await page.click(scheduleNavItemSelector);
+      final scheduleNavItemSelector =
+          'a.header-nav-link[href="https://www.ink.hr/raspored/"]';
+      await page.waitForSelector(scheduleNavItemSelector);
+      await page.click(scheduleNavItemSelector);
 
-    final scheduleMonthBlockSelector = "div.schedule-month-block";
+      final scheduleMonthBlockSelector = "div.schedule-month-block";
 
-    // TODO maybe not needed
-    // await Future.delayed(Duration(seconds: 1));
+      // TODO maybe not needed
+      // await Future.delayed(Duration(seconds: 1));
 
-    await page.waitForSelector(scheduleMonthBlockSelector);
+      await page.waitForSelector(scheduleMonthBlockSelector);
 
-    // await _takeScreenshot(page, 1);
+      // await _takeScreenshot(page, 1);
 
-    final scheduleMonthBlocks = await page.$$(scheduleMonthBlockSelector);
+      final scheduleMonthBlocks = await page.$$(scheduleMonthBlockSelector);
 
-    for (final monthBlock in scheduleMonthBlocks) {
-      // now need to select all events in this block
-      final blockEventsSelector = "li.schedule-list-item";
-      final blockEvents = await monthBlock.$$(blockEventsSelector);
+      for (final monthBlock in scheduleMonthBlocks) {
+        // now need to select all events in this block
+        final blockEventsSelector = "li.schedule-list-item";
+        final blockEvents = await monthBlock.$$(blockEventsSelector);
 
-      print("blockEvents.length: ${blockEvents.length}");
+        print("blockEvents.length: ${blockEvents.length}");
 
-      for (final blockEvent in blockEvents) {
-        final titleSelector = "a.title-3";
-        final titleElement = await blockEvent.$(titleSelector);
+        for (final blockEvent in blockEvents) {
+          final titleSelector = "a.title-3";
+          final titleElement = await blockEvent.$(titleSelector);
 
-        final title = await titleElement.evaluate(
-          '(element) => element.textContent',
-        );
-        final url = await titleElement.evaluate('(element) => element.href');
+          final title = await titleElement.evaluate(
+            '(element) => element.textContent',
+          );
+          final url = await titleElement.evaluate('(element) => element.href');
 
-        print("title: $title");
-        print("url: $url");
+          print("title: $title");
+          print("url: $url");
 
-        final dateSelector = "div.schedule-item-day";
-        final dateElement = await blockEvent.$(dateSelector);
-        final dateString = await dateElement.evaluate(
-          '(element) => element.textContent',
-        );
+          final dateSelector = "div.schedule-item-day";
+          final dateElement = await blockEvent.$(dateSelector);
+          final dateString = await dateElement.evaluate(
+            '(element) => element.textContent',
+          );
 
-        print("dateString: $dateString");
+          print("dateString: $dateString");
 
-        final dateStringRegex = RegExp(
-          r'(\d{1,2})\.\s+([A-Za-zčćđšž]+)\s+(\d{4})\.',
-        );
-        final dateStringRegexpMatch = dateStringRegex.firstMatch(dateString);
+          final dateStringRegex = RegExp(
+            r'(\d{1,2})\.\s+([A-Za-zčćđšž]+)\s+(\d{4})\.',
+          );
+          final dateStringRegexpMatch = dateStringRegex.firstMatch(dateString);
 
-        if (dateStringRegexpMatch == null) {
-          throw Exception('No match found');
+          if (dateStringRegexpMatch == null) {
+            throw Exception('No match found');
+          }
+
+          final dayString = dateStringRegexpMatch.group(1);
+          final monthString = dateStringRegexpMatch.group(2);
+          final yearString = dateStringRegexpMatch.group(3);
+
+          final day = int.parse(dayString!);
+          final month = monthString!.toINKMonthIndex;
+          final year = int.parse(yearString!);
+
+          print("dayString: $dayString");
+
+          final timeSelector = "div.schedule-item-time";
+          final timeElement = await blockEvent.$(timeSelector);
+
+          final timeString = await timeElement.evaluate(
+            '(element) => element.textContent',
+          );
+          final timeSections = timeString.split(":");
+          final hours = int.parse(timeSections[0]);
+          final minutes = int.parse(timeSections[1]);
+
+          print("hours: $hours");
+
+          final date = DateTime(year, month, day, hours, minutes);
+
+          final event = ScrapedEventEntity(
+            title: title,
+            date: date,
+            uri: Uri.parse(url),
+            venue: "Istarsko Narodno Kazalište",
+            // TODO temp placegholder
+            imageUri: Uri.parse("https://picsum.photos/300/200"),
+          );
+
+          allEvents.add(event);
         }
-
-        final dayString = dateStringRegexpMatch.group(1);
-        final monthString = dateStringRegexpMatch.group(2);
-        final yearString = dateStringRegexpMatch.group(3);
-
-        final day = int.parse(dayString!);
-        final month = monthString!.toINKMonthIndex;
-        final year = int.parse(yearString!);
-
-        print("dayString: $dayString");
-
-        final timeSelector = "div.schedule-item-time";
-        final timeElement = await blockEvent.$(timeSelector);
-
-        final timeString = await timeElement.evaluate(
-          '(element) => element.textContent',
-        );
-        final timeSections = timeString.split(":");
-        final hours = int.parse(timeSections[0]);
-        final minutes = int.parse(timeSections[1]);
-
-        print("hours: $hours");
-
-        final date = DateTime(year, month, day, hours, minutes);
-
-        final event = ScrapedEventEntity(
-          title: title,
-          date: date,
-          uri: Uri.parse(url),
-          venue: "Istarsko Narodno Kazalište",
-          // TODO temp placegholder
-          imageUri: Uri.parse("https://picsum.photos/300/200"),
-        );
-
-        allEvents.add(event);
       }
+    } catch (e) {
+      print("Ink: error: $e");
     }
 
     // end of helper functions

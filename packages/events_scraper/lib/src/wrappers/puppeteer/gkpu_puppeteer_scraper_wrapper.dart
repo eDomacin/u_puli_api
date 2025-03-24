@@ -12,129 +12,133 @@ class GkpuPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
 
     final page = await browser.newPage();
 
-    // extract into functions
-    await page.goto(uri.toString(), wait: Until.networkIdle);
+    try {
+      // extract into functions
+      await page.goto(uri.toString(), wait: Until.networkIdle);
 
-    // close cookies consent
-    final cookiesConsentSelector = "div#privacy-banner";
-    final cookiesConsent = await page.$(cookiesConsentSelector);
-    final acceptCookiesButtonSelector = "a.js-cookie-accept";
-    final acceptCookiesButton = await cookiesConsent.$(
-      acceptCookiesButtonSelector,
-    );
-    await acceptCookiesButton.click();
+      // close cookies consent
+      final cookiesConsentSelector = "div#privacy-banner";
+      final cookiesConsent = await page.$(cookiesConsentSelector);
+      final acceptCookiesButtonSelector = "a.js-cookie-accept";
+      final acceptCookiesButton = await cookiesConsent.$(
+        acceptCookiesButtonSelector,
+      );
+      await acceptCookiesButton.click();
 
-    // navigate to events page
-    final eventsNavItemSelector =
-        'li.cms-menu-item > a[href="/hr/dogadjanja/"]';
-    // 'li.cms-menu-item > a[href="/hr/novosti/"]';
-    final eventsNavItem = await page.$(eventsNavItemSelector);
-    await eventsNavItem.click();
+      // navigate to events page
+      final eventsNavItemSelector =
+          'li.cms-menu-item > a[href="/hr/dogadjanja/"]';
+      // 'li.cms-menu-item > a[href="/hr/novosti/"]';
+      final eventsNavItem = await page.$(eventsNavItemSelector);
+      await eventsNavItem.click();
 
-    // get events
-    final eventsWrapperSelector = "div.blog-main-wrapper";
-    // final eventsWrapper = await page.$(eventsWrapperSelector);
-    // need to await that initial page is loaded
-    await page.waitForSelector(eventsWrapperSelector);
-
-    final nextButtonSelector = "i.fa-angle-right";
-    // await page.waitForSelector(nextButtonSelector);
-    ElementHandle? nextButton = await page.$OrNull(nextButtonSelector);
-    // ElementHandle? nextButton;
-
-    int currentPage = 1;
-
-    // we can always scrape the first page
-
-    do {
-      // wait for the eventsWrapperSelector to exist
+      // get events
+      final eventsWrapperSelector = "div.blog-main-wrapper";
+      // final eventsWrapper = await page.$(eventsWrapperSelector);
+      // need to await that initial page is loaded
       await page.waitForSelector(eventsWrapperSelector);
-      final eventsWrapper = await page.$(eventsWrapperSelector);
 
-      final eventElementsSelector = "div.single-shop";
-      final eventElements = await eventsWrapper.$$(eventElementsSelector);
+      final nextButtonSelector = "i.fa-angle-right";
+      // await page.waitForSelector(nextButtonSelector);
+      ElementHandle? nextButton = await page.$OrNull(nextButtonSelector);
+      // ElementHandle? nextButton;
 
-      for (final eventElement in eventElements) {
-        // date
-        final dateElementSelector = "ul.news-post-meta > li:nth-child(2)";
-        final dateElement = await eventElement.$(dateElementSelector);
+      int currentPage = 1;
 
-        final dateString =
-            (await dateElement.evaluate(
-              '(element) => element.textContent',
-            )).toString().trim();
+      // we can always scrape the first page
 
-        final dateRegExp = RegExp(r'(\d{1,2})\.(\d{1,2})\.(\d{2})\.');
-        final match = dateRegExp.firstMatch(dateString);
+      do {
+        // wait for the eventsWrapperSelector to exist
+        await page.waitForSelector(eventsWrapperSelector);
+        final eventsWrapper = await page.$(eventsWrapperSelector);
 
-        if (match == null) {
-          throw Exception("No match found");
+        final eventElementsSelector = "div.single-shop";
+        final eventElements = await eventsWrapper.$$(eventElementsSelector);
+
+        for (final eventElement in eventElements) {
+          // date
+          final dateElementSelector = "ul.news-post-meta > li:nth-child(2)";
+          final dateElement = await eventElement.$(dateElementSelector);
+
+          final dateString =
+              (await dateElement.evaluate(
+                '(element) => element.textContent',
+              )).toString().trim();
+
+          final dateRegExp = RegExp(r'(\d{1,2})\.(\d{1,2})\.(\d{2})\.');
+          final match = dateRegExp.firstMatch(dateString);
+
+          if (match == null) {
+            throw Exception("No match found");
+          }
+
+          final dayString = match.group(1)!;
+          final monthString = match.group(2)!;
+          final yearString = "20${match.group(3)}";
+
+          final day = int.parse(dayString);
+          final month = int.parse(monthString);
+          final year = int.parse(yearString);
+
+          // time
+          final timeElementSelector = "ul.news-post-meta > li:nth-child(3)";
+          final timeElement = await eventElement.$(timeElementSelector);
+
+          final time =
+              (await timeElement.evaluate(
+                '(element) => element.textContent',
+              )).toString().trim();
+
+          final timeSections = time.split(":");
+          final hours = int.parse(timeSections[0]);
+          final minutes = int.parse(timeSections[1]);
+
+          final date = DateTime(year, month, day, hours, minutes);
+
+          // title
+          final titleElementSelector = "h3 > a";
+          final titleElement = await eventElement.$(titleElementSelector);
+
+          final title =
+              (await titleElement.evaluate(
+                '(element) => element.textContent',
+              )).toString().trim();
+          final url =
+              (await titleElement.evaluate(
+                '(element) => element.href',
+              )).toString();
+
+          final event = ScrapedEventEntity(
+            title: title,
+            date: date,
+            uri: Uri.parse(url),
+            venue: "Gradska knjižnica i čitaonica Pula",
+            // TODO temp placegholder
+            imageUri: Uri.parse("https://picsum.photos/300/200"),
+          );
+
+          allEvents.add(event);
+
+          print("date: $date");
         }
 
-        final dayString = match.group(1)!;
-        final monthString = match.group(2)!;
-        final yearString = "20${match.group(3)}";
+        print("scrapping page: $currentPage");
 
-        final day = int.parse(dayString);
-        final month = int.parse(monthString);
-        final year = int.parse(yearString);
+        // scrape stuff
 
-        // time
-        final timeElementSelector = "ul.news-post-meta > li:nth-child(3)";
-        final timeElement = await eventElement.$(timeElementSelector);
+        // get next button
+        nextButton = await page.$OrNull(nextButtonSelector);
+        // go to next page
+        if (nextButton != null) {
+          await nextButton.click();
+          currentPage++;
+        }
+      } while (nextButton != null);
 
-        final time =
-            (await timeElement.evaluate(
-              '(element) => element.textContent',
-            )).toString().trim();
-
-        final timeSections = time.split(":");
-        final hours = int.parse(timeSections[0]);
-        final minutes = int.parse(timeSections[1]);
-
-        final date = DateTime(year, month, day, hours, minutes);
-
-        // title
-        final titleElementSelector = "h3 > a";
-        final titleElement = await eventElement.$(titleElementSelector);
-
-        final title =
-            (await titleElement.evaluate(
-              '(element) => element.textContent',
-            )).toString().trim();
-        final url =
-            (await titleElement.evaluate(
-              '(element) => element.href',
-            )).toString();
-
-        final event = ScrapedEventEntity(
-          title: title,
-          date: date,
-          uri: Uri.parse(url),
-          venue: "Gradska knjižnica i čitaonica Pula",
-          // TODO temp placegholder
-          imageUri: Uri.parse("https://picsum.photos/300/200"),
-        );
-
-        allEvents.add(event);
-
-        print("date: $date");
-      }
-
-      print("scrapping page: $currentPage");
-
-      // scrape stuff
-
-      // get next button
-      nextButton = await page.$OrNull(nextButtonSelector);
-      // go to next page
-      if (nextButton != null) {
-        await nextButton.click();
-        currentPage++;
-      }
-    } while (nextButton != null);
-
-    // end extracted functions
+      // end extracted functions
+    } catch (e) {
+      print("GkpuPuppeteerScraperWrapper: error: $e");
+    }
 
     await page.close();
     await browser.close();

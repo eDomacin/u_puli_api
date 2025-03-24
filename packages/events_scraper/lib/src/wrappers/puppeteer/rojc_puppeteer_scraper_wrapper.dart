@@ -12,21 +12,25 @@ class RojcPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
     final Browser browser = await getBrowser();
     final Page page = await browser.newPage();
 
-    await page.goto(uri.toString());
+    try {
+      await page.goto(uri.toString());
 
-    final calendartNavItemSelector =
-        "a[href='https://rojcnet.pula.org/kalendar-dogadanja/']";
-    await page.waitForSelector(calendartNavItemSelector);
-    await page.click(calendartNavItemSelector);
+      final calendartNavItemSelector =
+          "a[href='https://rojcnet.pula.org/kalendar-dogadanja/']";
+      await page.waitForSelector(calendartNavItemSelector);
+      await page.click(calendartNavItemSelector);
 
-    for (int i = 0; i < 4; i++) {
-      final pageEvents = await _scrapeMonth(page: page);
-      allEvents.addAll(pageEvents);
+      for (int i = 0; i < 4; i++) {
+        final pageEvents = await _scrapeMonth(page: page);
+        allEvents.addAll(pageEvents);
 
-      // await page.click("a.evo_month_next");
-      final nextMonthSelector = "main span#evcal_next";
-      await page.waitForSelector(nextMonthSelector);
-      await page.click(nextMonthSelector);
+        // await page.click("a.evo_month_next");
+        final nextMonthSelector = "main span#evcal_next";
+        await page.waitForSelector(nextMonthSelector);
+        await page.click(nextMonthSelector);
+      }
+    } catch (e) {
+      print("RojcScraper: error: $e");
     }
 
     await page.close();
