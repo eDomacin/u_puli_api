@@ -3,6 +3,7 @@ import 'package:u_puli_api/src/features/events/domain/models/event_model.dart';
 import 'package:u_puli_api/src/features/events/domain/repositories/events_repository.dart';
 import 'package:u_puli_api/src/features/events/domain/values/create_event_value.dart';
 import 'package:u_puli_api/src/features/events/domain/values/event_entity_value.dart';
+import 'package:u_puli_api/src/features/events/domain/values/update_event_value.dart';
 import 'package:u_puli_api/src/features/events/utils/converters/events_converter.dart';
 
 class EventsRepositoryImpl implements EventsRepository {
@@ -10,6 +11,11 @@ class EventsRepositoryImpl implements EventsRepository {
     : _eventsDataSource = eventsDataSource;
 
   final EventsDataSource _eventsDataSource;
+
+  @override
+  Future<void> updateEvent(UpdateEventValue value) async {
+    await _eventsDataSource.updateEvent(value);
+  }
 
   @override
   Future<int> createEvent(CreateEventValue value) async {

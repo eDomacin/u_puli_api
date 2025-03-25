@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:shelf/shelf.dart';
-import 'package:shelf/src/middleware.dart';
 import 'package:u_puli_api/src/features/events/utils/constants/create_event_request_body_constants.dart';
 import 'package:u_puli_api/src/utils/extensions/request_extension.dart';
 import 'package:u_puli_api/src/utils/helpers/middleware/middleware_helper/middleware_helper.dart';
