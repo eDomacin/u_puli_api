@@ -6,5 +6,5 @@ abstract interface class EventsDataSource {
   Future<EventEntityValue?> getEvent(int id);
   Future<List<EventEntityValue>> getEvents();
   Future<int> storeEvent(CreateEventValue value);
-  Future<int> updateEvent(UpdateEventValue value);
+  Future<void> updateEvent(UpdateEventValue value);
 }

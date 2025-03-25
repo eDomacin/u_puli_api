@@ -27,11 +27,14 @@ import 'package:u_puli_api/src/features/events/domain/repositories/events_reposi
 import 'package:u_puli_api/src/features/events/domain/use_cases/create_event_use_case.dart';
 import 'package:u_puli_api/src/features/events/domain/use_cases/get_event_use_case.dart';
 import 'package:u_puli_api/src/features/events/domain/use_cases/get_events_use_case.dart';
+import 'package:u_puli_api/src/features/events/domain/use_cases/update_event_use_case.dart';
 import 'package:u_puli_api/src/features/events/presentation/controllers/create_event_controller.dart';
 import 'package:u_puli_api/src/features/events/presentation/controllers/get_event_controller.dart';
 import 'package:u_puli_api/src/features/events/presentation/controllers/get_events_controller.dart';
+import 'package:u_puli_api/src/features/events/presentation/controllers/update_event_controller.dart';
 import 'package:u_puli_api/src/features/events/presentation/router/events_router.dart';
 import 'package:u_puli_api/src/features/events/utils/helpers/middleware/middleware_helper/validate_create_event_request_body_middleware_helper.dart';
+import 'package:u_puli_api/src/features/events/utils/helpers/middleware/middleware_helper/validate_update_event_request_body_middleware_helper.dart';
 import 'package:u_puli_api/src/wrappers/dart_jsonwebtoken/dart_jsonwebtoken_wrapper.dart';
 import 'package:u_puli_api/src/wrappers/get_id/get_it_wrapper.dart';
 import 'package:u_puli_api/src/wrappers/hashlib/hashlib_wrapper.dart';
@@ -94,9 +97,9 @@ AppRouter _getInitializedAppRouter({
   final HashlibWrapper hashlibWrapper = HashlibWrapper();
   final DartJsonwebtokenWrapper dartJsonwebtokenWrapper =
       DartJsonwebtokenWrapper(
-    jwtAccessSecret: jwtAccessSecret,
-    jwtRefreshSecret: jwtRefreshSecret,
-  );
+        jwtAccessSecret: jwtAccessSecret,
+        jwtRefreshSecret: jwtRefreshSecret,
+      );
 
   // helpers
   final EncodePasswordHelper encodePasswordHelper = EncodePasswordHelper(
@@ -109,16 +112,19 @@ AppRouter _getInitializedAppRouter({
 
   // middlewares helpers
   final ValidateRegisterWithEmailAndPasswordRequestBodyMiddlewareHelper
-      validateRegisterWithEmailAndPasswordRequestBodyMiddlewareHelper =
+  validateRegisterWithEmailAndPasswordRequestBodyMiddlewareHelper =
       ValidateRegisterWithEmailAndPasswordRequestBodyMiddlewareHelper();
   final ValidateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper
-      validateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper =
+  validateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper =
       ValidateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper();
   final ValidateCreateEventRequestBodyMiddlewareHelper
-      validateCreateEventRequestBodyMiddlewareHelper =
+  validateCreateEventRequestBodyMiddlewareHelper =
       ValidateCreateEventRequestBodyMiddlewareHelper();
+  final ValidateUpdateEventRequestBodyMiddlewareHelper
+  validateUpdateEventRequestBodyMiddlewareHelper =
+      ValidateUpdateEventRequestBodyMiddlewareHelper();
   final AuthenticateRequestMiddlewareHelper
-      authenticateRequestMiddlewareHelper = AuthenticateRequestMiddlewareHelper(
+  authenticateRequestMiddlewareHelper = AuthenticateRequestMiddlewareHelper(
     authJWTHelper: authJWTHelper,
   );
 
@@ -153,8 +159,10 @@ AppRouter _getInitializedAppRouter({
   final GetAuthUserUseCase getAuthUserUseCase = GetAuthUserUseCase(
     authRepository: authRepository,
   );
-
   final CreateEventUseCase createEventUseCase = CreateEventUseCase(
+    eventsRepository: eventsRepository,
+  );
+  final UpdateEventUseCase updateEventUseCase = UpdateEventUseCase(
     eventsRepository: eventsRepository,
   );
 
@@ -166,17 +174,17 @@ AppRouter _getInitializedAppRouter({
     getEventsUseCase: getEventsUseCase,
   );
   final RegisterWithEmailAndPasswordController
-      registerWithEmailAndPasswordController =
+  registerWithEmailAndPasswordController =
       RegisterWithEmailAndPasswordController(
-    registerWithUserAndPasswordUseCase: registerWithUserAndPasswordUseCase,
-    getAuthUserUseCase: getAuthUserUseCase,
-    getAuthByEmailUseCase: getAuthByEmailUseCase,
-    encodePasswordHelper: encodePasswordHelper,
-    authJWTHelper: authJWTHelper,
-    cookiesHelper: cookiesHelper,
-  );
+        registerWithUserAndPasswordUseCase: registerWithUserAndPasswordUseCase,
+        getAuthUserUseCase: getAuthUserUseCase,
+        getAuthByEmailUseCase: getAuthByEmailUseCase,
+        encodePasswordHelper: encodePasswordHelper,
+        authJWTHelper: authJWTHelper,
+        cookiesHelper: cookiesHelper,
+      );
   final LoginWithEmailAndPasswordController
-      loginWithEmailAndPasswordController = LoginWithEmailAndPasswordController(
+  loginWithEmailAndPasswordController = LoginWithEmailAndPasswordController(
     getAuthUserUseCase: getAuthUserUseCase,
     getAuthByEmailUseCase: getAuthByEmailUseCase,
     encodePasswordHelper: encodePasswordHelper,
@@ -187,15 +195,21 @@ AppRouter _getInitializedAppRouter({
   final CreateEventController createEventController = CreateEventController(
     createEventUseCase: createEventUseCase,
   );
+  final UpdateEventController updateEventController = UpdateEventController(
+    updateEventUseCase: updateEventUseCase,
+  );
 
   // routers
   final EventsRouter eventsRouter = EventsRouter(
     getEventController: getEventController,
     getEventsController: getEventsController,
     createEventController: createEventController,
+    updateEventController: updateEventController,
     // middleware
     validateCreateEventRequestBodyMiddlewareHelper:
         validateCreateEventRequestBodyMiddlewareHelper,
+    validateUpdateEventRequestBodyMiddlewareHelper:
+        validateUpdateEventRequestBodyMiddlewareHelper,
     authenticateRequestMiddlewareHelper: authenticateRequestMiddlewareHelper,
   );
   final AuthRouter authRouter = AuthRouter(

@@ -14,7 +14,7 @@ class EventsDataSourceImpl implements EventsDataSource {
   final DatabaseWrapper _databaseWrapper;
 
   @override
-  Future<int> updateEvent(UpdateEventValue value) async {
+  Future<void> updateEvent(UpdateEventValue value) async {
     final EventEntityCompanion companion = EventEntityCompanion(
       id: Value(value.id),
       title: value.title == null ? Value.absent() : Value(value.title!),
@@ -28,9 +28,7 @@ class EventsDataSourceImpl implements EventsDataSource {
     final UpdateStatement<$EventEntityTable, EventEntityData> updateEvent =
         update..where((tbl) => tbl.id.equals(value.id));
 
-    final int updatedId = await updateEvent.write(companion);
-
-    return updatedId;
+    await updateEvent.write(companion);
   }
 
   @override

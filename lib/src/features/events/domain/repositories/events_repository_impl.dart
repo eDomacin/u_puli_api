@@ -13,10 +13,8 @@ class EventsRepositoryImpl implements EventsRepository {
   final EventsDataSource _eventsDataSource;
 
   @override
-  Future<int> updateEvent(UpdateEventValue value) async {
-    final int id = await _eventsDataSource.updateEvent(value);
-
-    return id;
+  Future<void> updateEvent(UpdateEventValue value) async {
+    await _eventsDataSource.updateEvent(value);
   }
 
   @override

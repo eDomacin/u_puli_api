@@ -6,5 +6,5 @@ abstract interface class EventsRepository {
   Future<EventModel?> getEvent(int id);
   Future<List<EventModel>> getEvents();
   Future<int> createEvent(CreateEventValue value);
-  Future<int> updateEvent(UpdateEventValue event);
+  Future<void> updateEvent(UpdateEventValue event);
 }

@@ -15,7 +15,6 @@ class CreateEventController {
   Future<Response> call(Request request) async {
     final Map<String, dynamic>? validatedBodyData =
         request.getValidatedBodyData();
-
     if (validatedBodyData == null) {
       final Response response = _generateFailureResponse(
         message: "Request body not validated",

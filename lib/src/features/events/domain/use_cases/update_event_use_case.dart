@@ -7,7 +7,7 @@ class UpdateEventUseCase {
 
   final EventsRepository _eventsRepository;
 
-  Future<int> call({
+  Future<void> call({
     required int id,
     required String? title,
     required String? location,

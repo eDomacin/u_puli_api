@@ -4,7 +4,9 @@ import 'package:u_puli_api/src/features/auth/utils/helpers/middleware/middleware
 import 'package:u_puli_api/src/features/events/presentation/controllers/create_event_controller.dart';
 import 'package:u_puli_api/src/features/events/presentation/controllers/get_event_controller.dart';
 import 'package:u_puli_api/src/features/events/presentation/controllers/get_events_controller.dart';
+import 'package:u_puli_api/src/features/events/presentation/controllers/update_event_controller.dart';
 import 'package:u_puli_api/src/features/events/utils/helpers/middleware/middleware_helper/validate_create_event_request_body_middleware_helper.dart';
+import 'package:u_puli_api/src/features/events/utils/helpers/middleware/middleware_helper/validate_update_event_request_body_middleware_helper.dart';
 
 // NOTE: this router is independent - placed after "events" path in the main router
 class EventsRouter {
@@ -12,16 +14,26 @@ class EventsRouter {
     required GetEventController getEventController,
     required GetEventsController getEventsController,
     required CreateEventController createEventController,
+    required UpdateEventController updateEventController,
 
     // middleware
     required ValidateCreateEventRequestBodyMiddlewareHelper
     validateCreateEventRequestBodyMiddlewareHelper,
+    required ValidateUpdateEventRequestBodyMiddlewareHelper
+    validateUpdateEventRequestBodyMiddlewareHelper,
     required AuthenticateRequestMiddlewareHelper
     authenticateRequestMiddlewareHelper,
   }) : _router = Router() {
     _router.get("/", getEventsController.call);
     // Dynamic routes have to be last, so as not to catch other routes requests
     _router.get("/<id>", getEventController.call);
+    _router.put(
+      "/<id>",
+      Pipeline()
+          .addMiddleware(authenticateRequestMiddlewareHelper())
+          .addMiddleware(validateUpdateEventRequestBodyMiddlewareHelper())
+          .addHandler(updateEventController.call),
+    );
     _router.post(
       "/",
       Pipeline()
