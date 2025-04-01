@@ -30,14 +30,14 @@ class EventsRouter {
     _router.put(
       "/<id>",
       Pipeline()
-          .addMiddleware(authenticateRequestMiddlewareHelper())
+          // .addMiddleware(authenticateRequestMiddlewareHelper())
           .addMiddleware(validateUpdateEventRequestBodyMiddlewareHelper())
           .addHandler(updateEventController.call),
     );
     _router.post(
       "/",
       Pipeline()
-          .addMiddleware(authenticateRequestMiddlewareHelper())
+          // .addMiddleware(authenticateRequestMiddlewareHelper())
           .addMiddleware(validateCreateEventRequestBodyMiddlewareHelper())
           .addHandler(createEventController.call),
     );
