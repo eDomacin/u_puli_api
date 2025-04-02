@@ -12,33 +12,53 @@ class NarancaPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
   Future<Set<ScrapedEventEntity>> getEvents() async {
     final List<ScrapedEventEntity> allEvents = <ScrapedEventEntity>[];
 
+    print("before getBrowser");
     final Browser browser = await getBrowser();
+
+    print("before newPage");
     final Page page = await browser.newPage();
 
     try {
+      print("before navigateToCalendarPage");
       await _navigateToCalendarPage(page);
+
+      print("before delayed");
       await Future.delayed(Duration(seconds: 1));
       // await _takeScreenshot(page, 0);
+
+      print("before closeCookiesConsent");
       await _closeCookiesConsent(page);
+
+      print("before delayed2");
       await Future.delayed(Duration(seconds: 1));
+
+      print("before switchToMonthView");
       await _switchToMonthView(page);
 
       for (int i = 0; i <= 3; i++) {
+        print("before scrapeMonthEvents: $i");
         final pageEvents = await _scrapeMonthEvents(page: page);
 
+        print("before allEvents.addAll");
         allEvents.addAll(pageEvents);
 
         // we only want to scrape 4 months
         if (i == 3) continue;
+
+        print("before navigateToNextMonth");
         await _navigateToNextMonth(page);
       }
     } catch (e) {
       print("NarancaScraper: error: $e");
     }
 
+    print("before close");
     await page.close();
+
+    print("before browser.close");
     await browser.close();
 
+    print("before return");
     return allEvents.toSet();
   }
 
