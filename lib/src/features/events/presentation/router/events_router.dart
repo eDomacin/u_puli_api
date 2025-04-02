@@ -41,6 +41,7 @@ class EventsRouter {
           .addMiddleware(validateCreateEventRequestBodyMiddlewareHelper())
           .addHandler(createEventController.call),
     );
+    // TODO missing delete event
   }
 
   final Router _router;
