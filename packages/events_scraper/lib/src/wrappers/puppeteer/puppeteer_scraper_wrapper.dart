@@ -21,7 +21,7 @@ mixin _PuppeteerScraperWrapperMixin {
       args: [
         // list of flags that worked - # https://github.com/puppeteer/puppeteer/issues/11028
         // TODO this probably should not be enabled - i guess in docker, will need to run as non-root
-        '--no-sandbox',
+        // '--no-sandbox',
         '--headless',
       ],
     );
