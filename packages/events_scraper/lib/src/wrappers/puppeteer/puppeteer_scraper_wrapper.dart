@@ -39,8 +39,8 @@ mixin _PuppeteerScraperWrapperMixin {
         // '--disable-features=IsolateOrigins',
         // '--disable-site-isolation-trials',
         // 3
-        '--disable-dev-shm-usage',
-        '--disk-cache-dir=/dev/null',
+        // '--disable-dev-shm-usage',
+        // '--disk-cache-dir=/dev/null',
       ],
     );
 
