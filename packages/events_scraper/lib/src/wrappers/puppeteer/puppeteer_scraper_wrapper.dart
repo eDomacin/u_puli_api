@@ -34,9 +34,9 @@ mixin _PuppeteerScraperWrapperMixin {
         // '--allow-file-access-from-files',
         // 2
         '--disable-web-security',
+        '--disable-gpu',
         // '--disable-features=IsolateOrigins',
         // '--disable-site-isolation-trials',
-        // '--disable-gpu',
         // 3
         '--disable-dev-shm-usage',
         '--disk-cache-dir=/dev/null',
