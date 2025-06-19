@@ -22,7 +22,20 @@ mixin _PuppeteerScraperWrapperMixin {
         // list of flags that worked - # https://github.com/puppeteer/puppeteer/issues/11028
         // TODO this probably should not be enabled - i guess in docker, will need to run as non-root
         // '--no-sandbox',
+        // '--headless',
+        /////////////////////
+        // new try
+        '--use-fake-device-for-media-stream',
+        '--no-zygote',
+        '--allow-file-access-from-files',
+        '--no-sandbox',
         '--headless',
+        '--disable-web-security',
+        '--disable-features=IsolateOrigins',
+        '--disable-site-isolation-trials',
+        '--disable-gpu',
+        '--disable-dev-shm-usage',
+        '--disk-cache-dir=/dev/null',
       ],
     );
 
