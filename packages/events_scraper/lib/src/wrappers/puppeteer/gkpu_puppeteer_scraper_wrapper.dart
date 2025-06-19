@@ -23,14 +23,16 @@ class GkpuPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
       final acceptCookiesButton = await cookiesConsent.$(
         acceptCookiesButtonSelector,
       );
-      await acceptCookiesButton.click();
+      // await acceptCookiesButton.click();
+      await acceptCookiesButton.evaluate('(element) => element.click()');
 
       // navigate to events page
       final eventsNavItemSelector =
           'li.cms-menu-item > a[href="/hr/dogadjanja/"]';
       // 'li.cms-menu-item > a[href="/hr/novosti/"]';
       final eventsNavItem = await page.$(eventsNavItemSelector);
-      await eventsNavItem.click();
+      // await eventsNavItem.click();
+      await eventsNavItem.evaluate('(element) => element.click()');
 
       // get events
       final eventsWrapperSelector = "div.blog-main-wrapper";
@@ -130,7 +132,8 @@ class GkpuPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
         nextButton = await page.$OrNull(nextButtonSelector);
         // go to next page
         if (nextButton != null) {
-          await nextButton.click();
+          // await nextButton.click();
+          await nextButton.evaluate('(element) => element.click()');
           currentPage++;
         }
       } while (nextButton != null);
