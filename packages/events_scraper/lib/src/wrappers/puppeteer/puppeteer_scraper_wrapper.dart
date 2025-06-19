@@ -28,13 +28,16 @@ mixin _PuppeteerScraperWrapperMixin {
         // new try
         '--no-sandbox',
         '--headless',
+        // 1
         // '--use-fake-device-for-media-stream',
         // '--no-zygote',
         // '--allow-file-access-from-files',
-        '--disable-web-security',
-        '--disable-features=IsolateOrigins',
-        '--disable-site-isolation-trials',
-        '--disable-gpu',
+        // 2
+        // '--disable-web-security',
+        // '--disable-features=IsolateOrigins',
+        // '--disable-site-isolation-trials',
+        // '--disable-gpu',
+        // 3
         '--disable-dev-shm-usage',
         '--disk-cache-dir=/dev/null',
       ],
