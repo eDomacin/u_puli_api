@@ -26,15 +26,15 @@ mixin _PuppeteerScraperWrapperMixin {
         // '--headless',
         /////////////////////
         // new try
-        '--no-sandbox',
-        '--headless',
+        // '--no-sandbox',
+        // '--headless',
         // 1
         // '--use-fake-device-for-media-stream',
         // '--no-zygote',
         // '--allow-file-access-from-files',
         // 2
-        '--disable-web-security',
         '--disable-gpu',
+        // '--disable-web-security',
         // '--disable-features=IsolateOrigins',
         // '--disable-site-isolation-trials',
         // 3
