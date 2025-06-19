@@ -16,7 +16,7 @@ class RojcPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
       await page.goto(uri.toString());
 
       final calendartNavItemSelector =
-          "a[href='https://rojcnet.pula.org/kalendar-dogadanja/']";
+          "a[href='http://rojcnet.pula.org/kalendar-dogadanja/']";
       await page.waitForSelector(calendartNavItemSelector);
       await page.click(calendartNavItemSelector);
 
