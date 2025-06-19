@@ -18,7 +18,7 @@ mixin _PuppeteerScraperWrapperMixin {
       // NOTE: Not working on linux, or in docker. "args" works tho
       headless: true,
       devTools: false,
-      noSandboxFlag: true,
+      // noSandboxFlag: true,
       // noSandboxFlag: true,
       args: [
         // list of flags that worked - # https://github.com/puppeteer/puppeteer/issues/11028
@@ -27,7 +27,7 @@ mixin _PuppeteerScraperWrapperMixin {
         // '--headless',
         /////////////////////
         // new try
-        // '--no-sandbox',
+        '--no-sandbox',
         // '--headless',
         // 1
         // '--use-fake-device-for-media-stream',
