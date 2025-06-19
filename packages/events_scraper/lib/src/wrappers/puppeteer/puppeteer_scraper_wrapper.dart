@@ -25,17 +25,17 @@ mixin _PuppeteerScraperWrapperMixin {
         // '--headless',
         /////////////////////
         // new try
-        '--use-fake-device-for-media-stream',
-        '--no-zygote',
-        '--allow-file-access-from-files',
+        // '--use-fake-device-for-media-stream',
+        // '--no-zygote',
+        // '--allow-file-access-from-files',
         '--no-sandbox',
         '--headless',
-        '--disable-web-security',
-        '--disable-features=IsolateOrigins',
-        '--disable-site-isolation-trials',
-        '--disable-gpu',
-        '--disable-dev-shm-usage',
-        '--disk-cache-dir=/dev/null',
+        // '--disable-web-security',
+        // '--disable-features=IsolateOrigins',
+        // '--disable-site-isolation-trials',
+        // '--disable-gpu',
+        // '--disable-dev-shm-usage',
+        // '--disk-cache-dir=/dev/null',
       ],
     );
 
