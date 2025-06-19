@@ -18,6 +18,7 @@ mixin _PuppeteerScraperWrapperMixin {
       // NOTE: Not working on linux, or in docker. "args" works tho
       headless: true,
       devTools: false,
+      noSandboxFlag: true,
       // noSandboxFlag: true,
       args: [
         // list of flags that worked - # https://github.com/puppeteer/puppeteer/issues/11028
