@@ -80,16 +80,34 @@ class InkPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
           final timeSelector = "div.schedule-item-time";
           final timeElement = await blockEvent.$(timeSelector);
 
-          final timeString = await timeElement.evaluate(
-            '(element) => element.textContent',
+          final timeString =
+              (await timeElement.evaluate('(element) => element.textContent')
+                      as String)
+                  .trim();
+
+          final hourAndMinutes = _InkEventHourAndMinute.fromItemTimeString(
+            timeString,
           );
-          final timeSections = timeString.split(":");
-          final hours = int.parse(timeSections[0]);
-          final minutes = int.parse(timeSections[1]);
+          // // time can be either in format "21:00" or 9 - 21
+          // // so we need to handle both cases
+          // // we need to extract only start timn
+          // final timeSections = timeString.split(":");
+          // // final hoursSegment = timeSections[0].trim();
+          // final hoursSegment = timeString.toString().substring(0, 2).trim();
+          // // now remove anyhting from the string that is not a digit
+          // final hoursSegmentDigits = hoursSegment.replaceAll(RegExp(r'\D'), '');
+          // final hours = int.parse(hoursSegmentDigits);
+          // final minutes = int.parse(timeSections[1]);
 
-          print("hours: $hours");
+          print("hour and minutes: $hourAndMinutes");
 
-          final date = DateTime(year, month, day, hours, minutes);
+          final date = DateTime(
+            year,
+            month,
+            day,
+            hourAndMinutes.hours,
+            hourAndMinutes.minutes,
+          );
 
           final event = ScrapedEventEntity(
             title: title,
@@ -141,5 +159,127 @@ extension on String {
       "prosinca" => 12,
       _ => throw Exception("Invalid month name"),
     };
+  }
+}
+
+class _InkEventHourAndMinute {
+  final int hours;
+  final int minutes;
+
+  const _InkEventHourAndMinute({required this.hours, required this.minutes});
+
+  factory _InkEventHourAndMinute.fromItemTimeString(String timeString) {
+    // time can be in following formats:
+    // option 1 - 21:00
+    // option 2 - 9 - 21
+    // option 3 - 9:30 - 21:30
+    // option 4 - 21:30 - 22
+    // option 5 - 21:30 - 22:30
+    // option 6 - 21 - 22.30
+    // option 7- 21 - 22
+
+    final option1Regex = RegExp(r"(\d{2}):(\d{2})");
+    final option2Regex = RegExp(r"(\d+)\s*-\s*\d+");
+    final option3Regex = RegExp(r"^(\d{1,2}):(\d{2})");
+    final option4Regex = RegExp(r"^(\d{1,2}):(\d{2})");
+    final option5Regex = RegExp(r"^(\d{1,2}):(\d{2})");
+    final option6Regex = RegExp(r"^(\d{1,2})\s*-\s*");
+    final option7Regex = RegExp(r"^(\d{1,2})\s*-\s*\d*");
+
+    if (option1Regex.hasMatch(timeString)) {
+      final match = option1Regex.firstMatch(timeString)!;
+      final hours = match.group(1);
+      final minutes = match.group(2);
+
+      print("hours: $hours");
+      print("minutes: $minutes");
+
+      return _InkEventHourAndMinute(
+        hours: int.parse(hours!),
+        minutes: int.parse(minutes!),
+      );
+    }
+
+    if (option2Regex.hasMatch(timeString)) {
+      final match = option2Regex.firstMatch(timeString)!;
+      final hours = match.group(1);
+      final minutes = 0;
+
+      print("hours: $hours");
+      print("minutes: $minutes");
+
+      return _InkEventHourAndMinute(hours: int.parse(hours!), minutes: minutes);
+    }
+
+    if (option3Regex.hasMatch(timeString)) {
+      final match = option3Regex.firstMatch(timeString)!;
+      final hours = match.group(1);
+      final minutes = match.group(2);
+
+      print("hours: $hours");
+      print("minutes: $minutes");
+
+      return _InkEventHourAndMinute(
+        hours: int.parse(hours!),
+        minutes: int.parse(minutes!),
+      );
+    }
+
+    if (option4Regex.hasMatch(timeString)) {
+      final match = option4Regex.firstMatch(timeString)!;
+      final hours = match.group(1);
+      final minutes = match.group(2);
+
+      print("hours: $hours");
+      print("minutes: $minutes");
+
+      return _InkEventHourAndMinute(
+        hours: int.parse(hours!),
+        minutes: int.parse(minutes!),
+      );
+    }
+
+    if (option5Regex.hasMatch(timeString)) {
+      final match = option5Regex.firstMatch(timeString)!;
+      final hours = match.group(1);
+      final minutes = match.group(2);
+
+      print("hours: $hours");
+      print("minutes: $minutes");
+
+      return _InkEventHourAndMinute(
+        hours: int.parse(hours!),
+        minutes: int.parse(minutes!),
+      );
+    }
+
+    if (option6Regex.hasMatch(timeString)) {
+      final match = option6Regex.firstMatch(timeString)!;
+      final hours = match.group(1);
+      final minutes = 0;
+
+      print("hours: $hours");
+      print("minutes: $minutes");
+
+      return _InkEventHourAndMinute(hours: int.parse(hours!), minutes: minutes);
+    }
+
+    if (option7Regex.hasMatch(timeString)) {
+      final match = option7Regex.firstMatch(timeString)!;
+      final hours = match.group(1);
+      final minutes = 0;
+
+      print("hours: $hours");
+      print("minutes: $minutes");
+
+      return _InkEventHourAndMinute(hours: int.parse(hours!), minutes: minutes);
+    }
+
+    throw ArgumentError('Invalid time format: $timeString');
+  }
+
+  @override
+  String toString() {
+    return '$_InkEventHourAndMinute{hours: $hours, minutes: $minutes}';
   }
 }

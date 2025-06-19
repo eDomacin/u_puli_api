@@ -13,6 +13,12 @@
       "type": "node-terminal",
       "request": "launch",
       "cwd": "${workspaceFolder}/test/helpers/database"
+    },
+    {
+      "name": "Scraper (Debug)",
+      "type": "dart",
+      "request": "launch",
+      "program": "packages/events_scraper/bin/events_scraper.dart" // Path to your main server file (e.g., bin/server.dart)
     }
   ]
 }
