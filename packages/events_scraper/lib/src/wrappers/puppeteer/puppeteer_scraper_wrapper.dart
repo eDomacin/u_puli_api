@@ -33,7 +33,7 @@ mixin _PuppeteerScraperWrapperMixin {
         // '--no-zygote',
         // '--allow-file-access-from-files',
         // 2
-        // '--disable-web-security',
+        '--disable-web-security',
         // '--disable-features=IsolateOrigins',
         // '--disable-site-isolation-trials',
         // '--disable-gpu',
