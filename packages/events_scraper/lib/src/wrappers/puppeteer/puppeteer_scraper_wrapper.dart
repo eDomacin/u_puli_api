@@ -16,7 +16,7 @@ mixin _PuppeteerScraperWrapperMixin {
   Future<Browser> getBrowser() async {
     final Browser browser = await puppeteer.launch(
       // NOTE: Not working on linux, or in docker. "args" works tho
-      headless: true,
+      // headless: true,
       devTools: false,
       // noSandboxFlag: true,
       // noSandboxFlag: true,
@@ -28,7 +28,7 @@ mixin _PuppeteerScraperWrapperMixin {
         /////////////////////
         // new try
         '--no-sandbox',
-        // '--headless',
+        '--headless',
         // 1
         // '--use-fake-device-for-media-stream',
         // '--no-zygote',
