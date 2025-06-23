@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:event_scraper/src/data/entities/scraped_event_entity.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/puppeteer_scraper_wrapper.dart';
 import 'package:puppeteer/puppeteer.dart';
@@ -101,6 +103,17 @@ class GkpuPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
           final titleElementSelector = "h3 > a";
           final titleElement = await eventElement.$(titleElementSelector);
 
+          final imageSelector = "div.product-img.product-img-list > a > img";
+          final imageElement = await eventElement.$(imageSelector);
+
+          final imageUrl = await imageElement.evaluate(
+            '(element) => element.src',
+          );
+
+          print("imageUrl: $imageUrl");
+
+          final imageUri = Uri.parse(imageUrl.toString().trim());
+
           final title =
               (await titleElement.evaluate(
                 '(element) => element.textContent',
@@ -110,13 +123,37 @@ class GkpuPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
                 '(element) => element.href',
               )).toString();
 
+          /* TODO create function to extract decription  */
+
+          final detailsPage = await browser.newPage();
+          await detailsPage.goto(url, wait: Until.networkIdle);
+
+          // wait for the content to load
+          final eventDescriptionSelector = "div.blog-single-content";
+          await detailsPage.waitForSelector(eventDescriptionSelector);
+
+          final eventDescriptionElement = await detailsPage.$(
+            eventDescriptionSelector,
+          );
+
+          final description = await eventDescriptionElement.evaluate(
+            '(element) => element.textContent',
+          );
+
+          // print("description: $description");
+
+          await detailsPage.close();
+
+          /* ---------- */
+
           final event = ScrapedEventEntity(
             title: title,
             date: date,
             uri: Uri.parse(url),
             venue: "Gradska knjižnica i čitaonica Pula",
             // TODO temp placegholder
-            imageUri: Uri.parse("https://picsum.photos/300/200"),
+            // imageUri: Uri.parse("https://picsum.photos/300/200"),
+            imageUri: imageUri,
           );
 
           allEvents.add(event);
@@ -156,4 +193,12 @@ class GkpuPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
   @override
   // TODO: implement uri
   Uri get uri => Uri.parse('https://www.gkc-pula.hr/hr/');
+}
+
+Future<void> _TAKE_SCREENSHOT(Page page, int index) async {
+  final screenshot = await page.screenshot();
+  final path =
+      "/Users/karlo/development/mine/upuli/u_puli_api/packages/events_scraper/bin";
+
+  await File("$path/image$index.png").writeAsBytes(screenshot);
 }
