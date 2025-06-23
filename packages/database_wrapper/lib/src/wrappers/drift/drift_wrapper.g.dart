@@ -34,8 +34,20 @@ class $EventEntityTable extends EventEntity
   late final GeneratedColumn<String> location = GeneratedColumn<String>(
       'location', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _urlMeta = const VerificationMeta('url');
   @override
-  List<GeneratedColumn> get $columns => [id, title, date, location];
+  late final GeneratedColumn<String> url = GeneratedColumn<String>(
+      'url', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _imageUrlMeta =
+      const VerificationMeta('imageUrl');
+  @override
+  late final GeneratedColumn<String> imageUrl = GeneratedColumn<String>(
+      'image_url', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, title, date, location, url, imageUrl];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -67,6 +79,18 @@ class $EventEntityTable extends EventEntity
     } else if (isInserting) {
       context.missing(_locationMeta);
     }
+    if (data.containsKey('url')) {
+      context.handle(
+          _urlMeta, url.isAcceptableOrUnknown(data['url']!, _urlMeta));
+    } else if (isInserting) {
+      context.missing(_urlMeta);
+    }
+    if (data.containsKey('image_url')) {
+      context.handle(_imageUrlMeta,
+          imageUrl.isAcceptableOrUnknown(data['image_url']!, _imageUrlMeta));
+    } else if (isInserting) {
+      context.missing(_imageUrlMeta);
+    }
     return context;
   }
 
@@ -88,6 +112,10 @@ class $EventEntityTable extends EventEntity
           .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
       location: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}location'])!,
+      url: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}url'])!,
+      imageUrl: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}image_url'])!,
     );
   }
 
@@ -102,11 +130,15 @@ class EventEntityData extends DataClass implements Insertable<EventEntityData> {
   final String title;
   final DateTime date;
   final String location;
+  final String url;
+  final String imageUrl;
   const EventEntityData(
       {required this.id,
       required this.title,
       required this.date,
-      required this.location});
+      required this.location,
+      required this.url,
+      required this.imageUrl});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -114,6 +146,8 @@ class EventEntityData extends DataClass implements Insertable<EventEntityData> {
     map['title'] = Variable<String>(title);
     map['date'] = Variable<DateTime>(date);
     map['location'] = Variable<String>(location);
+    map['url'] = Variable<String>(url);
+    map['image_url'] = Variable<String>(imageUrl);
     return map;
   }
 
@@ -123,6 +157,8 @@ class EventEntityData extends DataClass implements Insertable<EventEntityData> {
       title: Value(title),
       date: Value(date),
       location: Value(location),
+      url: Value(url),
+      imageUrl: Value(imageUrl),
     );
   }
 
@@ -134,6 +170,8 @@ class EventEntityData extends DataClass implements Insertable<EventEntityData> {
       title: serializer.fromJson<String>(json['title']),
       date: serializer.fromJson<DateTime>(json['date']),
       location: serializer.fromJson<String>(json['location']),
+      url: serializer.fromJson<String>(json['url']),
+      imageUrl: serializer.fromJson<String>(json['imageUrl']),
     );
   }
   @override
@@ -144,16 +182,25 @@ class EventEntityData extends DataClass implements Insertable<EventEntityData> {
       'title': serializer.toJson<String>(title),
       'date': serializer.toJson<DateTime>(date),
       'location': serializer.toJson<String>(location),
+      'url': serializer.toJson<String>(url),
+      'imageUrl': serializer.toJson<String>(imageUrl),
     };
   }
 
   EventEntityData copyWith(
-          {int? id, String? title, DateTime? date, String? location}) =>
+          {int? id,
+          String? title,
+          DateTime? date,
+          String? location,
+          String? url,
+          String? imageUrl}) =>
       EventEntityData(
         id: id ?? this.id,
         title: title ?? this.title,
         date: date ?? this.date,
         location: location ?? this.location,
+        url: url ?? this.url,
+        imageUrl: imageUrl ?? this.imageUrl,
       );
   EventEntityData copyWithCompanion(EventEntityCompanion data) {
     return EventEntityData(
@@ -161,6 +208,8 @@ class EventEntityData extends DataClass implements Insertable<EventEntityData> {
       title: data.title.present ? data.title.value : this.title,
       date: data.date.present ? data.date.value : this.date,
       location: data.location.present ? data.location.value : this.location,
+      url: data.url.present ? data.url.value : this.url,
+      imageUrl: data.imageUrl.present ? data.imageUrl.value : this.imageUrl,
     );
   }
 
@@ -170,13 +219,15 @@ class EventEntityData extends DataClass implements Insertable<EventEntityData> {
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('date: $date, ')
-          ..write('location: $location')
+          ..write('location: $location, ')
+          ..write('url: $url, ')
+          ..write('imageUrl: $imageUrl')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, title, date, location);
+  int get hashCode => Object.hash(id, title, date, location, url, imageUrl);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -184,7 +235,9 @@ class EventEntityData extends DataClass implements Insertable<EventEntityData> {
           other.id == this.id &&
           other.title == this.title &&
           other.date == this.date &&
-          other.location == this.location);
+          other.location == this.location &&
+          other.url == this.url &&
+          other.imageUrl == this.imageUrl);
 }
 
 class EventEntityCompanion extends UpdateCompanion<EventEntityData> {
@@ -192,31 +245,43 @@ class EventEntityCompanion extends UpdateCompanion<EventEntityData> {
   final Value<String> title;
   final Value<DateTime> date;
   final Value<String> location;
+  final Value<String> url;
+  final Value<String> imageUrl;
   const EventEntityCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
     this.date = const Value.absent(),
     this.location = const Value.absent(),
+    this.url = const Value.absent(),
+    this.imageUrl = const Value.absent(),
   });
   EventEntityCompanion.insert({
     this.id = const Value.absent(),
     required String title,
     required DateTime date,
     required String location,
+    required String url,
+    required String imageUrl,
   })  : title = Value(title),
         date = Value(date),
-        location = Value(location);
+        location = Value(location),
+        url = Value(url),
+        imageUrl = Value(imageUrl);
   static Insertable<EventEntityData> custom({
     Expression<int>? id,
     Expression<String>? title,
     Expression<DateTime>? date,
     Expression<String>? location,
+    Expression<String>? url,
+    Expression<String>? imageUrl,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (title != null) 'title': title,
       if (date != null) 'date': date,
       if (location != null) 'location': location,
+      if (url != null) 'url': url,
+      if (imageUrl != null) 'image_url': imageUrl,
     });
   }
 
@@ -224,12 +289,16 @@ class EventEntityCompanion extends UpdateCompanion<EventEntityData> {
       {Value<int>? id,
       Value<String>? title,
       Value<DateTime>? date,
-      Value<String>? location}) {
+      Value<String>? location,
+      Value<String>? url,
+      Value<String>? imageUrl}) {
     return EventEntityCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
       date: date ?? this.date,
       location: location ?? this.location,
+      url: url ?? this.url,
+      imageUrl: imageUrl ?? this.imageUrl,
     );
   }
 
@@ -248,6 +317,12 @@ class EventEntityCompanion extends UpdateCompanion<EventEntityData> {
     if (location.present) {
       map['location'] = Variable<String>(location.value);
     }
+    if (url.present) {
+      map['url'] = Variable<String>(url.value);
+    }
+    if (imageUrl.present) {
+      map['image_url'] = Variable<String>(imageUrl.value);
+    }
     return map;
   }
 
@@ -257,7 +332,9 @@ class EventEntityCompanion extends UpdateCompanion<EventEntityData> {
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('date: $date, ')
-          ..write('location: $location')
+          ..write('location: $location, ')
+          ..write('url: $url, ')
+          ..write('imageUrl: $imageUrl')
           ..write(')'))
         .toString();
   }
@@ -822,6 +899,8 @@ typedef $$EventEntityTableCreateCompanionBuilder = EventEntityCompanion
   required String title,
   required DateTime date,
   required String location,
+  required String url,
+  required String imageUrl,
 });
 typedef $$EventEntityTableUpdateCompanionBuilder = EventEntityCompanion
     Function({
@@ -829,6 +908,8 @@ typedef $$EventEntityTableUpdateCompanionBuilder = EventEntityCompanion
   Value<String> title,
   Value<DateTime> date,
   Value<String> location,
+  Value<String> url,
+  Value<String> imageUrl,
 });
 
 class $$EventEntityTableFilterComposer
@@ -851,6 +932,12 @@ class $$EventEntityTableFilterComposer
 
   ColumnFilters<String> get location => $composableBuilder(
       column: $table.location, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get url => $composableBuilder(
+      column: $table.url, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get imageUrl => $composableBuilder(
+      column: $table.imageUrl, builder: (column) => ColumnFilters(column));
 }
 
 class $$EventEntityTableOrderingComposer
@@ -873,6 +960,12 @@ class $$EventEntityTableOrderingComposer
 
   ColumnOrderings<String> get location => $composableBuilder(
       column: $table.location, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get url => $composableBuilder(
+      column: $table.url, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get imageUrl => $composableBuilder(
+      column: $table.imageUrl, builder: (column) => ColumnOrderings(column));
 }
 
 class $$EventEntityTableAnnotationComposer
@@ -895,6 +988,12 @@ class $$EventEntityTableAnnotationComposer
 
   GeneratedColumn<String> get location =>
       $composableBuilder(column: $table.location, builder: (column) => column);
+
+  GeneratedColumn<String> get url =>
+      $composableBuilder(column: $table.url, builder: (column) => column);
+
+  GeneratedColumn<String> get imageUrl =>
+      $composableBuilder(column: $table.imageUrl, builder: (column) => column);
 }
 
 class $$EventEntityTableTableManager extends RootTableManager<
@@ -927,24 +1026,32 @@ class $$EventEntityTableTableManager extends RootTableManager<
             Value<String> title = const Value.absent(),
             Value<DateTime> date = const Value.absent(),
             Value<String> location = const Value.absent(),
+            Value<String> url = const Value.absent(),
+            Value<String> imageUrl = const Value.absent(),
           }) =>
               EventEntityCompanion(
             id: id,
             title: title,
             date: date,
             location: location,
+            url: url,
+            imageUrl: imageUrl,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String title,
             required DateTime date,
             required String location,
+            required String url,
+            required String imageUrl,
           }) =>
               EventEntityCompanion.insert(
             id: id,
             title: title,
             date: date,
             location: location,
+            url: url,
+            imageUrl: imageUrl,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

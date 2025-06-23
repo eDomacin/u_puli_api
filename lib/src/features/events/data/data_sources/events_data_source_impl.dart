@@ -37,6 +37,8 @@ class EventsDataSourceImpl implements EventsDataSource {
       title: value.title,
       date: value.date,
       location: value.location,
+      url: value.uri.toString(),
+      imageUrl: value.imageUri.toString(),
       // TODO will need to add other fields too
     );
 

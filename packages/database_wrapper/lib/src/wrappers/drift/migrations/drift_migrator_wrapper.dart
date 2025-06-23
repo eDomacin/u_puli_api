@@ -13,6 +13,10 @@ class DriftMigratorWrapper {
         title: "title test",
         date: DateTime(2022, 1, 1),
         location: "location test",
+        url:
+            "https://unsplash.com/photos/woman-in-white-and-black-striped-shirt-standing-on-yellow-sunflower-field-during-daytime-RNiBLy7aHck",
+        imageUrl:
+            "https://images.unsplash.com/photo-1591035897819-f4bdf739f446?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       );
 
       final id = await _driftWrapper.eventEntity.insertOne(
@@ -56,6 +60,10 @@ class DriftMigratorWrapper {
                 "CREATE INDEX IF NOT EXISTS user_entity_auth_id_idx ON user_entity (auth_id);",
           }),
         );
+      },
+      from5To6: (m, schema) async {
+        await m.addColumn(schema.eventEntity, schema.eventEntity.url);
+        await m.addColumn(schema.eventEntity, schema.eventEntity.imageUrl);
       },
     ),
   );
