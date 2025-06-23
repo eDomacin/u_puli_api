@@ -304,7 +304,7 @@ make generate_migrations_steps -> not this really
 ```
 6. run the following command
 ```
-generate_db
+make generate_db
 ```
 
 

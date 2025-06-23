@@ -26,6 +26,8 @@ class DriftMigratorWrapper {
             _driftWrapper.eventEntity.title,
             _driftWrapper.eventEntity.date,
             _driftWrapper.eventEntity.location,
+            _driftWrapper.eventEntity.url,
+            _driftWrapper.eventEntity.imageUrl,
           ],
         ),
       );
@@ -64,6 +66,16 @@ class DriftMigratorWrapper {
       from5To6: (m, schema) async {
         await m.addColumn(schema.eventEntity, schema.eventEntity.url);
         await m.addColumn(schema.eventEntity, schema.eventEntity.imageUrl);
+      },
+      from6To7: (m, schema) async {
+        // this as a reference: https://stackoverflow.com/a/63733203/9661910
+        await m.database.customStatement(
+          'ALTER TABLE event_entity DROP CONSTRAINT event_entity_title_date_location_key;',
+        );
+
+        await m.database.customStatement(
+          'ALTER TABLE event_entity ADD CONSTRAINT event_entity_title_date_location_url_image_url_key UNIQUE (title, date, location, url, image_url);',
+        );
       },
     ),
   );

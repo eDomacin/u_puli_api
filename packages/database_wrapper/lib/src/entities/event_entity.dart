@@ -11,6 +11,6 @@ class EventEntity extends Table {
   // make sure same events are not reinserted
   @override
   List<Set<Column<Object>>>? get uniqueKeys => [
-    {title, date, location},
+    {title, date, location, url, imageUrl},
   ];
 }
