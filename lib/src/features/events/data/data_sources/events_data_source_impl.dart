@@ -21,6 +21,11 @@ class EventsDataSourceImpl implements EventsDataSource {
       date: value.date == null ? Value.absent() : Value(value.date!),
       location:
           value.location == null ? Value.absent() : Value(value.location!),
+      url: value.uri == null ? Value.absent() : Value(value.uri!.toString()),
+      imageUrl:
+          value.imageUri == null
+              ? Value.absent()
+              : Value(value.imageUri!.toString()),
     );
 
     final UpdateStatement<$EventEntityTable, EventEntityData> update =

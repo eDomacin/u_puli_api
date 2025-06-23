@@ -69,6 +69,8 @@ void main() {
                 title: "title",
                 date: date,
                 location: "location",
+                url: "url",
+                imageUrl: "imageUrl",
               ),
             );
         expect(event, equals(value));

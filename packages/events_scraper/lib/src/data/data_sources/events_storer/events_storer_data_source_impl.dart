@@ -19,6 +19,8 @@ class EventsStorerDataSourceImpl implements EventsStorerDataSource {
           _databaseWrapper.eventsRepo.title,
           _databaseWrapper.eventsRepo.date,
           _databaseWrapper.eventsRepo.location,
+          _databaseWrapper.eventsRepo.url,
+          _databaseWrapper.eventsRepo.imageUrl,
         ],
       ),
     );
