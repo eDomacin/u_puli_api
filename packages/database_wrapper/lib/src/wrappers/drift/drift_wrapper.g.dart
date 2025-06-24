@@ -45,9 +45,15 @@ class $EventEntityTable extends EventEntity
   late final GeneratedColumn<String> imageUrl = GeneratedColumn<String>(
       'image_url', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, title, date, location, url, imageUrl];
+      [id, title, date, location, url, imageUrl, description];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -91,6 +97,14 @@ class $EventEntityTable extends EventEntity
     } else if (isInserting) {
       context.missing(_imageUrlMeta);
     }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
     return context;
   }
 
@@ -116,6 +130,8 @@ class $EventEntityTable extends EventEntity
           .read(DriftSqlType.string, data['${effectivePrefix}url'])!,
       imageUrl: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}image_url'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
     );
   }
 
@@ -132,13 +148,15 @@ class EventEntityData extends DataClass implements Insertable<EventEntityData> {
   final String location;
   final String url;
   final String imageUrl;
+  final String description;
   const EventEntityData(
       {required this.id,
       required this.title,
       required this.date,
       required this.location,
       required this.url,
-      required this.imageUrl});
+      required this.imageUrl,
+      required this.description});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -148,6 +166,7 @@ class EventEntityData extends DataClass implements Insertable<EventEntityData> {
     map['location'] = Variable<String>(location);
     map['url'] = Variable<String>(url);
     map['image_url'] = Variable<String>(imageUrl);
+    map['description'] = Variable<String>(description);
     return map;
   }
 
@@ -159,6 +178,7 @@ class EventEntityData extends DataClass implements Insertable<EventEntityData> {
       location: Value(location),
       url: Value(url),
       imageUrl: Value(imageUrl),
+      description: Value(description),
     );
   }
 
@@ -172,6 +192,7 @@ class EventEntityData extends DataClass implements Insertable<EventEntityData> {
       location: serializer.fromJson<String>(json['location']),
       url: serializer.fromJson<String>(json['url']),
       imageUrl: serializer.fromJson<String>(json['imageUrl']),
+      description: serializer.fromJson<String>(json['description']),
     );
   }
   @override
@@ -184,6 +205,7 @@ class EventEntityData extends DataClass implements Insertable<EventEntityData> {
       'location': serializer.toJson<String>(location),
       'url': serializer.toJson<String>(url),
       'imageUrl': serializer.toJson<String>(imageUrl),
+      'description': serializer.toJson<String>(description),
     };
   }
 
@@ -193,7 +215,8 @@ class EventEntityData extends DataClass implements Insertable<EventEntityData> {
           DateTime? date,
           String? location,
           String? url,
-          String? imageUrl}) =>
+          String? imageUrl,
+          String? description}) =>
       EventEntityData(
         id: id ?? this.id,
         title: title ?? this.title,
@@ -201,6 +224,7 @@ class EventEntityData extends DataClass implements Insertable<EventEntityData> {
         location: location ?? this.location,
         url: url ?? this.url,
         imageUrl: imageUrl ?? this.imageUrl,
+        description: description ?? this.description,
       );
   EventEntityData copyWithCompanion(EventEntityCompanion data) {
     return EventEntityData(
@@ -210,6 +234,8 @@ class EventEntityData extends DataClass implements Insertable<EventEntityData> {
       location: data.location.present ? data.location.value : this.location,
       url: data.url.present ? data.url.value : this.url,
       imageUrl: data.imageUrl.present ? data.imageUrl.value : this.imageUrl,
+      description:
+          data.description.present ? data.description.value : this.description,
     );
   }
 
@@ -221,13 +247,15 @@ class EventEntityData extends DataClass implements Insertable<EventEntityData> {
           ..write('date: $date, ')
           ..write('location: $location, ')
           ..write('url: $url, ')
-          ..write('imageUrl: $imageUrl')
+          ..write('imageUrl: $imageUrl, ')
+          ..write('description: $description')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, title, date, location, url, imageUrl);
+  int get hashCode =>
+      Object.hash(id, title, date, location, url, imageUrl, description);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -237,7 +265,8 @@ class EventEntityData extends DataClass implements Insertable<EventEntityData> {
           other.date == this.date &&
           other.location == this.location &&
           other.url == this.url &&
-          other.imageUrl == this.imageUrl);
+          other.imageUrl == this.imageUrl &&
+          other.description == this.description);
 }
 
 class EventEntityCompanion extends UpdateCompanion<EventEntityData> {
@@ -247,6 +276,7 @@ class EventEntityCompanion extends UpdateCompanion<EventEntityData> {
   final Value<String> location;
   final Value<String> url;
   final Value<String> imageUrl;
+  final Value<String> description;
   const EventEntityCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
@@ -254,6 +284,7 @@ class EventEntityCompanion extends UpdateCompanion<EventEntityData> {
     this.location = const Value.absent(),
     this.url = const Value.absent(),
     this.imageUrl = const Value.absent(),
+    this.description = const Value.absent(),
   });
   EventEntityCompanion.insert({
     this.id = const Value.absent(),
@@ -262,11 +293,13 @@ class EventEntityCompanion extends UpdateCompanion<EventEntityData> {
     required String location,
     required String url,
     required String imageUrl,
+    required String description,
   })  : title = Value(title),
         date = Value(date),
         location = Value(location),
         url = Value(url),
-        imageUrl = Value(imageUrl);
+        imageUrl = Value(imageUrl),
+        description = Value(description);
   static Insertable<EventEntityData> custom({
     Expression<int>? id,
     Expression<String>? title,
@@ -274,6 +307,7 @@ class EventEntityCompanion extends UpdateCompanion<EventEntityData> {
     Expression<String>? location,
     Expression<String>? url,
     Expression<String>? imageUrl,
+    Expression<String>? description,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -282,6 +316,7 @@ class EventEntityCompanion extends UpdateCompanion<EventEntityData> {
       if (location != null) 'location': location,
       if (url != null) 'url': url,
       if (imageUrl != null) 'image_url': imageUrl,
+      if (description != null) 'description': description,
     });
   }
 
@@ -291,7 +326,8 @@ class EventEntityCompanion extends UpdateCompanion<EventEntityData> {
       Value<DateTime>? date,
       Value<String>? location,
       Value<String>? url,
-      Value<String>? imageUrl}) {
+      Value<String>? imageUrl,
+      Value<String>? description}) {
     return EventEntityCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
@@ -299,6 +335,7 @@ class EventEntityCompanion extends UpdateCompanion<EventEntityData> {
       location: location ?? this.location,
       url: url ?? this.url,
       imageUrl: imageUrl ?? this.imageUrl,
+      description: description ?? this.description,
     );
   }
 
@@ -323,6 +360,9 @@ class EventEntityCompanion extends UpdateCompanion<EventEntityData> {
     if (imageUrl.present) {
       map['image_url'] = Variable<String>(imageUrl.value);
     }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
     return map;
   }
 
@@ -334,7 +374,8 @@ class EventEntityCompanion extends UpdateCompanion<EventEntityData> {
           ..write('date: $date, ')
           ..write('location: $location, ')
           ..write('url: $url, ')
-          ..write('imageUrl: $imageUrl')
+          ..write('imageUrl: $imageUrl, ')
+          ..write('description: $description')
           ..write(')'))
         .toString();
   }
@@ -901,6 +942,7 @@ typedef $$EventEntityTableCreateCompanionBuilder = EventEntityCompanion
   required String location,
   required String url,
   required String imageUrl,
+  required String description,
 });
 typedef $$EventEntityTableUpdateCompanionBuilder = EventEntityCompanion
     Function({
@@ -910,6 +952,7 @@ typedef $$EventEntityTableUpdateCompanionBuilder = EventEntityCompanion
   Value<String> location,
   Value<String> url,
   Value<String> imageUrl,
+  Value<String> description,
 });
 
 class $$EventEntityTableFilterComposer
@@ -938,6 +981,9 @@ class $$EventEntityTableFilterComposer
 
   ColumnFilters<String> get imageUrl => $composableBuilder(
       column: $table.imageUrl, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnFilters(column));
 }
 
 class $$EventEntityTableOrderingComposer
@@ -966,6 +1012,9 @@ class $$EventEntityTableOrderingComposer
 
   ColumnOrderings<String> get imageUrl => $composableBuilder(
       column: $table.imageUrl, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnOrderings(column));
 }
 
 class $$EventEntityTableAnnotationComposer
@@ -994,6 +1043,9 @@ class $$EventEntityTableAnnotationComposer
 
   GeneratedColumn<String> get imageUrl =>
       $composableBuilder(column: $table.imageUrl, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => column);
 }
 
 class $$EventEntityTableTableManager extends RootTableManager<
@@ -1028,6 +1080,7 @@ class $$EventEntityTableTableManager extends RootTableManager<
             Value<String> location = const Value.absent(),
             Value<String> url = const Value.absent(),
             Value<String> imageUrl = const Value.absent(),
+            Value<String> description = const Value.absent(),
           }) =>
               EventEntityCompanion(
             id: id,
@@ -1036,6 +1089,7 @@ class $$EventEntityTableTableManager extends RootTableManager<
             location: location,
             url: url,
             imageUrl: imageUrl,
+            description: description,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -1044,6 +1098,7 @@ class $$EventEntityTableTableManager extends RootTableManager<
             required String location,
             required String url,
             required String imageUrl,
+            required String description,
           }) =>
               EventEntityCompanion.insert(
             id: id,
@@ -1052,6 +1107,7 @@ class $$EventEntityTableTableManager extends RootTableManager<
             location: location,
             url: url,
             imageUrl: imageUrl,
+            description: description,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

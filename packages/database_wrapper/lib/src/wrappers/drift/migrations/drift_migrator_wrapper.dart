@@ -77,6 +77,9 @@ class DriftMigratorWrapper {
           'ALTER TABLE event_entity ADD CONSTRAINT event_entity_title_date_location_url_image_url_key UNIQUE (title, date, location, url, image_url);',
         );
       },
+      from7To8: (m, schema) async {
+        await m.addColumn(schema.eventEntity, schema.eventEntity.description);
+      },
     ),
   );
 }

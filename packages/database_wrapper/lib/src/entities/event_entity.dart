@@ -7,6 +7,7 @@ class EventEntity extends Table {
   TextColumn get location => text()();
   TextColumn get url => text()();
   TextColumn get imageUrl => text()();
+  TextColumn get description => text()();
 
   // make sure same events are not reinserted
   @override
