@@ -29,6 +29,7 @@ class CreateEventController {
       :date,
       :uri,
       :imageUri,
+      :description,
     ) = _getCreateEventDataFromValidatedRequestBody(validatedBodyData);
 
     final int id = await _createEventUseCase(
@@ -37,6 +38,7 @@ class CreateEventController {
       date: date,
       uri: uri,
       imageUri: imageUri,
+      description: description,
     );
 
     final Map<String, dynamic> data = {
@@ -70,7 +72,14 @@ Response _generateSuccessResponse({
 }
 
 typedef _CreateEventDataFromValidatedRequestBody =
-    ({String title, String location, DateTime date, Uri uri, Uri imageUri});
+    ({
+      String title,
+      String location,
+      DateTime date,
+      Uri uri,
+      Uri imageUri,
+      String description,
+    });
 
 _CreateEventDataFromValidatedRequestBody
 _getCreateEventDataFromValidatedRequestBody(
@@ -85,6 +94,8 @@ _getCreateEventDataFromValidatedRequestBody(
   final Uri uri = validatedBodyData[CreateEventRequestBodyConstants.URI.value];
   final Uri imageUri =
       validatedBodyData[CreateEventRequestBodyConstants.IMAGE_URI.value];
+  final String description =
+      validatedBodyData[CreateEventRequestBodyConstants.DESCRIPTION.value];
 
   final _CreateEventDataFromValidatedRequestBody
   createEventDataFromValidatedRequestBody = (
@@ -93,6 +104,7 @@ _getCreateEventDataFromValidatedRequestBody(
     date: date,
     uri: uri,
     imageUri: imageUri,
+    description: description,
   );
 
   return createEventDataFromValidatedRequestBody;

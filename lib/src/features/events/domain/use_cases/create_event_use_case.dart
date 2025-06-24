@@ -13,6 +13,7 @@ class CreateEventUseCase {
     required DateTime date,
     required Uri uri,
     required Uri imageUri,
+    required String description,
   }) async {
     final CreateEventValue value = CreateEventValue(
       title: title,
@@ -20,6 +21,7 @@ class CreateEventUseCase {
       date: date,
       uri: uri,
       imageUri: imageUri,
+      description: description,
     );
 
     return await _eventsRepository.createEvent(value);

@@ -26,6 +26,10 @@ class EventsDataSourceImpl implements EventsDataSource {
           value.imageUri == null
               ? Value.absent()
               : Value(value.imageUri!.toString()),
+      description:
+          value.description == null
+              ? Value.absent()
+              : Value(value.description!),
     );
 
     final UpdateStatement<$EventEntityTable, EventEntityData> update =
@@ -44,6 +48,7 @@ class EventsDataSourceImpl implements EventsDataSource {
       location: value.location,
       url: value.uri.toString(),
       imageUrl: value.imageUri.toString(),
+      description: value.description,
       // TODO will need to add other fields too
     );
 

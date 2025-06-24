@@ -7,6 +7,7 @@ class ScrapedEventEntity {
     required this.date,
     required this.uri,
     required this.imageUri,
+    required this.description,
   });
 
   final String title;
@@ -15,6 +16,7 @@ class ScrapedEventEntity {
   final DateTime date;
   final Uri uri;
   final Uri imageUri;
+  final String description;
 
   // https://www.darttutorial.org/dart-tutorial/dart-object-identity-equality/
   @override
@@ -25,6 +27,7 @@ class ScrapedEventEntity {
     if (other.venue != venue) return false;
     if (other.uri != uri) return false;
     if (other.imageUri != imageUri) return false;
+    if (other.description != description) return false;
 
     return true;
   }
@@ -32,5 +35,6 @@ class ScrapedEventEntity {
   @override
   // TODO: implement hashCode
   // int get hashCode => Object.hash(title, venue, date, uri);
-  int get hashCode => Object.hash(title, venue, date, uri, imageUri);
+  int get hashCode =>
+      Object.hash(title, venue, date, uri, imageUri, description);
 }

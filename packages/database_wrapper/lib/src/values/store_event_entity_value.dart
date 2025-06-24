@@ -5,6 +5,7 @@ class StoreEventEntityValue {
     required this.location,
     required this.uri,
     required this.imageUri,
+    required this.description,
   });
 
   final String title;
@@ -12,4 +13,5 @@ class StoreEventEntityValue {
   final String location;
   final Uri uri;
   final Uri imageUri;
+  final String description;
 }

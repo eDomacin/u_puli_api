@@ -109,6 +109,16 @@ class ValidateUpdateEventRequestBodyMiddlewareHelper
           return imageUriValidationResponse;
         }
 
+        final dynamic description =
+            requestBody[UpdateEventRequestBodyConstants.DESCRIPTION.value];
+        if (description is! String?) {
+          final Response response = _generateFailureResponse(
+            message: "Invalid 'description' parameter",
+            statusCode: HttpStatus.badRequest,
+          );
+          return response;
+        }
+
         final Request validatedRequest = request
             .getChangedRequestWithValidatedBodyData({
               UpdateEventRequestBodyConstants.TITLE.value: title,
@@ -116,6 +126,7 @@ class ValidateUpdateEventRequestBodyMiddlewareHelper
               UpdateEventRequestBodyConstants.DATE.value: date,
               UpdateEventRequestBodyConstants.URI.value: uri,
               UpdateEventRequestBodyConstants.IMAGE_URI.value: imageUri,
+              UpdateEventRequestBodyConstants.DESCRIPTION.value: description,
             })
             .getChangedRequestWithValidatedUrlParamsData({
               EventsRequestUrlParamsConstants.ID.value: id,

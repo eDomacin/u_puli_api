@@ -11,6 +11,7 @@ abstract class EventsConverter {
       location: scrapedEventEntity.venue,
       uri: scrapedEventEntity.uri,
       imageUri: scrapedEventEntity.imageUri,
+      description: scrapedEventEntity.description,
     );
 
     return value;

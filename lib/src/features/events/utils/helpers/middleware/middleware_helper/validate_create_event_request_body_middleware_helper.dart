@@ -134,6 +134,23 @@ class ValidateCreateEventRequestBodyMiddlewareHelper
             return response;
           }
 
+          final dynamic description =
+              requestBody[CreateEventRequestBodyConstants.DESCRIPTION.value];
+          if (description == null) {
+            final Response response = _generateFailureResponse(
+              message: "Missing 'description' parameter",
+              statusCode: HttpStatus.badRequest,
+            );
+            return response;
+          }
+          if (description is! String) {
+            final Response response = _generateFailureResponse(
+              message: "Invalid 'description' parameter",
+              statusCode: HttpStatus.badRequest,
+            );
+            return response;
+          }
+
           final Request validatedRequest = request
               .getChangedRequestWithValidatedBodyData({
                 CreateEventRequestBodyConstants.TITLE.value: title,
@@ -141,6 +158,7 @@ class ValidateCreateEventRequestBodyMiddlewareHelper
                 CreateEventRequestBodyConstants.LOCATION.value: location,
                 CreateEventRequestBodyConstants.URI.value: uriValue,
                 CreateEventRequestBodyConstants.IMAGE_URI.value: imageUriValue,
+                CreateEventRequestBodyConstants.DESCRIPTION.value: description,
               });
 
           final Response response = await Future.sync(

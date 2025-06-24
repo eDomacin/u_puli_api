@@ -40,6 +40,7 @@ class UpdateEventController {
       :date,
       :uri,
       :imageUri,
+      :description,
     ) = _getUpdateEventDataFromValidatedRequestBody(validatedBodyData);
 
     await _updateEventUseCase(
@@ -49,6 +50,7 @@ class UpdateEventController {
       date: date,
       uri: uri,
       imageUri: imageUri,
+      description: description,
     );
 
     final Map<String, dynamic> data = {
@@ -118,6 +120,7 @@ typedef _UpdateEventDataFromValidatedRequestBody =
       DateTime? date,
       Uri? uri,
       Uri? imageUri,
+      String? description,
     });
 _UpdateEventDataFromValidatedRequestBody
 _getUpdateEventDataFromValidatedRequestBody(
@@ -132,6 +135,8 @@ _getUpdateEventDataFromValidatedRequestBody(
   final Uri? uri = validatedBodyData[UpdateEventRequestBodyConstants.URI.value];
   final Uri? imageUri =
       validatedBodyData[UpdateEventRequestBodyConstants.IMAGE_URI.value];
+  final String? description =
+      validatedBodyData[UpdateEventRequestBodyConstants.DESCRIPTION.value];
 
   final _UpdateEventDataFromValidatedRequestBody
   createEventDataFromValidatedRequestBody = (
@@ -140,6 +145,7 @@ _getUpdateEventDataFromValidatedRequestBody(
     date: date,
     uri: uri,
     imageUri: imageUri,
+    description: description,
   );
 
   return createEventDataFromValidatedRequestBody;

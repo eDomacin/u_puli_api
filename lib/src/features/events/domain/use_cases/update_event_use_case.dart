@@ -14,6 +14,7 @@ class UpdateEventUseCase {
     required DateTime? date,
     required Uri? uri,
     required Uri? imageUri,
+    required String? description,
   }) async {
     final UpdateEventValue value = UpdateEventValue(
       id: id,
@@ -22,6 +23,7 @@ class UpdateEventUseCase {
       date: date,
       uri: uri,
       imageUri: imageUri,
+      description: description,
     );
 
     return await _eventsRepository.updateEvent(value);

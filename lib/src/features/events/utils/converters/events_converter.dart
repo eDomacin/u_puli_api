@@ -12,6 +12,9 @@ abstract class EventsConverter {
       title: entityData.title,
       date: entityData.date,
       location: entityData.location,
+      url: entityData.url,
+      imageUrl: entityData.imageUrl,
+      description: entityData.description,
     );
 
     return value;
@@ -20,21 +23,25 @@ abstract class EventsConverter {
   static List<EventEntityValue> entityValuesFromEntityDatas({
     required List<EventEntityData> entityDatas,
   }) {
-    final List<EventEntityValue> values = entityDatas
-        .map((entityData) => entityValueFromEntityData(entityData: entityData))
-        .toList();
+    final List<EventEntityValue> values =
+        entityDatas
+            .map(
+              (entityData) => entityValueFromEntityData(entityData: entityData),
+            )
+            .toList();
 
     return values;
   }
 
-  static EventModel modelFromEntityValue({
-    required EventEntityValue value,
-  }) {
+  static EventModel modelFromEntityValue({required EventEntityValue value}) {
     final model = EventModel(
       id: value.id,
       title: value.title,
       date: value.date,
       location: value.location,
+      url: value.url,
+      imageUrl: value.imageUrl,
+      description: value.description,
     );
 
     return model;

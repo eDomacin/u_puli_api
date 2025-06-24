@@ -8,6 +8,7 @@ class CreateEventValue extends Equatable {
     required this.date,
     required this.uri,
     required this.imageUri,
+    required this.description,
   });
 
   final String title;
@@ -15,7 +16,15 @@ class CreateEventValue extends Equatable {
   final DateTime date;
   final Uri uri;
   final Uri imageUri;
+  final String description;
 
   @override
-  List<Object?> get props => [title, date, location, uri, imageUri];
+  List<Object?> get props => [
+    title,
+    date,
+    location,
+    uri,
+    imageUri,
+    description,
+  ];
 }

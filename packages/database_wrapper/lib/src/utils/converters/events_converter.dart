@@ -12,6 +12,7 @@ abstract class EventsConverter {
       location: storeEventEntityValue.location,
       url: storeEventEntityValue.uri.toString(),
       imageUrl: storeEventEntityValue.imageUri.toString(),
+      description: storeEventEntityValue.description,
       // TODO need migration to actually insert this
       // TODO this means that that constraint will need to be dropped, and new one will need to be created
       // TODO because we have to remove it, next one would be good to create with specifying constraint key

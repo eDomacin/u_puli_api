@@ -8,7 +8,7 @@ import 'package:u_puli_api/src/features/events/domain/use_cases/get_event_use_ca
 
 class GetEventController {
   const GetEventController({required GetEventUseCase getEventUseCase})
-      : _getEventUseCase = getEventUseCase;
+    : _getEventUseCase = getEventUseCase;
 
   final GetEventUseCase _getEventUseCase;
 
@@ -32,9 +32,7 @@ class GetEventController {
       return notFoundResponse;
     }
 
-    final Response successResponse = _generateSuccessResponse(
-      event: event,
-    );
+    final Response successResponse = _generateSuccessResponse(event: event);
 
     return successResponse;
   }
@@ -50,39 +48,35 @@ Response _generateNotFoundResponse() {
   final response = Response(
     HttpStatus.notFound,
     body: responseBodyJson,
-    headers: {
-      HttpHeaders.contentTypeHeader: ContentType.json.value,
-    },
+    headers: {HttpHeaders.contentTypeHeader: ContentType.json.value},
   );
 
   return response;
 }
 
-Response _generateSuccessResponse({
-  required EventModel event,
-}) {
+Response _generateSuccessResponse({required EventModel event}) {
+  /* TODO should create some converter to json on model itself, or on Converters class   */
   final Map<String, dynamic> eventData = {
     "id": event.id,
     "title": event.title,
     "date": event.date.millisecondsSinceEpoch,
     "location": event.location,
+    "url": event.url,
+    "imageUrl": event.imageUrl,
+    "description": event.description,
   };
 
   final Map<String, dynamic> responseBody = {
     "ok": true,
     "message": "Data retrieved successfully",
-    "data": {
-      "event": eventData,
-    },
+    "data": {"event": eventData},
   };
   final responseBodyJson = jsonEncode(responseBody);
 
   final response = Response(
     HttpStatus.ok,
     body: responseBodyJson,
-    headers: {
-      HttpHeaders.contentTypeHeader: ContentType.json.value,
-    },
+    headers: {HttpHeaders.contentTypeHeader: ContentType.json.value},
   );
 
   return response;

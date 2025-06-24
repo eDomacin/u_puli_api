@@ -7,37 +7,38 @@ import 'package:u_puli_api/src/features/events/domain/use_cases/get_events_use_c
 
 class GetEventsController {
   const GetEventsController({required GetEventsUseCase getEventsUseCase})
-      : _getEventsUseCase = getEventsUseCase;
+    : _getEventsUseCase = getEventsUseCase;
 
   final GetEventsUseCase _getEventsUseCase;
 
   Future<Response> call(Request request) async {
     final List<EventModel> events = await _getEventsUseCase();
 
-    final List<Map> eventsData = events.map((event) {
-      return {
-        "id": event.id,
-        "title": event.title,
-        "date": event.date.millisecondsSinceEpoch,
-        "location": event.location,
-      };
-    }).toList();
+    final List<Map> eventsData =
+        events.map((event) {
+          return {
+            "id": event.id,
+            "title": event.title,
+            "date": event.date.millisecondsSinceEpoch,
+            "location": event.location,
+            /* TODO should create some converter to json on model itself, or on Converters class   */
+            "url": event.url,
+            "imageUrl": event.imageUrl,
+            "description": event.description,
+          };
+        }).toList();
 
     final Map<String, dynamic> responseBody = {
       "ok": true,
       "message": "Data retrieved successfully",
-      "data": {
-        "events": eventsData,
-      },
+      "data": {"events": eventsData},
     };
     final responseBodyJson = jsonEncode(responseBody);
 
     final response = Response(
       HttpStatus.ok,
       body: responseBodyJson,
-      headers: {
-        HttpHeaders.contentTypeHeader: ContentType.json.value,
-      },
+      headers: {HttpHeaders.contentTypeHeader: ContentType.json.value},
     );
 
     return response;

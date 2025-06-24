@@ -17,6 +17,7 @@ class DriftMigratorWrapper {
             "https://unsplash.com/photos/woman-in-white-and-black-striped-shirt-standing-on-yellow-sunflower-field-during-daytime-RNiBLy7aHck",
         imageUrl:
             "https://images.unsplash.com/photo-1591035897819-f4bdf739f446?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        description: "description test",
       );
 
       final id = await _driftWrapper.eventEntity.insertOne(
@@ -28,6 +29,7 @@ class DriftMigratorWrapper {
             _driftWrapper.eventEntity.location,
             _driftWrapper.eventEntity.url,
             _driftWrapper.eventEntity.imageUrl,
+            _driftWrapper.eventEntity.description,
           ],
         ),
       );
