@@ -508,6 +508,72 @@ class Shape4 extends i0.VersionedTable {
 i1.GeneratedColumn<String> _column_14(String aliasedName) =>
     i1.GeneratedColumn<String>('description', aliasedName, false,
         type: i1.DriftSqlType.string);
+
+final class Schema9 extends i0.VersionedSchema {
+  Schema9({required super.database}) : super(version: 9);
+  @override
+  late final List<i1.DatabaseSchemaEntity> entities = [
+    eventEntity,
+    authEntity,
+    userEntity,
+    userEntityAuthIdIdx,
+  ];
+  late final Shape4 eventEntity = Shape4(
+      source: i0.VersionedTable(
+        entityName: 'event_entity',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'UNIQUE(title, date, location, url, image_url, description)',
+        ],
+        columns: [
+          _column_10,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_12,
+          _column_13,
+          _column_14,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape1 authEntity = Shape1(
+      source: i0.VersionedTable(
+        entityName: 'auth_entity',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_10,
+          _column_11,
+          _column_5,
+          _column_6,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape2 userEntity = Shape2(
+      source: i0.VersionedTable(
+        entityName: 'user_entity',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'FOREIGN KEY (auth_id) REFERENCES auth_entity(id)',
+        ],
+        columns: [
+          _column_10,
+          _column_7,
+          _column_8,
+          _column_9,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  final i1.Index userEntityAuthIdIdx = i1.Index('user_entity_auth_id_idx',
+      'CREATE INDEX user_entity_auth_id_idx ON user_entity (auth_id)');
+}
+
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
@@ -516,6 +582,7 @@ i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema6 schema) from5To6,
   required Future<void> Function(i1.Migrator m, Schema7 schema) from6To7,
   required Future<void> Function(i1.Migrator m, Schema8 schema) from7To8,
+  required Future<void> Function(i1.Migrator m, Schema9 schema) from8To9,
 }) {
   return (currentVersion, database) async {
     switch (currentVersion) {
@@ -554,6 +621,11 @@ i0.MigrationStepWithVersion migrationSteps({
         final migrator = i1.Migrator(database, schema);
         await from7To8(migrator, schema);
         return 8;
+      case 8:
+        final schema = Schema9(database: database);
+        final migrator = i1.Migrator(database, schema);
+        await from8To9(migrator, schema);
+        return 9;
       default:
         throw ArgumentError.value('Unknown migration from $currentVersion');
     }
@@ -568,6 +640,7 @@ i1.OnUpgrade stepByStep({
   required Future<void> Function(i1.Migrator m, Schema6 schema) from5To6,
   required Future<void> Function(i1.Migrator m, Schema7 schema) from6To7,
   required Future<void> Function(i1.Migrator m, Schema8 schema) from7To8,
+  required Future<void> Function(i1.Migrator m, Schema9 schema) from8To9,
 }) =>
     i0.VersionedSchema.stepByStepHelper(
         step: migrationSteps(
@@ -578,4 +651,5 @@ i1.OnUpgrade stepByStep({
       from5To6: from5To6,
       from6To7: from6To7,
       from7To8: from7To8,
+      from8To9: from8To9,
     ));

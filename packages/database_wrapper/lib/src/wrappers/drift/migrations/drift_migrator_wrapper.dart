@@ -72,7 +72,7 @@ class DriftMigratorWrapper {
       from6To7: (m, schema) async {
         // this as a reference: https://stackoverflow.com/a/63733203/9661910
         await m.database.customStatement(
-          'ALTER TABLE event_entity DROP CONSTRAINT event_entity_title_date_location_key;',
+          'ALTER TABLE event_entity DROP CONSTRAINT IF EXISTS event_entity_title_date_location_key;',
         );
 
         await m.database.customStatement(
@@ -81,6 +81,15 @@ class DriftMigratorWrapper {
       },
       from7To8: (m, schema) async {
         await m.addColumn(schema.eventEntity, schema.eventEntity.description);
+      },
+      from8To9: (m, schema) async {
+        await m.database.customStatement(
+          'ALTER TABLE event_entity DROP CONSTRAINT IF EXISTS event_entity_title_date_location_url_image_url_key;',
+        );
+
+        await m.database.customStatement(
+          'ALTER TABLE event_entity ADD CONSTRAINT event_entity_title_date_location_url_image_url_description_key UNIQUE (title, date, location, url, image_url, description);',
+        );
       },
     ),
   );

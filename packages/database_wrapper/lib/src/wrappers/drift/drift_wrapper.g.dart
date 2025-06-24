@@ -112,7 +112,7 @@ class $EventEntityTable extends EventEntity
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   List<Set<GeneratedColumn>> get uniqueKeys => [
-        {title, date, location, url, imageUrl},
+        {title, date, location, url, imageUrl, description},
       ];
   @override
   EventEntityData map(Map<String, dynamic> data, {String? tablePrefix}) {

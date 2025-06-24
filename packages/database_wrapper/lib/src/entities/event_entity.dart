@@ -10,8 +10,9 @@ class EventEntity extends Table {
   TextColumn get description => text()();
 
   // make sure same events are not reinserted
+  /* TODO check to make sure that all packages and main project use same dart version */
   @override
   List<Set<Column<Object>>>? get uniqueKeys => [
-    {title, date, location, url, imageUrl},
+    {title, date, location, url, imageUrl, description},
   ];
 }
