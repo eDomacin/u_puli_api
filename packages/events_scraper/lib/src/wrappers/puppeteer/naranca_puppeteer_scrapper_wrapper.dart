@@ -187,6 +187,8 @@ class NarancaPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
         uri: Uri.parse(url),
         // TODO temp placegholder
         imageUri: Uri.parse("https://picsum.photos/300/200"),
+        /* TODO return to this once events are available */
+        description: "No description available",
       );
 
       events.add(event);

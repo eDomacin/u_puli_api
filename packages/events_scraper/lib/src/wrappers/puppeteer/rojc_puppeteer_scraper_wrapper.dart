@@ -15,8 +15,11 @@ class RojcPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
     try {
       await page.goto(uri.toString());
 
+      // final calendartNavItemSelector =
+      //     "a[href='http://rojcnet.pula.org/kalendar-dogadanja/']";
+
       final calendartNavItemSelector =
-          "a[href='http://rojcnet.pula.org/kalendar-dogadanja/']";
+          "a[href\$='rojcnet.pula.org/kalendar-dogadanja/']";
       await page.waitForSelector(calendartNavItemSelector);
       await page.click(calendartNavItemSelector);
 
@@ -37,6 +40,12 @@ class RojcPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
     await browser.close();
 
     print("RocScraper: allEvents.length: ${allEvents.length}");
+
+    print("---------------");
+    for (final event in allEvents) {
+      final title = event.title;
+      print("RojcScraper: event title: $title");
+    }
 
     return allEvents.toSet();
   }
@@ -63,8 +72,31 @@ class RojcPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
     for (int i = 0; i < singleMainEventItems.length; i++) {
       final singleMainEventItem = singleMainEventItems[i];
 
+      final descriptionElementSelector =
+          "div.event_description.evcal_eventcard div.evocard_box.eventdetails div.eventon_desc_in";
+      final descriptionElement = await singleMainEventItem.$(
+        descriptionElementSelector,
+      );
+
+      final description =
+          (await descriptionElement.evaluate(
+            '(element) => element.textContent',
+          )).toString().trim();
+
+      print("DESCRIPTION!!!: $description");
+
+      /* TODO not sure how main should be used here?! */
       final schemaSelector = "main div.evo_event_schema";
       final eventSchema = await singleMainEventItem.$(schemaSelector);
+
+      final imageHolderSelector = "div.evo_event_schema meta[itemprop='image']";
+      final imageHolder = await eventSchema.$(imageHolderSelector);
+      final imageUrl =
+          (await imageHolder.evaluate(
+            '(element) => element.content',
+          )).toString().trim();
+
+      print("RojcScraper: imageUrl!!!!!!!!!!!!: $imageUrl");
 
       final eventUrlSelector = "main div.evo_event_schema a[itemprop='url']";
       final eventUrl = await eventSchema.$(eventUrlSelector);
@@ -125,7 +157,12 @@ class RojcPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
         date: eventDate,
         uri: uri,
         // TODO temp placegholder
-        imageUri: Uri.parse("https://picsum.photos/300/200"),
+        imageUri:
+            Uri.tryParse(imageUrl) ??
+            Uri.parse(
+              "https://images.unsplash.com/photo-1615875548115-83f4cb7611c6?q=80&w=958&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            ),
+        description: description,
       );
 
       allEvents.add(event);

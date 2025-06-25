@@ -84,13 +84,50 @@ class KotacPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
 
         final location = "Klub Kotač";
 
+        final descriptionElementSelector = "div.tt-evt-li__sub-info--About";
+        final descriptionElement = await blockEvent.$(
+          descriptionElementSelector,
+        );
+        final description =
+            (await descriptionElement.evaluate(
+              '(element) => element.textContent',
+            )).toString().replaceAll(title.toString().trim(), "").trim();
+
+        print("KotacScraper: description: $description");
+
+        // --------- navigate to details page to get more info ---------
+        // TODO for some reason, navigating to provided link does not work, but regular google does
+        // final detailsPage = await browser.newPage();
+        // await detailsPage.goto(url.toString().trim(), wait: Until.networkIdle);
+        // await detailsPage.goto("https://google.com", wait: Until.networkIdle);
+
+        // final descriptionElementSelector =
+        //     "section.elementor-section > div.elementor-column > div.elementor-widget-container";
+
+        // await detailsPage.waitForSelector(descriptionElementSelector);
+        // final descriptionElement = await detailsPage.$(
+        //   descriptionElementSelector,
+        // );
+
+        // final description = await descriptionElement.evaluate(
+        //   '(element) => element.textContent',
+        // );
+
+        // print("description!!!: $description");
+
+        // await detailsPage.close();
+
+        // - end navigate to details page to get more info -
+
         final event = ScrapedEventEntity(
           title: title,
           date: date,
           venue: location,
           uri: Uri.parse(url),
           // TODO temp placegholder
-          imageUri: Uri.parse("https://picsum.photos/300/200"),
+          // imageUri: Uri.parse("https://picsum.photos/300/200"),
+          imageUri: Uri.parse(imageUrl.toString().trim()),
+          description: description.toString().trim(),
         );
 
         print("KotacScraper: event: $event");

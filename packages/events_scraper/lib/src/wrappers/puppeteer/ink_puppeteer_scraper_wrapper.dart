@@ -50,6 +50,15 @@ class InkPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
           print("title: $title");
           print("url: $url");
 
+          // get image
+          final imageElementSelector = "div.schedule-item-left > img";
+          final imageElement = await blockEvent.$(imageElementSelector);
+          final imageUrl = await imageElement.evaluate(
+            '(element) => element.src',
+          );
+
+          print("imageUrl!!!!!!!!!!: $imageUrl");
+
           final dateSelector = "div.schedule-item-day";
           final dateElement = await blockEvent.$(dateSelector);
           final dateString = await dateElement.evaluate(
@@ -109,13 +118,45 @@ class InkPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
             hourAndMinutes.minutes,
           );
 
+          // here open new page to collect description
+          final detailsPage = await browser.newPage();
+          await detailsPage.goto(url.toString(), wait: Until.networkIdle);
+
+          final descriptionSelector =
+              // "div#galleries > section.repertoire-detail-section";
+              "div#galleries";
+          final descriptionElement = await detailsPage.$OrNull(
+            descriptionSelector,
+          );
+
+          final description =
+              ((await descriptionElement?.evaluate(
+                            '(element) => element.textContent',
+                          ) ??
+                          "")
+                      as String)
+                  .trim()
+                  // .replaceAll("KUPI ULAZNICU", "")
+                  .replaceAll(RegExp(r"KUPI ULAZNICU(?:\s\(.+\))?"), "")
+                  .replaceAll("GALERIJA", "")
+                  .replaceAll("Učitaj još", "")
+                  .trim();
+
+          print("description!!!!!!!!!: $description");
+
+          await detailsPage.close();
+
+          // end of getting description
+
           final event = ScrapedEventEntity(
             title: title,
             date: date,
             uri: Uri.parse(url),
             venue: "Istarsko Narodno Kazalište",
             // TODO temp placegholder
-            imageUri: Uri.parse("https://picsum.photos/300/200"),
+            // imageUri: Uri.parse("https://picsum.photos/300/200"),
+            imageUri: Uri.parse(imageUrl.toString().trim()),
+            description: description,
           );
 
           allEvents.add(event);

@@ -154,6 +154,7 @@ class GkpuPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
             // TODO temp placegholder
             // imageUri: Uri.parse("https://picsum.photos/300/200"),
             imageUri: imageUri,
+            description: description.toString().trim(),
           );
 
           allEvents.add(event);

@@ -97,6 +97,8 @@ class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
           uri: Uri.parse("https://www.pd-glasistre.hr/godisnji-plan-izleta/"),
           venue: "Planinarsko društvo Pula",
           imageUri: Uri.parse("https://picsum.photos/300/200"),
+          /* TODO return to this once scraper works */
+          description: "No description available",
         );
 
         allEvents.add(event);
