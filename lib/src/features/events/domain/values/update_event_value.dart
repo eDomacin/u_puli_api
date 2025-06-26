@@ -2,16 +2,20 @@ import 'package:equatable/equatable.dart';
 
 /// Class that represents the value of a event being updated
 class UpdateEventValue extends Equatable {
-  const UpdateEventValue({
+  UpdateEventValue({
     required this.id,
     required this.title,
     required this.location,
     required this.date,
     required this.uri,
     required this.imageUri,
-    required this.description,
+    required String? description,
+
     /* TODO add missing fields here  */
-  });
+  })
+    // NOTE: truncating description to 500 characters if it is longer
+    // TODO: maybe this should be done elsewhere, but for now it is here
+    : description = description?.padRight(500).substring(0, 500);
 
   final int id;
   final String? title;
