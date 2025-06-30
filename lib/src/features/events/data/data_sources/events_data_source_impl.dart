@@ -83,6 +83,7 @@ class EventsDataSourceImpl implements EventsDataSource {
     // filters
     // final DateTime nowDate = DateTime.now();
     final DateTime fromDate = filter.fromDate ?? DateTime.now();
+    final List<int>? eventIds = filter.eventIds;
 
     SimpleSelectStatement<$EventEntityTable, EventEntityData> select =
         _databaseWrapper.eventsRepo.select();
@@ -93,7 +94,16 @@ class EventsDataSourceImpl implements EventsDataSource {
     final Expression<bool> fromDateExpression = _databaseWrapper.eventsRepo.date
         .isBiggerOrEqualValue(fromDate);
     // filter by fromDate
-    select = select..where((tbl) => fromDateExpression);
+    // this works as well
+    // select = select..where((tbl) => fromDateExpression);
+    select.where((tbl) => fromDateExpression);
+
+    // filter by event ids
+    if (eventIds != null) {
+      final eventIdsExpression = _databaseWrapper.eventsRepo.id.isIn(eventIds);
+      // select = select..where((tbl) => eventIdsExpression);
+      select.where((tbl) => eventIdsExpression);
+    }
 
     // filter by order - closest event is shown first
     select =

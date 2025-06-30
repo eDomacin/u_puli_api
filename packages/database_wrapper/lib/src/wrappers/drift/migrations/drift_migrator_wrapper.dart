@@ -20,21 +20,21 @@ class DriftMigratorWrapper {
         description: "description test",
       );
 
-      final id = await _driftWrapper.eventEntity.insertOne(
-        companion,
-        onConflict: DoNothing(
-          target: [
-            _driftWrapper.eventEntity.title,
-            _driftWrapper.eventEntity.date,
-            _driftWrapper.eventEntity.location,
-            _driftWrapper.eventEntity.url,
-            _driftWrapper.eventEntity.imageUrl,
-            _driftWrapper.eventEntity.description,
-          ],
-        ),
-      );
+      // final id = await _driftWrapper.eventEntity.insertOne(
+      //   companion,
+      //   onConflict: DoNothing(
+      //     target: [
+      //       _driftWrapper.eventEntity.title,
+      //       _driftWrapper.eventEntity.date,
+      //       _driftWrapper.eventEntity.location,
+      //       _driftWrapper.eventEntity.url,
+      //       _driftWrapper.eventEntity.imageUrl,
+      //       _driftWrapper.eventEntity.description,
+      //     ],
+      //   ),
+      // );
 
-      print("Inserted id: $id");
+      // print("Inserted id: $id");
     },
     onCreate: (m) async {
       await m.createAll();
