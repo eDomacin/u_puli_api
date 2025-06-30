@@ -5,7 +5,9 @@ import 'package:u_puli_api/src/features/events/domain/values/create_event_value.
 import 'package:u_puli_api/src/features/events/domain/values/event_entity_value.dart';
 import 'package:u_puli_api/src/features/events/domain/values/update_event_value.dart';
 import 'package:u_puli_api/src/features/events/utils/converters/events_converter.dart';
+import 'package:u_puli_api/src/features/events/utils/values/get_events_filter_value.dart';
 
+/* TODO repositories should ne moved to domain */
 class EventsRepositoryImpl implements EventsRepository {
   const EventsRepositoryImpl({required EventsDataSource eventsDataSource})
     : _eventsDataSource = eventsDataSource;
@@ -37,8 +39,12 @@ class EventsRepositoryImpl implements EventsRepository {
   }
 
   @override
-  Future<List<EventModel>> getEvents() async {
-    final List<EventEntityValue> values = await _eventsDataSource.getEvents();
+  Future<List<EventModel>> getEvents({
+    required GetEventsFilterValue filter,
+  }) async {
+    final List<EventEntityValue> values = await _eventsDataSource.getEvents(
+      filter: filter,
+    );
     final List<EventModel> models = EventsConverter.modelsFromEntityValues(
       values: values,
     );

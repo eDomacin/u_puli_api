@@ -12,7 +12,11 @@ class GetEventsController {
   final GetEventsUseCase _getEventsUseCase;
 
   Future<Response> call(Request request) async {
-    final List<EventModel> events = await _getEventsUseCase();
+    final List<EventModel> events = await _getEventsUseCase(
+      // TODO temp we are testing this will null values
+      fromDate: null,
+      eventIds: null,
+    );
 
     final List<Map> eventsData =
         events.map((event) {

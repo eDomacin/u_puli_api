@@ -4,6 +4,7 @@ import 'package:u_puli_api/src/features/events/domain/values/create_event_value.
 import 'package:u_puli_api/src/features/events/domain/values/event_entity_value.dart';
 import 'package:u_puli_api/src/features/events/domain/values/update_event_value.dart';
 import 'package:u_puli_api/src/features/events/utils/converters/events_converter.dart';
+import 'package:u_puli_api/src/features/events/utils/values/get_events_filter_value.dart';
 // import 'package:u_puli_api/src/wrappers/database/database_wrapper.dart';
 // import 'package:u_puli_api/src/wrappers/drift/drift_wrapper.dart';
 
@@ -76,15 +77,18 @@ class EventsDataSourceImpl implements EventsDataSource {
   }
 
   @override
-  Future<List<EventEntityValue>> getEvents() async {
+  Future<List<EventEntityValue>> getEvents({
+    required GetEventsFilterValue filter,
+  }) async {
     // filters
-    final DateTime nowDate = DateTime.now();
+    // final DateTime nowDate = DateTime.now();
+    final DateTime fromDate = filter.fromDate ?? DateTime.now();
 
     SimpleSelectStatement<$EventEntityTable, EventEntityData> select =
         _databaseWrapper.eventsRepo.select();
 
     // TODO when we have filters, fromDate could be derived from filters
-    final DateTime fromDate = nowDate;
+    // final DateTime fromDate = nowDate;
 
     final Expression<bool> fromDateExpression = _databaseWrapper.eventsRepo.date
         .isBiggerOrEqualValue(fromDate);
