@@ -7,6 +7,9 @@ import 'package:u_puli_api/src/features/events/utils/constants/update_event_requ
 import 'package:u_puli_api/src/utils/extensions/request_extension.dart';
 import 'package:u_puli_api/src/utils/helpers/middleware/middleware_helper/middleware_helper.dart';
 
+/* TODO maybe these should not specify in their name what is it that they really validate  */
+// maybe this should be called ValidateUpdateEventRequestMiddlewareHelper
+
 class ValidateUpdateEventRequestBodyMiddlewareHelper
     implements MiddlewareHelper {
   @override

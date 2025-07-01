@@ -17,8 +17,20 @@ Future<void> main(List<String> args) async {
 
   // print('Substring: $subsstring');
 
-  final something = "hhhh";
+  // final something = "hhhh";
 
-  final padded = something.padRight(2, '0');
-  print('Padded: $padded');
+  // final padded = something.padRight(2, '0');
+  // print('Padded: $padded');
+
+  final component = "ids=1,2,3&fromDate=1751310762670";
+
+  final encoded = Uri.encodeQueryComponent(component);
+  final encodedComponent = Uri.encodeComponent(component);
+
+  final decoded = Uri.decodeQueryComponent(encoded);
+  final decodedComponent = Uri.decodeComponent(encodedComponent);
+
+  print('Encoded component: $encoded');
+
+  // Uri.decodeQueryComponent(encodedComponent)
 }

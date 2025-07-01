@@ -16,6 +16,7 @@ class CreateEventController {
     final Map<String, dynamic>? validatedBodyData =
         request.getValidatedBodyData();
     if (validatedBodyData == null) {
+      // TODO we should create some kind of respoonse generator that we can use everywhere
       final Response response = _generateFailureResponse(
         message: "Request body not validated",
         statusCode: HttpStatus.internalServerError,

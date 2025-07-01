@@ -13,6 +13,7 @@ class GetEventController {
   final GetEventUseCase _getEventUseCase;
 
   Future<Response> call(Request request) async {
+    // TODO will need to create middlware for this
     final idParam = request.params['id'];
     if (idParam == null) {
       // TODO we will come back to this

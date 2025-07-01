@@ -75,6 +75,16 @@ extension RequestExtension on Request {
     return changedRequest;
   }
 
+  Request getChangedRequestWithValidatedQueryParamsData(
+    Map<String, dynamic> data,
+  ) {
+    final Request changedRequest = change(
+      context: {RequestConstants.VALIDATED_QUERY_PARAMS_DATA.value: data},
+    );
+
+    return changedRequest;
+  }
+
   Request getChangedRequestWithValidatedUrlParamsData(
     Map<String, dynamic> data,
   ) {
@@ -99,6 +109,14 @@ extension RequestExtension on Request {
             as Map<String, dynamic>?;
 
     return validatedUrlParamsData;
+  }
+
+  Map<String, dynamic>? getValidatedQueryParamsData() {
+    final Map<String, dynamic>? validatedQueryParamsData =
+        context[RequestConstants.VALIDATED_QUERY_PARAMS_DATA.value]
+            as Map<String, dynamic>?;
+
+    return validatedQueryParamsData;
   }
 
   Request getChangedRequestWithAuthenticatedAuthId(int authId) {

@@ -34,6 +34,7 @@ import 'package:u_puli_api/src/features/events/presentation/controllers/get_even
 import 'package:u_puli_api/src/features/events/presentation/controllers/update_event_controller.dart';
 import 'package:u_puli_api/src/features/events/presentation/router/events_router.dart';
 import 'package:u_puli_api/src/features/events/utils/helpers/middleware/middleware_helper/validate_create_event_request_body_middleware_helper.dart';
+import 'package:u_puli_api/src/features/events/utils/helpers/middleware/middleware_helper/validate_get_events_request_middleware_helper.dart';
 import 'package:u_puli_api/src/features/events/utils/helpers/middleware/middleware_helper/validate_update_event_request_body_middleware_helper.dart';
 import 'package:u_puli_api/src/wrappers/dart_jsonwebtoken/dart_jsonwebtoken_wrapper.dart';
 import 'package:u_puli_api/src/wrappers/get_id/get_it_wrapper.dart';
@@ -127,6 +128,9 @@ AppRouter _getInitializedAppRouter({
   authenticateRequestMiddlewareHelper = AuthenticateRequestMiddlewareHelper(
     authJWTHelper: authJWTHelper,
   );
+  final ValidateGetEventsRequestMiddlewareHelper
+  validateGetEventsRequestMiddlewareHelper =
+      ValidateGetEventsRequestMiddlewareHelper();
 
   // data surces
   final EventsDataSource eventsDataSource = EventsDataSourceImpl(
@@ -211,6 +215,8 @@ AppRouter _getInitializedAppRouter({
     validateUpdateEventRequestBodyMiddlewareHelper:
         validateUpdateEventRequestBodyMiddlewareHelper,
     authenticateRequestMiddlewareHelper: authenticateRequestMiddlewareHelper,
+    validateGetEventsRequestMiddlewareHelper:
+        validateGetEventsRequestMiddlewareHelper,
   );
   final AuthRouter authRouter = AuthRouter(
     registerWithEmailAndPasswordController:

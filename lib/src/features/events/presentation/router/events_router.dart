@@ -6,6 +6,7 @@ import 'package:u_puli_api/src/features/events/presentation/controllers/get_even
 import 'package:u_puli_api/src/features/events/presentation/controllers/get_events_controller.dart';
 import 'package:u_puli_api/src/features/events/presentation/controllers/update_event_controller.dart';
 import 'package:u_puli_api/src/features/events/utils/helpers/middleware/middleware_helper/validate_create_event_request_body_middleware_helper.dart';
+import 'package:u_puli_api/src/features/events/utils/helpers/middleware/middleware_helper/validate_get_events_request_middleware_helper.dart';
 import 'package:u_puli_api/src/features/events/utils/helpers/middleware/middleware_helper/validate_update_event_request_body_middleware_helper.dart';
 
 // NOTE: this router is independent - placed after "events" path in the main router
@@ -23,8 +24,16 @@ class EventsRouter {
     validateUpdateEventRequestBodyMiddlewareHelper,
     required AuthenticateRequestMiddlewareHelper
     authenticateRequestMiddlewareHelper,
+    required ValidateGetEventsRequestMiddlewareHelper
+    validateGetEventsRequestMiddlewareHelper,
   }) : _router = Router() {
-    _router.get("/", getEventsController.call);
+    // _router.get("/", getEventsController.call);
+    _router.get(
+      "/",
+      Pipeline()
+          .addMiddleware(validateGetEventsRequestMiddlewareHelper())
+          .addHandler(getEventsController.call),
+    );
     // Dynamic routes have to be last, so as not to catch other routes requests
     _router.get("/<id>", getEventController.call);
     _router.put(
