@@ -13,7 +13,14 @@ class StoreEventEntityValue {
     // NOTE: truncating description to 500 characters if it is longer
     // TODO: maybe this should be done elsewhere, but for now it is here
     : description = description.trim().padRight(500).substring(0, 500),
-       date = date.toUtc();
+       date = date.toUtc() {
+    final newDescription = description.trim().padRight(500);
+
+    final utcDate = date.toUtc();
+
+    print("original date!!!!!!!!!!!!!!!!: $date");
+    print("utc date!!!!!!!!!!!!!!: $utcDate");
+  }
 
   final String title;
   final DateTime date;
