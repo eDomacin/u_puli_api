@@ -23,6 +23,7 @@ dependencies:
   env_vars_wrapper:
     path: ./packages/env_vars_wrapper
   dart_jsonwebtoken: ^3.1.1
+  timezone: ^0.10.1
 
 dev_dependencies:
   http: ^1.1.0

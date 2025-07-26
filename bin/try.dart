@@ -1,4 +1,8 @@
-Future<void> main(List<String> args) async {}
+import "package:timezone/data/latest.dart" as tz;
+
+Future<void> main(List<String> args) async {
+  tz.initializeTimeZones();
+}
 
 void _someDecodedUrlStuff() {
   // // final scraper = GkpuPuppeteerScraperWrapper();
