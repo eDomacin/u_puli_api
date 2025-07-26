@@ -18,8 +18,15 @@ class StoreEventEntityValue {
 
     final utcDate = date.toUtc();
 
+    print("------------");
+
     print("original date!!!!!!!!!!!!!!!!: $date");
     print("utc date!!!!!!!!!!!!!!: $utcDate");
+
+    print("original date millis!!!!!!!!!!!!: ${date.millisecondsSinceEpoch}");
+    print("utc date millis!!!!!!!!!!!!: ${utcDate.millisecondsSinceEpoch}");
+
+    print("------------");
   }
 
   final String title;
