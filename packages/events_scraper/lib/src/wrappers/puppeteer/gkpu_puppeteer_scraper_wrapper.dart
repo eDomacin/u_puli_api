@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:event_scraper/src/wrappers/timezone/timezone_wrapper.dart';
 import "package:timezone/data/latest.dart" as tzdata;
 import "package:timezone/timezone.dart" as tz;
 
@@ -102,56 +103,71 @@ class GkpuPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
           final timeSections = time.split(":");
           final hours = int.parse(timeSections[0]);
           final minutes = int.parse(timeSections[1]);
-          tzdata.initializeTimeZones();
 
-          final tzLocationName = 'Europe/Zagreb';
-          final tzLocation = tz.getLocation(tzLocationName);
-          final zonedDateTime = tz.TZDateTime(
-            tzLocation,
-            year,
-            month,
-            day,
-            hours,
-            minutes,
+          // TODO this datetine will be in whatever time zone the server is in
+          final eventDateTime = DateTime(year, month, day, hours, minutes);
+
+          // we need to convert this server datetime to UTC by:
+          // - specifiying that the above time is in croatia time zone
+          // - then converting it to UTC
+          final utcEventDateTime = TimezoneWrapper.convertToUtc(
+            dateTime: eventDateTime,
+            location: TimezoneLocation.croatia,
           );
 
-          final zonedUTCDateTime = zonedDateTime.toUtc();
-          // TODO this will convert to DateTime in UTC, so it is good - we will get UTC + 0 date? this is what we want
-          final nativeUTCDateTime = zonedUTCDateTime.native;
+          // --------------------------------
+          // tzdata.initializeTimeZones();
 
-          // final date = DateTime(year, month, day, hours, minutes);
-          // TODO test
-          final date = nativeUTCDateTime;
+          // final tzLocationName = 'Europe/Zagreb';
+          // final tzLocation = tz.getLocation(tzLocationName);
+          // final zonedDateTime = tz.TZDateTime(
+          //   tzLocation,
+          //   year,
+          //   month,
+          //   day,
+          //   hours,
+          //   minutes,
+          // );
 
-          final croatiaZone = 'Europe/Zagreb';
-          final croatiaDateWithFromDateTimeConstructor = tz.TZDateTime.from(
-            date,
-            tz.getLocation(croatiaZone),
-          );
+          // final zonedUTCDateTime = zonedDateTime.toUtc();
+          // // TODO this will convert to DateTime in UTC, so it is good - we will get UTC + 0 date? this is what we want
+          // final nativeUTCDateTime = zonedUTCDateTime.native;
 
-          final croatiaDateWithDefaultConstructor = tz.TZDateTime(
-            tz.getLocation(croatiaZone),
-            year,
-            month,
-            day,
-            hours,
-            minutes,
-          );
+          // // final date = DateTime(year, month, day, hours, minutes);
+          // // TODO test
+          // final date = nativeUTCDateTime;
 
-          print("assembled date: $date");
-          print("zonedDateTime: $zonedDateTime");
-          print("zonedUTCDateTime: $zonedUTCDateTime");
-          print("nativeUTCDateTime: $nativeUTCDateTime");
-          print(
-            "croatiaDateWithFromDateTimeConstructor: "
-            "$croatiaDateWithFromDateTimeConstructor",
-          );
-          print(
-            "croatiaDateWithDefaultConstructor: "
-            "$croatiaDateWithDefaultConstructor",
-          );
+          // final croatiaZone = 'Europe/Zagreb';
+          // final croatiaDateWithFromDateTimeConstructor = tz.TZDateTime.from(
+          //   date,
+          //   tz.getLocation(croatiaZone),
+          // );
 
-          print("!!!!!!!!!!!!! -------------- !!!!!!!!!!!!!!!");
+          // final croatiaDateWithDefaultConstructor = tz.TZDateTime(
+          //   tz.getLocation(croatiaZone),
+          //   year,
+          //   month,
+          //   day,
+          //   hours,
+          //   minutes,
+          // );
+
+          // print("assembled date: $date");
+          // print("zonedDateTime: $zonedDateTime");
+          // print("zonedUTCDateTime: $zonedUTCDateTime");
+          // print("nativeUTCDateTime: $nativeUTCDateTime");
+          // print(
+          //   "croatiaDateWithFromDateTimeConstructor: "
+          //   "$croatiaDateWithFromDateTimeConstructor",
+          // );
+          // print(
+          //   "croatiaDateWithDefaultConstructor: "
+          //   "$croatiaDateWithDefaultConstructor",
+          // );
+
+          // print("!!!!!!!!!!!!! -------------- !!!!!!!!!!!!!!!");
+
+          // -------------------------------
 
           // title
           final titleElementSelector = "h3 > a";
@@ -202,7 +218,8 @@ class GkpuPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
 
           final event = ScrapedEventEntity(
             title: title,
-            date: date,
+            // date: date,
+            date: utcEventDateTime,
             uri: Uri.parse(url),
             venue: "Gradska knjižnica i čitaonica Pula",
             // TODO temp placegholder
@@ -213,7 +230,7 @@ class GkpuPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
 
           allEvents.add(event);
 
-          print("date: $date");
+          // print("date: $date");
         }
 
         print("scrapping page: $currentPage");
