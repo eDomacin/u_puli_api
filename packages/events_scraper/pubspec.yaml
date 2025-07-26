@@ -15,6 +15,7 @@ dependencies:
     path: ../database_wrapper
   env_vars_wrapper:
     path: ../env_vars_wrapper
+  timezone: ^0.10.1
 # path: ^1.8.0
 
 dev_dependencies:

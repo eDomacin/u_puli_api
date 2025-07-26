@@ -27,6 +27,8 @@ Future<void> main(List<String> args) async {
   print("croatiaNowMillis: $croatiaNowMillis");
   print("londonNowMillis: $londonNowMillis");
 
+  final croatiaDateTime = croatiaNow.native;
+  final croatiaUTCDateTime = croatiaNow.toUtc();
   print('Croatia Timezone: $croatiaZone');
 }
 
