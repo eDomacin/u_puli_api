@@ -11,7 +11,17 @@ abstract class TimezoneWrapper {
     required TimezoneLocation location,
   }) {
     final tzLocation = tz.getLocation(location.name);
-    final tzDateTime = tz.TZDateTime.from(dateTime, tzLocation);
+    final tzDateTime = tz.TZDateTime(
+      tzLocation,
+      dateTime.year,
+      dateTime.month,
+      dateTime.day,
+      dateTime.hour,
+      dateTime.minute,
+      dateTime.second,
+      dateTime.millisecond,
+      dateTime.microsecond,
+    );
     final utcTzDateTime = tzDateTime.toUtc();
 
     final nativeUtcDateTime = utcTzDateTime.native;
