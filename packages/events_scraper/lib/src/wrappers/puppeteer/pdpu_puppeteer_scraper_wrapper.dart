@@ -1,5 +1,6 @@
 import 'package:event_scraper/src/data/entities/scraped_event_entity.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/puppeteer_scraper_wrapper.dart';
+import 'package:event_scraper/src/wrappers/timezone/timezone_wrapper.dart';
 import 'package:puppeteer/puppeteer.dart';
 
 class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
@@ -16,6 +17,7 @@ class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
       final excursionsNavItemSelector =
           'a[href="https://www.pd-glasistre.hr/godisnji-plan-izleta/"]';
       await page.waitForSelector(excursionsNavItemSelector);
+      /* TODO pdpu might not work because of click this way. maybe we should use JS for this - to evaluate, and then click within js */
       await page.click(excursionsNavItemSelector);
 
       // get year
@@ -28,7 +30,6 @@ class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
       );
       final excursionsPageYearTitle = await excursionsPageYearTitleElement
           .evaluate('(element) => element.textContent');
-      print("PD Pula: excursionsPageYearTitle: $excursionsPageYearTitle");
 
       final excurionsPageYearTitleRegex = RegExp(
         r"PLAN PLANINARSKIH IZLETA ZA (\d{4})\. GODINU",
@@ -43,7 +44,6 @@ class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
       }
 
       final year = int.parse(match.group(1)!);
-      print("PD Pula: year: $year");
 
       // get events
 
@@ -52,16 +52,11 @@ class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
 
       final excursionsTable = await page.$(excurionsTableSelector);
 
-      print("PD Pula: excursionsTable: $excursionsTable");
-
       final tableRowSelector = "tr.wptb-row";
       final tableRows = await excursionsTable.$$(tableRowSelector);
 
-      print("PD Pula: tableRows.length: ${tableRows.length}");
-
       // TODO we dont care about the first row - it is the header
       for (int i = 1; i < tableRows.length; i++) {
-        print("--------");
         final tableRow = tableRows[i];
 
         final tableRowCellSelector = "td.wptb-cell";
@@ -77,19 +72,12 @@ class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
           '(element) => element.textContent',
         );
 
-        print("PD Pula: dateContent: $dateContent");
-        print("PD Pula: titleContent: $titleContent");
-
         final isDateRange = dateContent.contains("-");
 
         final date =
             isDateRange
                 ? _getDateFromRangeDateString(dateContent, year)
                 : _getDateFromSingleDateString(dateContent, year);
-
-        print("PD Pula: date: $date");
-
-        print("--------");
 
         final event = ScrapedEventEntity(
           title: titleContent.toString().trim(),
@@ -109,7 +97,6 @@ class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
 
     await page.close();
     await browser.close();
-    print("RocScraper: allEvents.length: ${allEvents.length}");
 
     return allEvents.toSet();
   }
@@ -148,7 +135,14 @@ class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
       final startDay = int.parse(match.group(1)!);
       final month = int.parse(match.group(2)!);
 
-      return DateTime(year, month, startDay);
+      return TimezoneWrapper.toLocationDateInUTC(
+        TimezoneLocation.croatia,
+        year: year,
+        month: month,
+        day: startDay,
+        hours: 0,
+        minutes: 0,
+      );
     } else {
       throw Exception(
         "PD Pula: rangeDateString: $rangeDateString does not match the regex",
@@ -168,7 +162,14 @@ class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
     final day = int.parse(match.group(1)!);
     final month = int.parse(match.group(2)!);
 
-    return DateTime(year, month, day);
+    return TimezoneWrapper.toLocationDateInUTC(
+      TimezoneLocation.croatia,
+      year: year,
+      month: month,
+      day: day,
+      hours: 0,
+      minutes: 0,
+    );
   }
 
   @override

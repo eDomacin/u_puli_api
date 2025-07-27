@@ -1,5 +1,6 @@
 import 'package:event_scraper/src/data/entities/scraped_event_entity.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/puppeteer_scraper_wrapper.dart';
+import 'package:event_scraper/src/wrappers/timezone/timezone_wrapper.dart';
 import 'package:puppeteer/puppeteer.dart';
 
 class InkPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
@@ -36,8 +37,6 @@ class InkPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
         final blockEventsSelector = "li.schedule-list-item";
         final blockEvents = await monthBlock.$$(blockEventsSelector);
 
-        print("blockEvents.length: ${blockEvents.length}");
-
         for (final blockEvent in blockEvents) {
           final titleSelector = "a.title-3";
           final titleElement = await blockEvent.$(titleSelector);
@@ -47,9 +46,6 @@ class InkPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
           );
           final url = await titleElement.evaluate('(element) => element.href');
 
-          print("title: $title");
-          print("url: $url");
-
           // get image
           final imageElementSelector = "div.schedule-item-left > img";
           final imageElement = await blockEvent.$(imageElementSelector);
@@ -57,15 +53,11 @@ class InkPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
             '(element) => element.src',
           );
 
-          print("imageUrl!!!!!!!!!!: $imageUrl");
-
           final dateSelector = "div.schedule-item-day";
           final dateElement = await blockEvent.$(dateSelector);
           final dateString = await dateElement.evaluate(
             '(element) => element.textContent',
           );
-
-          print("dateString: $dateString");
 
           final dateStringRegex = RegExp(
             r'(\d{1,2})\.\s+([A-Za-zčćđšž]+)\s+(\d{4})\.',
@@ -84,8 +76,6 @@ class InkPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
           final month = monthString!.toINKMonthIndex;
           final year = int.parse(yearString!);
 
-          print("dayString: $dayString");
-
           final timeSelector = "div.schedule-item-time";
           final timeElement = await blockEvent.$(timeSelector);
 
@@ -94,28 +84,22 @@ class InkPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
                       as String)
                   .trim();
 
+          // time can be either in format "21:00" or 9 - 21
+          // so we need to handle both cases
           final hourAndMinutes = _InkEventHourAndMinute.fromItemTimeString(
             timeString,
           );
-          // // time can be either in format "21:00" or 9 - 21
-          // // so we need to handle both cases
-          // // we need to extract only start timn
-          // final timeSections = timeString.split(":");
-          // // final hoursSegment = timeSections[0].trim();
-          // final hoursSegment = timeString.toString().substring(0, 2).trim();
-          // // now remove anyhting from the string that is not a digit
-          // final hoursSegmentDigits = hoursSegment.replaceAll(RegExp(r'\D'), '');
-          // final hours = int.parse(hoursSegmentDigits);
-          // final minutes = int.parse(timeSections[1]);
 
-          print("hour and minutes: $hourAndMinutes");
-
-          final date = DateTime(
-            year,
-            month,
-            day,
-            hourAndMinutes.hours,
-            hourAndMinutes.minutes,
+          // we need to convert this server datetime to UTC by:
+          // - specifiying that the above time is in croatia time zone
+          // - then converting it to UTC
+          final utcDateTime = TimezoneWrapper.toLocationDateInUTC(
+            TimezoneLocation.croatia,
+            year: year,
+            month: month,
+            day: day,
+            hours: hourAndMinutes.hours,
+            minutes: hourAndMinutes.minutes,
           );
 
           // here open new page to collect description
@@ -142,15 +126,13 @@ class InkPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
                   .replaceAll("Učitaj još", "")
                   .trim();
 
-          print("description!!!!!!!!!: $description");
-
           await detailsPage.close();
 
           // end of getting description
 
           final event = ScrapedEventEntity(
             title: title,
-            date: date,
+            date: utcDateTime,
             uri: Uri.parse(url),
             venue: "Istarsko Narodno Kazalište",
             // TODO temp placegholder
@@ -232,9 +214,6 @@ class _InkEventHourAndMinute {
       final hours = match.group(1);
       final minutes = match.group(2);
 
-      print("hours: $hours");
-      print("minutes: $minutes");
-
       return _InkEventHourAndMinute(
         hours: int.parse(hours!),
         minutes: int.parse(minutes!),
@@ -246,9 +225,6 @@ class _InkEventHourAndMinute {
       final hours = match.group(1);
       final minutes = 0;
 
-      print("hours: $hours");
-      print("minutes: $minutes");
-
       return _InkEventHourAndMinute(hours: int.parse(hours!), minutes: minutes);
     }
 
@@ -256,9 +232,6 @@ class _InkEventHourAndMinute {
       final match = option3Regex.firstMatch(timeString)!;
       final hours = match.group(1);
       final minutes = match.group(2);
-
-      print("hours: $hours");
-      print("minutes: $minutes");
 
       return _InkEventHourAndMinute(
         hours: int.parse(hours!),
@@ -271,9 +244,6 @@ class _InkEventHourAndMinute {
       final hours = match.group(1);
       final minutes = match.group(2);
 
-      print("hours: $hours");
-      print("minutes: $minutes");
-
       return _InkEventHourAndMinute(
         hours: int.parse(hours!),
         minutes: int.parse(minutes!),
@@ -284,9 +254,6 @@ class _InkEventHourAndMinute {
       final match = option5Regex.firstMatch(timeString)!;
       final hours = match.group(1);
       final minutes = match.group(2);
-
-      print("hours: $hours");
-      print("minutes: $minutes");
 
       return _InkEventHourAndMinute(
         hours: int.parse(hours!),
@@ -299,9 +266,6 @@ class _InkEventHourAndMinute {
       final hours = match.group(1);
       final minutes = 0;
 
-      print("hours: $hours");
-      print("minutes: $minutes");
-
       return _InkEventHourAndMinute(hours: int.parse(hours!), minutes: minutes);
     }
 
@@ -309,9 +273,6 @@ class _InkEventHourAndMinute {
       final match = option7Regex.firstMatch(timeString)!;
       final hours = match.group(1);
       final minutes = 0;
-
-      print("hours: $hours");
-      print("minutes: $minutes");
 
       return _InkEventHourAndMinute(hours: int.parse(hours!), minutes: minutes);
     }

@@ -1,5 +1,6 @@
 import 'package:event_scraper/src/data/entities/scraped_event_entity.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/puppeteer_scraper_wrapper.dart';
+import 'package:event_scraper/src/wrappers/timezone/timezone_wrapper.dart';
 import 'package:puppeteer/puppeteer.dart';
 
 class KotacPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
@@ -25,29 +26,21 @@ class KotacPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
 
       final blockEventsWrapper = await page.$(blockEventsWrapperSelector);
 
-      print("KotacScraper: blockEventsWrapper: $blockEventsWrapper");
-
       final blockEventsSelector = "div.tt-evt-li";
       final blockEvents = await blockEventsWrapper.$$(blockEventsSelector);
 
       for (final blockEvent in blockEvents) {
-        print("KotacScraper: blockEvent: $blockEvent");
-
         final imageUrlSelector = "img.tt-evt-li__img";
         final imageUrlElement = await blockEvent.$(imageUrlSelector);
         final imageUrl = await imageUrlElement.evaluate(
           '(element) => element.src',
         );
 
-        print("KotacScraper: imageUrl: $imageUrl");
-
         final dateInfoSelector = "div.tt-evt-li__sub-info--BeginDate";
         final dateInfoElement = await blockEvent.$(dateInfoSelector);
         final dateInfo = await dateInfoElement.evaluate(
           '(element) => element.textContent',
         );
-
-        print("KotacScraper: dateInfo: $dateInfo");
 
         final dateInfoRegex = RegExp(
           r'(\d{1,2})\.(\d{1,2})\.(\d{4})\s*@(\d{1,2}):(\d{2})',
@@ -66,9 +59,14 @@ class KotacPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
         final hour = int.parse(dateInfoRegexMatch.group(4)!);
         final minute = int.parse(dateInfoRegexMatch.group(5)!);
 
-        final date = DateTime(year, month, day, hour, minute);
-
-        print("KotacScraper: date: $date");
+        final utcDateTime = TimezoneWrapper.toLocationDateInUTC(
+          TimezoneLocation.croatia,
+          year: year,
+          month: month,
+          day: day,
+          hours: hour,
+          minutes: minute,
+        );
 
         final titleAndUrlSelector = "a.tt-evt-li__name";
         final titleAndUrlElement = await blockEvent.$(titleAndUrlSelector);
@@ -78,9 +76,6 @@ class KotacPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
         final url = await titleAndUrlElement.evaluate(
           '(element) => element.href',
         );
-
-        print("KotacScraper: title: $title");
-        print("KotacScraper: url: $url");
 
         final location = "Klub Kotač";
 
@@ -93,44 +88,15 @@ class KotacPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
               '(element) => element.textContent',
             )).toString().replaceAll(title.toString().trim(), "").trim();
 
-        print("KotacScraper: description: $description");
-
-        // --------- navigate to details page to get more info ---------
-        // TODO for some reason, navigating to provided link does not work, but regular google does
-        // final detailsPage = await browser.newPage();
-        // await detailsPage.goto(url.toString().trim(), wait: Until.networkIdle);
-        // await detailsPage.goto("https://google.com", wait: Until.networkIdle);
-
-        // final descriptionElementSelector =
-        //     "section.elementor-section > div.elementor-column > div.elementor-widget-container";
-
-        // await detailsPage.waitForSelector(descriptionElementSelector);
-        // final descriptionElement = await detailsPage.$(
-        //   descriptionElementSelector,
-        // );
-
-        // final description = await descriptionElement.evaluate(
-        //   '(element) => element.textContent',
-        // );
-
-        // print("description!!!: $description");
-
-        // await detailsPage.close();
-
-        // - end navigate to details page to get more info -
-
         final event = ScrapedEventEntity(
           title: title,
-          date: date,
+          date: utcDateTime,
           venue: location,
           uri: Uri.parse(url),
-          // TODO temp placegholder
-          // imageUri: Uri.parse("https://picsum.photos/300/200"),
           imageUri: Uri.parse(imageUrl.toString().trim()),
           description: description.toString().trim(),
         );
 
-        print("KotacScraper: event: $event");
         allEvents.add(event);
       }
     } catch (e) {

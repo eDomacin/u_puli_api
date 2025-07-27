@@ -1,15 +1,12 @@
 import 'dart:io';
 
 import 'package:event_scraper/src/wrappers/timezone/timezone_wrapper.dart';
-import "package:timezone/data/latest.dart" as tzdata;
-import "package:timezone/timezone.dart" as tz;
 
 import 'package:event_scraper/src/data/entities/scraped_event_entity.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/puppeteer_scraper_wrapper.dart';
 import 'package:puppeteer/puppeteer.dart';
 
 class GkpuPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
-  // TODO this needs cleanup
   @override
   Future<Set<ScrapedEventEntity>> getEvents() async {
     final List<ScrapedEventEntity> allEvents = <ScrapedEventEntity>[];
@@ -31,14 +28,6 @@ class GkpuPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
       );
       // await acceptCookiesButton.click();
       await acceptCookiesButton.evaluate('(element) => element.click()');
-
-      // navigate to events page
-      final eventsNavItemSelector =
-          'li.cms-menu-item > a[href="/hr/dogadjanja/"]';
-      // 'li.cms-menu-item > a[href="/hr/novosti/"]';
-      final eventsNavItem = await page.$(eventsNavItemSelector);
-      // await eventsNavItem.click();
-      await eventsNavItem.evaluate('(element) => element.click()');
 
       // get events
       final eventsWrapperSelector = "div.blog-main-wrapper";
@@ -97,77 +86,25 @@ class GkpuPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
                 '(element) => element.textContent',
               )).toString().trim();
 
-          print("!!!!!!!!!!!!! -------------- !!!!!!!!!!!!!!!");
-
           //  TODO - i could find offset here? for this specific date - and then use that offset to create date in croatia time zone
           final timeSections = time.split(":");
           final hours = int.parse(timeSections[0]);
           final minutes = int.parse(timeSections[1]);
 
           // TODO this datetine will be in whatever time zone the server is in
-          final eventDateTime = DateTime(year, month, day, hours, minutes);
+          // final eventDateTime = DateTime(year, month, day, hours, minutes);
 
           // we need to convert this server datetime to UTC by:
           // - specifiying that the above time is in croatia time zone
           // - then converting it to UTC
-          final utcEventDateTime = TimezoneWrapper.convertToUtc(
-            dateTime: eventDateTime,
-            location: TimezoneLocation.croatia,
+          final utcDateTime = TimezoneWrapper.toLocationDateInUTC(
+            TimezoneLocation.croatia,
+            year: year,
+            month: month,
+            day: day,
+            hours: hours,
+            minutes: minutes,
           );
-
-          // --------------------------------
-          // tzdata.initializeTimeZones();
-
-          // final tzLocationName = 'Europe/Zagreb';
-          // final tzLocation = tz.getLocation(tzLocationName);
-          // final zonedDateTime = tz.TZDateTime(
-          //   tzLocation,
-          //   year,
-          //   month,
-          //   day,
-          //   hours,
-          //   minutes,
-          // );
-
-          // final zonedUTCDateTime = zonedDateTime.toUtc();
-          // // TODO this will convert to DateTime in UTC, so it is good - we will get UTC + 0 date? this is what we want
-          // final nativeUTCDateTime = zonedUTCDateTime.native;
-
-          // // final date = DateTime(year, month, day, hours, minutes);
-          // // TODO test
-          // final date = nativeUTCDateTime;
-
-          // final croatiaZone = 'Europe/Zagreb';
-          // final croatiaDateWithFromDateTimeConstructor = tz.TZDateTime.from(
-          //   date,
-          //   tz.getLocation(croatiaZone),
-          // );
-
-          // final croatiaDateWithDefaultConstructor = tz.TZDateTime(
-          //   tz.getLocation(croatiaZone),
-          //   year,
-          //   month,
-          //   day,
-          //   hours,
-          //   minutes,
-          // );
-
-          // print("assembled date: $date");
-          // print("zonedDateTime: $zonedDateTime");
-          // print("zonedUTCDateTime: $zonedUTCDateTime");
-          // print("nativeUTCDateTime: $nativeUTCDateTime");
-          // print(
-          //   "croatiaDateWithFromDateTimeConstructor: "
-          //   "$croatiaDateWithFromDateTimeConstructor",
-          // );
-          // print(
-          //   "croatiaDateWithDefaultConstructor: "
-          //   "$croatiaDateWithDefaultConstructor",
-          // );
-
-          // print("!!!!!!!!!!!!! -------------- !!!!!!!!!!!!!!!");
-
-          // -------------------------------
 
           // title
           final titleElementSelector = "h3 > a";
@@ -179,8 +116,6 @@ class GkpuPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
           final imageUrl = await imageElement.evaluate(
             '(element) => element.src',
           );
-
-          print("imageUrl: $imageUrl");
 
           final imageUri = Uri.parse(imageUrl.toString().trim());
 
@@ -210,30 +145,19 @@ class GkpuPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
             '(element) => element.textContent',
           );
 
-          // print("description: $description");
-
           await detailsPage.close();
-
-          /* ---------- */
 
           final event = ScrapedEventEntity(
             title: title,
-            // date: date,
-            date: utcEventDateTime,
+            date: utcDateTime,
             uri: Uri.parse(url),
             venue: "Gradska knjižnica i čitaonica Pula",
-            // TODO temp placegholder
-            // imageUri: Uri.parse("https://picsum.photos/300/200"),
             imageUri: imageUri,
             description: description.toString().trim(),
           );
 
           allEvents.add(event);
-
-          // print("date: $date");
         }
-
-        print("scrapping page: $currentPage");
 
         // scrape stuff
 
@@ -264,7 +188,8 @@ class GkpuPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
 
   @override
   // TODO: implement uri
-  Uri get uri => Uri.parse('https://www.gkc-pula.hr/hr/');
+  // Uri get uri => Uri.parse('https://www.gkc-pula.hr/hr/');
+  Uri get uri => Uri.parse('https://www.gkc-pula.hr/hr/dogadjanja/');
 }
 
 Future<void> _TAKE_SCREENSHOT(Page page, int index) async {

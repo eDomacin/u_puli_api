@@ -6,31 +6,39 @@ abstract class TimezoneWrapper {
     tzdate.initializeTimeZones();
   }
 
-  static DateTime convertToUtc({
-    required DateTime dateTime,
-    required TimezoneLocation location,
+  static DateTime toLocationDateInUTC(
+    TimezoneLocation location, {
+    required int year,
+    required int month,
+    required int day,
+    required int hours,
+    required int minutes,
   }) {
     final tzLocation = tz.getLocation(location.name);
-    final tzDateTime = tz.TZDateTime(
+    final locationTZDateTime = tz.TZDateTime(
       tzLocation,
-      dateTime.year,
-      dateTime.month,
-      dateTime.day,
-      dateTime.hour,
-      dateTime.minute,
-      dateTime.second,
-      dateTime.millisecond,
-      dateTime.microsecond,
-    );
-    final utcTzDateTime = tzDateTime.toUtc();
+      year,
+      month,
+      day,
+      hours,
+      minutes,
 
-    final nativeUtcDateTime = utcTzDateTime.native;
+      // dateTime.year,
+      // dateTime.month,
+      // dateTime.day,
+      // dateTime.hour,
+      // dateTime.minute,
+      // dateTime.second,
+      // dateTime.millisecond,
+      // dateTime.microsecond,
+    );
+    final utcTZDateTime = locationTZDateTime.toUtc();
+
+    final nativeUtcDateTime = utcTZDateTime.native;
 
     print("!!!!!!!!!!!!! -------------- !!!!!!!!!!!!!!!");
-
-    print("original dateTime: $dateTime");
-    print("tzDateTime: $tzDateTime");
-    print("utcTzDateTime: $utcTzDateTime");
+    print("tzDateTime: $locationTZDateTime");
+    print("utcTzDateTime: $utcTZDateTime");
     print("nativeUtcDateTime: $nativeUtcDateTime");
 
     print("!!!!!!!!!!!!! -------------- !!!!!!!!!!!!!!!");

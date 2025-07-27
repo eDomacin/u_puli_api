@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:event_scraper/src/data/entities/scraped_event_entity.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/puppeteer_scraper_wrapper.dart';
+import 'package:event_scraper/src/wrappers/timezone/timezone_wrapper.dart';
 import 'package:puppeteer/puppeteer.dart';
 
 class NarancaPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
@@ -12,53 +13,39 @@ class NarancaPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
   Future<Set<ScrapedEventEntity>> getEvents() async {
     final List<ScrapedEventEntity> allEvents = <ScrapedEventEntity>[];
 
-    print("before getBrowser");
     final Browser browser = await getBrowser();
 
-    print("before newPage");
     final Page page = await browser.newPage();
 
     try {
-      print("before navigateToCalendarPage");
       await _navigateToCalendarPage(page);
 
-      print("before delayed");
       await Future.delayed(Duration(seconds: 1));
-      // await _takeScreenshot(page, 0);
 
-      print("before closeCookiesConsent");
       await _closeCookiesConsent(page);
 
-      print("before delayed2");
       await Future.delayed(Duration(seconds: 1));
 
-      print("before switchToMonthView");
       await _switchToMonthView(page);
 
       for (int i = 0; i <= 3; i++) {
-        print("before scrapeMonthEvents: $i");
         final pageEvents = await _scrapeMonthEvents(page: page);
 
-        print("before allEvents.addAll");
         allEvents.addAll(pageEvents);
 
         // we only want to scrape 4 months
         if (i == 3) continue;
 
-        print("before navigateToNextMonth");
         await _navigateToNextMonth(page);
       }
     } catch (e) {
       print("NarancaScraper: error: $e");
     }
 
-    print("before close");
     await page.close();
 
-    print("before browser.close");
     await browser.close();
 
-    print("before return");
     return allEvents.toSet();
   }
 
@@ -152,8 +139,17 @@ class NarancaPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
       final hours = int.parse(timeSections[0]);
       final minutes = int.parse(timeSections[1]);
 
-      // TODO for some reason, we have issue with timezone here when we run this in docker or locally
-      final date = DateTime(year, month, day, hours, minutes);
+      // we need to convert this server datetime to UTC by:
+      // - specifiying that the above time is in croatia time zone
+      // - then converting it to UTC
+      final utcDateTime = TimezoneWrapper.toLocationDateInUTC(
+        TimezoneLocation.croatia,
+        year: year,
+        month: month,
+        day: day,
+        hours: hours,
+        minutes: minutes,
+      );
 
       final regex = RegExp(r'^(.*),\s([^,]+)$');
 
@@ -183,11 +179,10 @@ class NarancaPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
       final event = ScrapedEventEntity(
         title: title!,
         venue: venue!,
-        date: date,
+        date: utcDateTime,
         uri: Uri.parse(url),
-        // TODO temp placegholder
+        /* TODO return to these once events are available */
         imageUri: Uri.parse("https://picsum.photos/300/200"),
-        /* TODO return to this once events are available */
         description: "No description available",
       );
 
