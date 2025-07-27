@@ -8,7 +8,6 @@ gojzerica pula
 tcp
 šou program
 ict 
-nk istra
 pulainfo - https://pulainfo.hr/hr/dogadanja/
 kulturistra
 teatar naranča

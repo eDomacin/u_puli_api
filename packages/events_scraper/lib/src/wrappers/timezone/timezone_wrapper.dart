@@ -22,26 +22,10 @@ abstract class TimezoneWrapper {
       day,
       hours,
       minutes,
-
-      // dateTime.year,
-      // dateTime.month,
-      // dateTime.day,
-      // dateTime.hour,
-      // dateTime.minute,
-      // dateTime.second,
-      // dateTime.millisecond,
-      // dateTime.microsecond,
     );
     final utcTZDateTime = locationTZDateTime.toUtc();
 
     final nativeUtcDateTime = utcTZDateTime.native;
-
-    print("!!!!!!!!!!!!! -------------- !!!!!!!!!!!!!!!");
-    print("tzDateTime: $locationTZDateTime");
-    print("utcTzDateTime: $utcTZDateTime");
-    print("nativeUtcDateTime: $nativeUtcDateTime");
-
-    print("!!!!!!!!!!!!! -------------- !!!!!!!!!!!!!!!");
 
     // Return the DateTime in UTC
     return nativeUtcDateTime;
