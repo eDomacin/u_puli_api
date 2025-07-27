@@ -6,4 +6,5 @@ abstract class EventsLoaderRepository {
   Future<void> loadRojcEvents();
   Future<void> loadPDPUEvents();
   Future<void> loadHnlEvents();
+  Future<void> loadSpEvents();
 }

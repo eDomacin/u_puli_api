@@ -5,6 +5,7 @@ import 'package:event_scraper/src/domain/use_cases/load_kotac_events_use_case.da
 import 'package:event_scraper/src/domain/use_cases/load_naranca_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_pdpu_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_rojc_events_use_case.dart';
+import 'package:event_scraper/src/domain/use_cases/load_sp_events_use_case.dart';
 
 class EventsScraperController {
   EventsScraperController({
@@ -15,13 +16,15 @@ class EventsScraperController {
     required LoadRojcEventsUseCase loadRojcEventsUseCase,
     required LoadPDPUEventsUseCase loadPDPUEventsUseCase,
     required LoadHnlEventsUseCase loadHnlEventsUseCase,
+    required LoadSpEventsUseCase loadSpEventsUseCase,
   }) : _loadNarancaEventsUseCase = loadNarancaEventsUseCase,
        _loadGkpuEventsUseCase = loadGkpuEventsUseCase,
        _loadInkEventsUseCase = loadInkEventsUseCase,
        _loadKotacEventsUseCase = loadKotacEventsUseCase,
        _loadRojcEventsUseCase = loadRojcEventsUseCase,
        _loadHnlEventsUseCase = loadHnlEventsUseCase,
-       _loadPDPUEventsUseCase = loadPDPUEventsUseCase;
+       _loadPDPUEventsUseCase = loadPDPUEventsUseCase,
+       _loadSpEventsUseCase = loadSpEventsUseCase;
 
   final LoadNarancaEventsUseCase _loadNarancaEventsUseCase;
   final LoadGkpuEventsUseCase _loadGkpuEventsUseCase;
@@ -30,6 +33,7 @@ class EventsScraperController {
   final LoadRojcEventsUseCase _loadRojcEventsUseCase;
   final LoadPDPUEventsUseCase _loadPDPUEventsUseCase;
   final LoadHnlEventsUseCase _loadHnlEventsUseCase;
+  final LoadSpEventsUseCase _loadSpEventsUseCase;
 
   Future<void> run() async {
     // await _handleLoadNarancaEvents();
@@ -37,7 +41,8 @@ class EventsScraperController {
     // await _handleLoadInkEvents();
     // await _handleLoadKotacEvents();
     // await _handleLoadRojcEvents();
-    await _handleLoadHnlEvents();
+    // await _handleLoadHnlEvents();
+    await _handleLoadSpEvents();
     // TODO skipping this because cannot connect to the site. it could be because of how the chromium browser is created. maybe try different options becasue in scraper POC project it works
     // await _handleLoadPDPUEvents();
   }
@@ -96,6 +101,14 @@ class EventsScraperController {
       await _loadHnlEventsUseCase();
     } catch (e) {
       print("Failed scraping HNL events with error: $e");
+    }
+  }
+
+  Future<void> _handleLoadSpEvents() async {
+    try {
+      await _loadSpEventsUseCase();
+    } catch (e) {
+      print("Failed scraping SP events with error: $e");
     }
   }
 }
