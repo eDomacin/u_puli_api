@@ -1,4 +1,5 @@
 import 'package:event_scraper/src/domain/use_cases/load_gkpu_events_use_case.dart';
+import 'package:event_scraper/src/domain/use_cases/load_hnl_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_ink_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_kotac_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_naranca_events_use_case.dart';
@@ -13,11 +14,13 @@ class EventsScraperController {
     required LoadKotacEventsUseCase loadKotacEventsUseCase,
     required LoadRojcEventsUseCase loadRojcEventsUseCase,
     required LoadPDPUEventsUseCase loadPDPUEventsUseCase,
+    required LoadHnlEventsUseCase loadHnlEventsUseCase,
   }) : _loadNarancaEventsUseCase = loadNarancaEventsUseCase,
        _loadGkpuEventsUseCase = loadGkpuEventsUseCase,
        _loadInkEventsUseCase = loadInkEventsUseCase,
        _loadKotacEventsUseCase = loadKotacEventsUseCase,
        _loadRojcEventsUseCase = loadRojcEventsUseCase,
+       _loadHnlEventsUseCase = loadHnlEventsUseCase,
        _loadPDPUEventsUseCase = loadPDPUEventsUseCase;
 
   final LoadNarancaEventsUseCase _loadNarancaEventsUseCase;
@@ -26,13 +29,15 @@ class EventsScraperController {
   final LoadKotacEventsUseCase _loadKotacEventsUseCase;
   final LoadRojcEventsUseCase _loadRojcEventsUseCase;
   final LoadPDPUEventsUseCase _loadPDPUEventsUseCase;
+  final LoadHnlEventsUseCase _loadHnlEventsUseCase;
 
   Future<void> run() async {
-    await _handleLoadNarancaEvents();
-    await _handleLoadGkpuEvents();
-    await _handleLoadInkEvents();
-    await _handleLoadKotacEvents();
-    await _handleLoadRojcEvents();
+    // await _handleLoadNarancaEvents();
+    // await _handleLoadGkpuEvents();
+    // await _handleLoadInkEvents();
+    // await _handleLoadKotacEvents();
+    // await _handleLoadRojcEvents();
+    await _handleLoadHnlEvents();
     // TODO skipping this because cannot connect to the site. it could be because of how the chromium browser is created. maybe try different options becasue in scraper POC project it works
     // await _handleLoadPDPUEvents();
   }
@@ -83,6 +88,14 @@ class EventsScraperController {
       await _loadPDPUEventsUseCase();
     } catch (e) {
       print("Failed scraping PDPU events with error: $e");
+    }
+  }
+
+  Future<void> _handleLoadHnlEvents() async {
+    try {
+      await _loadHnlEventsUseCase();
+    } catch (e) {
+      print("Failed scraping HNL events with error: $e");
     }
   }
 }

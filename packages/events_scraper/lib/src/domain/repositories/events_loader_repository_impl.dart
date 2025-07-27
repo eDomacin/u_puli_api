@@ -116,4 +116,21 @@ class EventsLoaderRepositoryImpl implements EventsLoaderRepository {
 
     print("Stored event entities: $storeEntityValues");
   }
+
+  @override
+  Future<void> loadHnlEvents() async {
+    final Set<ScrapedEventEntity> events =
+        await _eventsScraperDataSource.getHnlEvents();
+
+    print("Scraped event entities: $events");
+
+    final List<StoreEventEntityValue> storeEntityValues =
+        EventsConverter.storeEntityValuesFromScrapedEntities(
+          scrapedEventEntities: events,
+        );
+
+    await _eventsStorerDataSource.storeEvents(storeEntityValues);
+
+    print("Stored event entities: $storeEntityValues");
+  }
 }

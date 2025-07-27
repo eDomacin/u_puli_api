@@ -1,4 +1,19 @@
-Future<void> main(List<String> args) async {}
+import 'package:event_scraper/src/wrappers/puppeteer/hnl_puppeteer_scraper_wraper.dart';
+import 'package:timezone/data/latest.dart' as TimezoneWrapper;
+
+Future<void> main(List<String> args) async {
+  TimezoneWrapper.initializeTimeZones();
+
+  // await _scrapeHNLIstraEvents();
+  // _someDecodedUrlStuff();
+}
+
+Future<void> _scrapeHNLIstraEvents() async {
+  final hnlScraper = HnlPuppeteerScraperWrapper();
+  final events = await hnlScraper.getEvents();
+
+  print('Events: $events');
+}
 
 void _someDecodedUrlStuff() {
   // // final scraper = GkpuPuppeteerScraperWrapper();
