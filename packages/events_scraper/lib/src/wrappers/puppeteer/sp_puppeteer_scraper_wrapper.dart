@@ -96,11 +96,6 @@ class SpPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
 
         final location = locationString.replaceFirst("📍", "").trim();
 
-        print("date: $day.$month.$year");
-        print("time: $hours:$minutes");
-        print("title: $title");
-        print("location: $location");
-
         final event = ScrapedEventEntity(
           title: title,
           venue: location,
@@ -114,8 +109,6 @@ class SpPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
 
         allEvents.add(event);
       }
-
-      print("here");
     } catch (e) {
       print("SpPuppeteerScraperWrapper: error: $e");
     }

@@ -32,20 +32,7 @@ class HnlPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
       final matchesTableRowsSelector = "tbody > tr";
       final matchesTableRows = await matchesTable.$$(matchesTableRowsSelector);
 
-      print("found matches table: $matchesTable");
-
       for (final tableRow in matchesTableRows) {
-        // get classes of each element
-        // final rowClasses = (await tableRow.evaluate(
-        //   '(element) => element.className',
-        // )).toString();
-
-        // if(rowClasses.isNotEmpty) {
-        //   // we dont care about header rows
-        //   continue;
-        // }
-        // print("row classes: $rowClasses");
-
         final rowContent = await tableRow.evaluate(
           '(element) => element.textContent',
         );
@@ -54,8 +41,6 @@ class HnlPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
         if (rowContent!.contains("Izvještaj")) {
           continue;
         }
-
-        print("row content: $rowContent");
 
         final homeTeamCell = await tableRow.$("td:nth-child(2)");
         final homeTeam =
@@ -78,8 +63,6 @@ class HnlPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
         final matchInfo = await matchInfoCell.evaluate(
           '(element) => element.textContent',
         );
-
-        print("match info: $matchInfo");
 
         final matchDateTime = _convertMatchInfoToDateTime(matchInfo!);
 
