@@ -37,4 +37,9 @@ class ScrapedEventEntity {
   // int get hashCode => Object.hash(title, venue, date, uri);
   int get hashCode =>
       Object.hash(title, venue, date, uri, imageUri, description);
+
+  @override
+  String toString() {
+    return 'ScrapedEventEntity{title: $title, venue: $venue, date: $date, uri: $uri, imageUri: $imageUri, description: $description}';
+  }
 }

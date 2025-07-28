@@ -1,22 +1,24 @@
 import 'package:event_scraper/src/data/entities/scraped_event_entity.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/puppeteer_scraper_wrapper.dart';
+import 'package:event_scraper/src/wrappers/timezone/timezone_wrapper.dart';
 import 'package:puppeteer/puppeteer.dart';
 
 class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
+  @override
+  // TODO: implement uri
+  Uri get uri => Uri.parse("https://www.pd-glasistre.hr/godisnji-plan-izleta/");
+
+  const PDPUPuppeteerScrapperWrapper();
+
   @override
   Future<Set<ScrapedEventEntity>> getEvents() async {
     final Set<ScrapedEventEntity> allEvents = <ScrapedEventEntity>{};
 
     final Browser browser = await getBrowser();
-    final Page page = await browser.newPage();
+    final page = await browser.newPage();
 
     try {
-      await page.goto(uri.toString());
-
-      final excursionsNavItemSelector =
-          'a[href="https://www.pd-glasistre.hr/godisnji-plan-izleta/"]';
-      await page.waitForSelector(excursionsNavItemSelector);
-      await page.click(excursionsNavItemSelector);
+      await page.goto(uri.toString(), wait: Until.networkIdle);
 
       // get year
       final excursionsPageYearTitleSelector =
@@ -28,7 +30,6 @@ class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
       );
       final excursionsPageYearTitle = await excursionsPageYearTitleElement
           .evaluate('(element) => element.textContent');
-      print("PD Pula: excursionsPageYearTitle: $excursionsPageYearTitle");
 
       final excurionsPageYearTitleRegex = RegExp(
         r"PLAN PLANINARSKIH IZLETA ZA (\d{4})\. GODINU",
@@ -43,7 +44,6 @@ class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
       }
 
       final year = int.parse(match.group(1)!);
-      print("PD Pula: year: $year");
 
       // get events
 
@@ -52,16 +52,11 @@ class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
 
       final excursionsTable = await page.$(excurionsTableSelector);
 
-      print("PD Pula: excursionsTable: $excursionsTable");
-
       final tableRowSelector = "tr.wptb-row";
       final tableRows = await excursionsTable.$$(tableRowSelector);
 
-      print("PD Pula: tableRows.length: ${tableRows.length}");
-
       // TODO we dont care about the first row - it is the header
       for (int i = 1; i < tableRows.length; i++) {
-        print("--------");
         final tableRow = tableRows[i];
 
         final tableRowCellSelector = "td.wptb-cell";
@@ -77,9 +72,6 @@ class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
           '(element) => element.textContent',
         );
 
-        print("PD Pula: dateContent: $dateContent");
-        print("PD Pula: titleContent: $titleContent");
-
         final isDateRange = dateContent.contains("-");
 
         final date =
@@ -87,18 +79,16 @@ class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
                 ? _getDateFromRangeDateString(dateContent, year)
                 : _getDateFromSingleDateString(dateContent, year);
 
-        print("PD Pula: date: $date");
-
-        print("--------");
-
         final event = ScrapedEventEntity(
           title: titleContent.toString().trim(),
           date: date,
           uri: Uri.parse("https://www.pd-glasistre.hr/godisnji-plan-izleta/"),
           venue: "Planinarsko društvo Pula",
-          imageUri: Uri.parse("https://picsum.photos/300/200"),
+          imageUri: Uri.parse(
+            "https://www.pd-glasistre.hr/wp-content/uploads/2022/06/PD-Glas-Istre-LOGO-000000001.png",
+          ),
           /* TODO return to this once scraper works */
-          description: "No description available",
+          description: "",
         );
 
         allEvents.add(event);
@@ -109,7 +99,6 @@ class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
 
     await page.close();
     await browser.close();
-    print("RocScraper: allEvents.length: ${allEvents.length}");
 
     return allEvents.toSet();
   }
@@ -134,7 +123,15 @@ class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
       final startDay = int.parse(match.group(1)!);
       final month = int.parse(match.group(2)!);
 
-      return DateTime(year, month, startDay);
+      // return DateTime(year, month, startDay);
+      return TimezoneWrapper.toLocationDateInUTC(
+        TimezoneLocation.croatia,
+        year: year,
+        month: month,
+        day: startDay,
+        hours: 0,
+        minutes: 0,
+      );
     } else if (sameMonthRange.hasMatch(rangeDateString)) {
       final regex = RegExp(r"(\d{1,2})\.?\-\d{1,2}\.(\d{1,2})\.?");
 
@@ -148,7 +145,14 @@ class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
       final startDay = int.parse(match.group(1)!);
       final month = int.parse(match.group(2)!);
 
-      return DateTime(year, month, startDay);
+      return TimezoneWrapper.toLocationDateInUTC(
+        TimezoneLocation.croatia,
+        year: year,
+        month: month,
+        day: startDay,
+        hours: 0,
+        minutes: 0,
+      );
     } else {
       throw Exception(
         "PD Pula: rangeDateString: $rangeDateString does not match the regex",
@@ -168,14 +172,17 @@ class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
     final day = int.parse(match.group(1)!);
     final month = int.parse(match.group(2)!);
 
-    return DateTime(year, month, day);
+    return TimezoneWrapper.toLocationDateInUTC(
+      TimezoneLocation.croatia,
+      year: year,
+      month: month,
+      day: day,
+      hours: 0,
+      minutes: 0,
+    );
   }
 
   @override
   // TODO: implement name
   String get name => "Planinarsko društvo Pula";
-
-  @override
-  // TODO: implement uri
-  Uri get uri => Uri.parse("https://www.pd-glasistre.hr/");
 }

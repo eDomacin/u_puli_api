@@ -20,16 +20,12 @@ class EventsLoaderRepositoryImpl implements EventsLoaderRepository {
     final Set<ScrapedEventEntity> events =
         await _eventsScraperDataSource.getKotacEvents();
 
-    print("Scraped event entities: $events");
-
     final List<StoreEventEntityValue> storeEntityValues =
         EventsConverter.storeEntityValuesFromScrapedEntities(
           scrapedEventEntities: events,
         );
 
     await _eventsStorerDataSource.storeEvents(storeEntityValues);
-
-    print("Stored event entities: $storeEntityValues");
   }
 
   @override
@@ -37,16 +33,12 @@ class EventsLoaderRepositoryImpl implements EventsLoaderRepository {
     final Set<ScrapedEventEntity> events =
         await _eventsScraperDataSource.getInkEvents();
 
-    print("Scraped event entities: $events");
-
     final List<StoreEventEntityValue> storeEntityValues =
         EventsConverter.storeEntityValuesFromScrapedEntities(
           scrapedEventEntities: events,
         );
 
     await _eventsStorerDataSource.storeEvents(storeEntityValues);
-
-    print("Stored event entities: $storeEntityValues");
   }
 
   @override
@@ -54,16 +46,12 @@ class EventsLoaderRepositoryImpl implements EventsLoaderRepository {
     final Set<ScrapedEventEntity> events =
         await _eventsScraperDataSource.getNarancaEvents();
 
-    print("Scraped event entities: $events");
-
     final List<StoreEventEntityValue> storeEntityValues =
         EventsConverter.storeEntityValuesFromScrapedEntities(
           scrapedEventEntities: events,
         );
 
     await _eventsStorerDataSource.storeEvents(storeEntityValues);
-
-    print("Stored event entities: $storeEntityValues");
   }
 
   @override
@@ -71,16 +59,12 @@ class EventsLoaderRepositoryImpl implements EventsLoaderRepository {
     final Set<ScrapedEventEntity> events =
         await _eventsScraperDataSource.getGkpuEvents();
 
-    print("Scraped event entities: $events");
-
     final List<StoreEventEntityValue> storeEntityValues =
         EventsConverter.storeEntityValuesFromScrapedEntities(
           scrapedEventEntities: events,
         );
 
     await _eventsStorerDataSource.storeEvents(storeEntityValues);
-
-    print("Stored event entities: $storeEntityValues");
   }
 
   @override
@@ -88,16 +72,12 @@ class EventsLoaderRepositoryImpl implements EventsLoaderRepository {
     final Set<ScrapedEventEntity> events =
         await _eventsScraperDataSource.getRojcEvents();
 
-    print("Scraped event entities: $events");
-
     final List<StoreEventEntityValue> storeEntityValues =
         EventsConverter.storeEntityValuesFromScrapedEntities(
           scrapedEventEntities: events,
         );
 
     await _eventsStorerDataSource.storeEvents(storeEntityValues);
-
-    print("Stored event entities: $storeEntityValues");
   }
 
   @override
@@ -105,7 +85,18 @@ class EventsLoaderRepositoryImpl implements EventsLoaderRepository {
     final Set<ScrapedEventEntity> events =
         await _eventsScraperDataSource.getPDPUEvents();
 
-    print("Scraped event entities: $events");
+    final List<StoreEventEntityValue> storeEntityValues =
+        EventsConverter.storeEntityValuesFromScrapedEntities(
+          scrapedEventEntities: events,
+        );
+
+    await _eventsStorerDataSource.storeEvents(storeEntityValues);
+  }
+
+  @override
+  Future<void> loadHnlEvents() async {
+    final Set<ScrapedEventEntity> events =
+        await _eventsScraperDataSource.getHnlEvents();
 
     final List<StoreEventEntityValue> storeEntityValues =
         EventsConverter.storeEntityValuesFromScrapedEntities(
@@ -113,7 +104,31 @@ class EventsLoaderRepositoryImpl implements EventsLoaderRepository {
         );
 
     await _eventsStorerDataSource.storeEvents(storeEntityValues);
+  }
 
-    print("Stored event entities: $storeEntityValues");
+  @override
+  Future<void> loadSpEvents() async {
+    final Set<ScrapedEventEntity> events =
+        await _eventsScraperDataSource.getSpEvents();
+
+    final List<StoreEventEntityValue> storeEntityValues =
+        EventsConverter.storeEntityValuesFromScrapedEntities(
+          scrapedEventEntities: events,
+        );
+
+    await _eventsStorerDataSource.storeEvents(storeEntityValues);
+  }
+
+  @override
+  Future<void> loadPulainfoEvents() async {
+    final Set<ScrapedEventEntity> events =
+        await _eventsScraperDataSource.getPulainfoEvents();
+
+    final List<StoreEventEntityValue> storeEntityValues =
+        EventsConverter.storeEntityValuesFromScrapedEntities(
+          scrapedEventEntities: events,
+        );
+
+    await _eventsStorerDataSource.storeEvents(storeEntityValues);
   }
 }

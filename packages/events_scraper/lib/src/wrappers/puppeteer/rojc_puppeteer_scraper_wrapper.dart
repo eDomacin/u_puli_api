@@ -1,5 +1,6 @@
 import 'package:event_scraper/src/data/entities/scraped_event_entity.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/puppeteer_scraper_wrapper.dart';
+import 'package:event_scraper/src/wrappers/timezone/timezone_wrapper.dart';
 import 'package:puppeteer/puppeteer.dart';
 
 class RojcPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
@@ -39,14 +40,6 @@ class RojcPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
     await page.close();
     await browser.close();
 
-    print("RocScraper: allEvents.length: ${allEvents.length}");
-
-    print("---------------");
-    for (final event in allEvents) {
-      final title = event.title;
-      print("RojcScraper: event title: $title");
-    }
-
     return allEvents.toSet();
   }
 
@@ -65,10 +58,6 @@ class RojcPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
       singleMainEventItemSelector,
     );
 
-    print(
-      "RojcScraper: singleMainEventItems.length: ${singleMainEventItems.length}",
-    );
-
     for (int i = 0; i < singleMainEventItems.length; i++) {
       final singleMainEventItem = singleMainEventItems[i];
 
@@ -83,8 +72,6 @@ class RojcPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
             '(element) => element.textContent',
           )).toString().trim();
 
-      print("DESCRIPTION!!!: $description");
-
       /* TODO not sure how main should be used here?! */
       final schemaSelector = "main div.evo_event_schema";
       final eventSchema = await singleMainEventItem.$(schemaSelector);
@@ -95,8 +82,6 @@ class RojcPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
           (await imageHolder.evaluate(
             '(element) => element.content',
           )).toString().trim();
-
-      print("RojcScraper: imageUrl!!!!!!!!!!!!: $imageUrl");
 
       final eventUrlSelector = "main div.evo_event_schema a[itemprop='url']";
       final eventUrl = await eventSchema.$(eventUrlSelector);
@@ -118,11 +103,6 @@ class RojcPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
           ((await startDate.evaluate('(element) => element.content')) as String)
               .trim();
 
-      print("RojcScraper: eventSchema: $eventSchema");
-      print("RojcScraper: eventUrl: $eventUrl");
-      print("RojcScraper: url: $url");
-      print("RojcScraper: startDate: $startDateContent");
-
       final regex = RegExp(r"(\d{4})-(\d{1,2})-(\d{1,2})T(\d{1,2}):(\d{2})");
       final match = regex.firstMatch(startDateContent);
 
@@ -140,8 +120,18 @@ class RojcPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
       final hour = int.parse(match.group(4)!);
       final minutes = int.parse(match.group(5)!);
 
-      final eventDate = DateTime(year, month, day, hour, minutes);
-      print("RojcScraper: eventDate: $eventDate");
+      // final eventDate = DateTime(year, month, day, hour, minutes);
+      // we need to convert this server datetime to UTC by:
+      // - specifiying that the above time is in croatia time zone
+      // - then converting it to UTC
+      final utcDateTime = TimezoneWrapper.toLocationDateInUTC(
+        TimezoneLocation.croatia,
+        year: year,
+        month: month,
+        day: day,
+        hours: hour,
+        minutes: minutes,
+      );
 
       final titleSelector = "main span.evoet_title";
       final title = await singleMainEventItem.$(titleSelector);
@@ -149,19 +139,17 @@ class RojcPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
         '(element) => element.textContent',
       );
 
-      print("RojcScraper: title: $titleContent");
-
       final event = ScrapedEventEntity(
         title: titleContent as String,
         venue: "DC Rojc",
-        date: eventDate,
+        date: utcDateTime,
         uri: uri,
-        // TODO temp placegholder
         imageUri:
-            Uri.tryParse(imageUrl) ??
-            Uri.parse(
-              "https://images.unsplash.com/photo-1615875548115-83f4cb7611c6?q=80&w=958&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-            ),
+            imageUrl.isNotEmpty
+                ? Uri.parse(imageUrl)
+                : Uri.parse(
+                  "https://rojcnet.pula.org/wp-content/uploads/2020/04/ROJCNET2020header-white.png",
+                ),
         description: description,
       );
 

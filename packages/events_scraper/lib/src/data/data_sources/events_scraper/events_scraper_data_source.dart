@@ -7,4 +7,7 @@ abstract interface class EventsScraperDataSource {
   Future<Set<ScrapedEventEntity>> getKotacEvents();
   Future<Set<ScrapedEventEntity>> getRojcEvents();
   Future<Set<ScrapedEventEntity>> getPDPUEvents();
+  Future<Set<ScrapedEventEntity>> getHnlEvents();
+  Future<Set<ScrapedEventEntity>> getSpEvents();
+  Future<Set<ScrapedEventEntity>> getPulainfoEvents();
 }

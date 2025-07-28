@@ -7,19 +7,25 @@ import 'package:event_scraper/src/data/data_sources/events_storer/events_storer_
 import 'package:event_scraper/src/domain/repositories/events_loader_repository.dart';
 import 'package:event_scraper/src/domain/repositories/events_loader_repository_impl.dart';
 import 'package:event_scraper/src/domain/use_cases/load_gkpu_events_use_case.dart';
+import 'package:event_scraper/src/domain/use_cases/load_hnl_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_ink_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_kotac_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_naranca_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_pdpu_events_use_case.dart';
+import 'package:event_scraper/src/domain/use_cases/load_pulainfo_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_rojc_events_use_case.dart';
+import 'package:event_scraper/src/domain/use_cases/load_sp_events_use_case.dart';
 import 'package:event_scraper/src/events_scraper.dart';
 import 'package:event_scraper/src/presentation/controllers/events_scraper_controller.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/gkpu_puppeteer_scraper_wrapper.dart';
+import 'package:event_scraper/src/wrappers/puppeteer/hnl_puppeteer_scraper_wraper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/ink_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/kotac_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/naranca_puppeteer_scrapper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/pdpu_puppeteer_scraper_wrapper.dart';
+import 'package:event_scraper/src/wrappers/puppeteer/pulainfo_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/rojc_puppeteer_scraper_wrapper.dart';
+import 'package:event_scraper/src/wrappers/puppeteer/sp_puppeteer_scraper_wrapper.dart';
 
 Future<void> runEventsScraper() async {
   final EnvVarsWrapper envVarsWrapper = EnvVarsWrapper();
@@ -76,6 +82,12 @@ EventsScraperController _getInitializedEventsScraperController({
       RojcPuppeteerScraperWrapper();
   final PDPUPuppeteerScrapperWrapper pdpuPuppeteerScrapperWrapper =
       PDPUPuppeteerScrapperWrapper();
+  final HnlPuppeteerScraperWrapper hnlPuppeteerScrapperWrapper =
+      HnlPuppeteerScraperWrapper();
+  final SpPuppeteerScraperWrapper spPuppeteerScraperWrapper =
+      SpPuppeteerScraperWrapper();
+  final PulainfoPuppeteerScraperWrapper pulainfoPuppeteerScraperWrapper =
+      PulainfoPuppeteerScraperWrapper();
 
   // data sources
   final EventsScraperDataSource eventsScraperDataSource =
@@ -86,6 +98,9 @@ EventsScraperController _getInitializedEventsScraperController({
         kotacPuppeteerScraperWrapper: kotacPuppeteerScraperWrapper,
         rojcPuppeteerScraperWrapper: rojcPuppeteerScraperWrapper,
         pdpuPuppeteerScrapperWrapper: pdpuPuppeteerScrapperWrapper,
+        hnlPuppeteerScrapperWrapper: hnlPuppeteerScrapperWrapper,
+        spPuppeteerScraperWrapper: spPuppeteerScraperWrapper,
+        pulainfoPuppeteerScraperWrapper: pulainfoPuppeteerScraperWrapper,
       );
 
   final EventsStorerDataSource eventsStorerDataSource =
@@ -116,6 +131,14 @@ EventsScraperController _getInitializedEventsScraperController({
   final LoadPDPUEventsUseCase loadPDPUEventsUseCase = LoadPDPUEventsUseCase(
     eventsLoaderRepository: eventsLoaderRepository,
   );
+  final LoadHnlEventsUseCase loadHnlEventsUseCase = LoadHnlEventsUseCase(
+    eventsLoaderRepository: eventsLoaderRepository,
+  );
+  final LoadSpEventsUseCase loadSpEventsUseCase = LoadSpEventsUseCase(
+    eventsLoaderRepository: eventsLoaderRepository,
+  );
+  final LoadPulainfoEventsUseCase loadPulainfoEventsUseCase =
+      LoadPulainfoEventsUseCase(eventsLoaderRepository: eventsLoaderRepository);
 
   // controller
   final EventsScraperController eventsScraperController =
@@ -126,6 +149,9 @@ EventsScraperController _getInitializedEventsScraperController({
         loadKotacEventsUseCase: loadKotacEventsUseCase,
         loadRojcEventsUseCase: loadRojcEventsUseCase,
         loadPDPUEventsUseCase: loadPDPUEventsUseCase,
+        loadHnlEventsUseCase: loadHnlEventsUseCase,
+        loadSpEventsUseCase: loadSpEventsUseCase,
+        loadPulainfoEventsUseCase: loadPulainfoEventsUseCase,
       );
 
   return eventsScraperController;
