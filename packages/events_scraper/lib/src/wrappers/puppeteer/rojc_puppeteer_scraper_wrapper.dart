@@ -144,12 +144,12 @@ class RojcPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
         venue: "DC Rojc",
         date: utcDateTime,
         uri: uri,
-        // TODO temp placegholder
         imageUri:
-            Uri.tryParse(imageUrl) ??
-            Uri.parse(
-              "https://images.unsplash.com/photo-1615875548115-83f4cb7611c6?q=80&w=958&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-            ),
+            imageUrl.isNotEmpty
+                ? Uri.parse(imageUrl)
+                : Uri.parse(
+                  "https://rojcnet.pula.org/wp-content/uploads/2020/04/ROJCNET2020header-white.png",
+                ),
         description: description,
       );
 

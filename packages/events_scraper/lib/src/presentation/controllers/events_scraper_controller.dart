@@ -4,6 +4,7 @@ import 'package:event_scraper/src/domain/use_cases/load_ink_events_use_case.dart
 import 'package:event_scraper/src/domain/use_cases/load_kotac_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_naranca_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_pdpu_events_use_case.dart';
+import 'package:event_scraper/src/domain/use_cases/load_pulainfo_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_rojc_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_sp_events_use_case.dart';
 
@@ -17,6 +18,7 @@ class EventsScraperController {
     required LoadPDPUEventsUseCase loadPDPUEventsUseCase,
     required LoadHnlEventsUseCase loadHnlEventsUseCase,
     required LoadSpEventsUseCase loadSpEventsUseCase,
+    required LoadPulainfoEventsUseCase loadPulainfoEventsUseCase,
   }) : _loadNarancaEventsUseCase = loadNarancaEventsUseCase,
        _loadGkpuEventsUseCase = loadGkpuEventsUseCase,
        _loadInkEventsUseCase = loadInkEventsUseCase,
@@ -24,7 +26,8 @@ class EventsScraperController {
        _loadRojcEventsUseCase = loadRojcEventsUseCase,
        _loadHnlEventsUseCase = loadHnlEventsUseCase,
        _loadPDPUEventsUseCase = loadPDPUEventsUseCase,
-       _loadSpEventsUseCase = loadSpEventsUseCase;
+       _loadSpEventsUseCase = loadSpEventsUseCase,
+       _loadPulainfoEventsUseCase = loadPulainfoEventsUseCase;
 
   final LoadNarancaEventsUseCase _loadNarancaEventsUseCase;
   final LoadGkpuEventsUseCase _loadGkpuEventsUseCase;
@@ -34,17 +37,18 @@ class EventsScraperController {
   final LoadPDPUEventsUseCase _loadPDPUEventsUseCase;
   final LoadHnlEventsUseCase _loadHnlEventsUseCase;
   final LoadSpEventsUseCase _loadSpEventsUseCase;
+  final LoadPulainfoEventsUseCase _loadPulainfoEventsUseCase;
 
   Future<void> run() async {
-    // await _handleLoadNarancaEvents();
-    // await _handleLoadGkpuEvents();
-    // await _handleLoadInkEvents();
-    // await _handleLoadKotacEvents();
-    // await _handleLoadRojcEvents();
-    // await _handleLoadHnlEvents();
+    await _handleLoadNarancaEvents();
+    await _handleLoadGkpuEvents();
+    await _handleLoadInkEvents();
+    await _handleLoadKotacEvents();
+    await _handleLoadRojcEvents();
+    await _handleLoadHnlEvents();
     await _handleLoadSpEvents();
-    // TODO skipping this because cannot connect to the site. it could be because of how the chromium browser is created. maybe try different options becasue in scraper POC project it works
-    // await _handleLoadPDPUEvents();
+    await _handleLoadPulainfoEvents();
+    await _handleLoadPDPUEvents();
   }
 
   // TODO maybe this can be unified somehow - but i want to be able to log which one failed - so need some field on the use case, if possile
@@ -109,6 +113,14 @@ class EventsScraperController {
       await _loadSpEventsUseCase();
     } catch (e) {
       print("Failed scraping SP events with error: $e");
+    }
+  }
+
+  Future<void> _handleLoadPulainfoEvents() async {
+    try {
+      await _loadPulainfoEventsUseCase();
+    } catch (e) {
+      print("Failed scraping Pulainfo events with error: $e");
     }
   }
 }

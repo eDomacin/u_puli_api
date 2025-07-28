@@ -6,6 +6,7 @@ import 'package:event_scraper/src/wrappers/puppeteer/ink_puppeteer_scraper_wrapp
 import 'package:event_scraper/src/wrappers/puppeteer/kotac_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/naranca_puppeteer_scrapper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/pdpu_puppeteer_scraper_wrapper.dart';
+import 'package:event_scraper/src/wrappers/puppeteer/pulainfo_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/rojc_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/sp_puppeteer_scraper_wrapper.dart';
 
@@ -19,6 +20,7 @@ class EventsScraperDataSourceImpl implements EventsScraperDataSource {
     required PDPUPuppeteerScrapperWrapper pdpuPuppeteerScrapperWrapper,
     required HnlPuppeteerScraperWrapper hnlPuppeteerScrapperWrapper,
     required SpPuppeteerScraperWrapper spPuppeteerScraperWrapper,
+    required PulainfoPuppeteerScraperWrapper pulainfoPuppeteerScraperWrapper,
   }) : _narancaPuppeteerScraperWrapper = narancaPuppeteerScraperWrapper,
        _gkpuPuppeteerScraperWrapper = gkpuPuppeteerScraperWrapper,
        _inkPuppeteerScraperWrapper = inkPuppeteerScraperWrapper,
@@ -26,7 +28,8 @@ class EventsScraperDataSourceImpl implements EventsScraperDataSource {
        _rojcPuppeteerScraperWrapper = rojcPuppeteerScraperWrapper,
        _pdpuPuppeteerScrapperWrapper = pdpuPuppeteerScrapperWrapper,
        _hnlPuppeteerScrapperWrapper = hnlPuppeteerScrapperWrapper,
-       _spPuppeteerScraperWrapper = spPuppeteerScraperWrapper;
+       _spPuppeteerScraperWrapper = spPuppeteerScraperWrapper,
+       _pulainfoPuppeteerScraperWrapper = pulainfoPuppeteerScraperWrapper;
 
   // TODO this could accept some kind of reporting service to log potential errors
   final NarancaPuppeteerScraperWrapper _narancaPuppeteerScraperWrapper;
@@ -37,6 +40,7 @@ class EventsScraperDataSourceImpl implements EventsScraperDataSource {
   final PDPUPuppeteerScrapperWrapper _pdpuPuppeteerScrapperWrapper;
   final HnlPuppeteerScraperWrapper _hnlPuppeteerScrapperWrapper;
   final SpPuppeteerScraperWrapper _spPuppeteerScraperWrapper;
+  final PulainfoPuppeteerScraperWrapper _pulainfoPuppeteerScraperWrapper;
 
   @override
   Future<Set<ScrapedEventEntity>> getKotacEvents() async {
@@ -281,6 +285,35 @@ class EventsScraperDataSourceImpl implements EventsScraperDataSource {
       _printFailedScrapeMessage(
         name: _spPuppeteerScraperWrapper.name,
         uri: _spPuppeteerScraperWrapper.uri,
+        error: e.toString(),
+        stackTrace: s,
+      );
+
+      return <ScrapedEventEntity>{};
+    }
+  }
+
+  @override
+  Future<Set<ScrapedEventEntity>> getPulainfoEvents() async {
+    _printStartScrapeMessage(
+      name: _pulainfoPuppeteerScraperWrapper.name,
+      uri: _pulainfoPuppeteerScraperWrapper.uri,
+    );
+
+    try {
+      final Set<ScrapedEventEntity> events =
+          await _pulainfoPuppeteerScraperWrapper.getEvents();
+
+      _printFinishScrapeMessage(
+        name: _pulainfoPuppeteerScraperWrapper.name,
+        uri: _pulainfoPuppeteerScraperWrapper.uri,
+      );
+
+      return events;
+    } catch (e, s) {
+      _printFailedScrapeMessage(
+        name: _pulainfoPuppeteerScraperWrapper.name,
+        uri: _pulainfoPuppeteerScraperWrapper.uri,
         error: e.toString(),
         stackTrace: s,
       );

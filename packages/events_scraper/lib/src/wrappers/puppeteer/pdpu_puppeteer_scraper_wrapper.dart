@@ -5,20 +5,20 @@ import 'package:puppeteer/puppeteer.dart';
 
 class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
   @override
+  // TODO: implement uri
+  Uri get uri => Uri.parse("https://www.pd-glasistre.hr/godisnji-plan-izleta/");
+
+  const PDPUPuppeteerScrapperWrapper();
+
+  @override
   Future<Set<ScrapedEventEntity>> getEvents() async {
     final Set<ScrapedEventEntity> allEvents = <ScrapedEventEntity>{};
 
     final Browser browser = await getBrowser();
-    final Page page = await browser.newPage();
+    final page = await browser.newPage();
 
     try {
-      await page.goto(uri.toString());
-
-      final excursionsNavItemSelector =
-          'a[href="https://www.pd-glasistre.hr/godisnji-plan-izleta/"]';
-      await page.waitForSelector(excursionsNavItemSelector);
-      /* TODO pdpu might not work because of click this way. maybe we should use JS for this - to evaluate, and then click within js */
-      await page.click(excursionsNavItemSelector);
+      await page.goto(uri.toString(), wait: Until.networkIdle);
 
       // get year
       final excursionsPageYearTitleSelector =
@@ -84,9 +84,11 @@ class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
           date: date,
           uri: Uri.parse("https://www.pd-glasistre.hr/godisnji-plan-izleta/"),
           venue: "Planinarsko društvo Pula",
-          imageUri: Uri.parse("https://picsum.photos/300/200"),
+          imageUri: Uri.parse(
+            "https://www.pd-glasistre.hr/wp-content/uploads/2022/06/PD-Glas-Istre-LOGO-000000001.png",
+          ),
           /* TODO return to this once scraper works */
-          description: "No description available",
+          description: "",
         );
 
         allEvents.add(event);
@@ -121,7 +123,15 @@ class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
       final startDay = int.parse(match.group(1)!);
       final month = int.parse(match.group(2)!);
 
-      return DateTime(year, month, startDay);
+      // return DateTime(year, month, startDay);
+      return TimezoneWrapper.toLocationDateInUTC(
+        TimezoneLocation.croatia,
+        year: year,
+        month: month,
+        day: startDay,
+        hours: 0,
+        minutes: 0,
+      );
     } else if (sameMonthRange.hasMatch(rangeDateString)) {
       final regex = RegExp(r"(\d{1,2})\.?\-\d{1,2}\.(\d{1,2})\.?");
 
@@ -175,8 +185,4 @@ class PDPUPuppeteerScrapperWrapper extends PuppeteerScraperWrapper {
   @override
   // TODO: implement name
   String get name => "Planinarsko društvo Pula";
-
-  @override
-  // TODO: implement uri
-  Uri get uri => Uri.parse("https://www.pd-glasistre.hr/");
 }

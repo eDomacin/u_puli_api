@@ -1,4 +1,7 @@
 import 'package:event_scraper/src/wrappers/puppeteer/hnl_puppeteer_scraper_wraper.dart';
+import 'package:event_scraper/src/wrappers/puppeteer/pdpu_puppeteer_scraper_wrapper.dart';
+import 'package:event_scraper/src/wrappers/puppeteer/pulainfo_puppeteer_scraper_wrapper.dart';
+import 'package:event_scraper/src/wrappers/puppeteer/rojc_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/sp_puppeteer_scraper_wrapper.dart';
 import 'package:timezone/data/latest.dart' as TimezoneWrapper;
 
@@ -20,10 +23,35 @@ Future<void> main(List<String> args) async {
 
   // print('Hours: $hours, Minutes: $minutes');
 
-  await _scrapeSPEvents();
+  // await _scrapeSPEvents();
+  // await _scrapePulainfoEvents();
 
   // await _scrapeHNLIstraEvents();
   // _someDecodedUrlStuff();
+
+  // await _scrapePDPUEvents();
+  await _scrapeRojcEvents();
+}
+
+Future<void> _scrapeRojcEvents() async {
+  final rojcScraper = RojcPuppeteerScraperWrapper();
+  final events = await rojcScraper.getEvents();
+
+  print('Events: $events');
+}
+
+Future<void> _scrapePDPUEvents() async {
+  final pdpuScraper = PDPUPuppeteerScrapperWrapper();
+  final events = await pdpuScraper.getEvents();
+
+  print('Events: $events');
+}
+
+Future<void> _scrapePulainfoEvents() async {
+  final pulainfoScraper = PulainfoPuppeteerScraperWrapper();
+  final events = await pulainfoScraper.getEvents();
+
+  print('Events: $events');
 }
 
 Future<void> _scrapeSPEvents() async {
