@@ -22,20 +22,22 @@ mixin _PuppeteerScraperWrapperMixin {
       // noSandboxFlag: true,
       // noSandboxFlag: true,
       args: [
+        /* -------- these should be kept ------- */
+        '--no-sandbox',
+        '--headless',
+        '--disable-gpu',
+        /* --------- should be kept -------- */
         // list of flags that worked - # https://github.com/puppeteer/puppeteer/issues/11028
         // TODO this probably should not be enabled - i guess in docker, will need to run as non-root
         // '--no-sandbox',
         // '--headless',
         /////////////////////
         // new try
-        '--no-sandbox',
-        '--headless',
         // 1
         // '--use-fake-device-for-media-stream',
         // '--no-zygote',
         // '--allow-file-access-from-files',
         // 2
-        '--disable-gpu',
         // '--disable-web-security',
         // '--disable-features=IsolateOrigins',
         // '--disable-site-isolation-trials',

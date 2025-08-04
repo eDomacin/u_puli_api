@@ -4,13 +4,13 @@ import 'package:event_scraper/src/wrappers/puppeteer/pdpu_puppeteer_scraper_wrap
 import 'package:event_scraper/src/wrappers/puppeteer/pulainfo_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/rojc_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/sp_puppeteer_scraper_wrapper.dart';
+import 'package:event_scraper/src/wrappers/puppeteer/valli_puppeteer_scraper_wrapper.dart';
 import 'package:timezone/data/latest.dart' as TimezoneWrapper;
 
 Future<void> main(List<String> args) async {
   TimezoneWrapper.initializeTimeZones();
 
   // final text = "🕓 9:00 - 11:30";
-
   // final RegExp regExp = RegExp(r'(\d{1,2}):(\d{2})');
 
   // final match = regExp.firstMatch(text);
@@ -32,7 +32,16 @@ Future<void> main(List<String> args) async {
 
   // await _scrapePDPUEvents();
   // await _scrapeRojcEvents();
-  await scrapeEventimEvents();
+  // await scrapeEventimEvents();
+
+  await scrapeValliEvents();
+}
+
+Future<void> scrapeValliEvents() async {
+  final valliScraper = ValliPuppeteerScraperWrapper();
+  final events = await valliScraper.getEvents();
+
+  print('Valli Events: $events');
 }
 
 Future<void> scrapeEventimEvents() async {

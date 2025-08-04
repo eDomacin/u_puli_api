@@ -16,6 +16,7 @@ import 'package:event_scraper/src/domain/use_cases/load_pdpu_events_use_case.dar
 import 'package:event_scraper/src/domain/use_cases/load_pulainfo_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_rojc_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_sp_events_use_case.dart';
+import 'package:event_scraper/src/domain/use_cases/load_valli_events_use_case.dart';
 import 'package:event_scraper/src/events_scraper.dart';
 import 'package:event_scraper/src/presentation/controllers/events_scraper_controller.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/eventim_puppeteer_scraper_wrapper.dart';
@@ -28,6 +29,7 @@ import 'package:event_scraper/src/wrappers/puppeteer/pdpu_puppeteer_scraper_wrap
 import 'package:event_scraper/src/wrappers/puppeteer/pulainfo_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/rojc_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/sp_puppeteer_scraper_wrapper.dart';
+import 'package:event_scraper/src/wrappers/puppeteer/valli_puppeteer_scraper_wrapper.dart';
 
 Future<void> runEventsScraper() async {
   final EnvVarsWrapper envVarsWrapper = EnvVarsWrapper();
@@ -92,6 +94,8 @@ EventsScraperController _getInitializedEventsScraperController({
       PulainfoPuppeteerScraperWrapper();
   final EventimPuppeteerScraperWrapper eventimPuppeteerScraperWrapper =
       EventimPuppeteerScraperWrapper();
+  final ValliPuppeteerScraperWrapper valliPuppeteerScraperWrapper =
+      ValliPuppeteerScraperWrapper();
 
   // data sources
   final EventsScraperDataSource eventsScraperDataSource =
@@ -106,6 +110,7 @@ EventsScraperController _getInitializedEventsScraperController({
         spPuppeteerScraperWrapper: spPuppeteerScraperWrapper,
         pulainfoPuppeteerScraperWrapper: pulainfoPuppeteerScraperWrapper,
         eventimPuppeteerScraperWrapper: eventimPuppeteerScraperWrapper,
+        valliPuppeteerScraperWrapper: valliPuppeteerScraperWrapper,
       );
 
   final EventsStorerDataSource eventsStorerDataSource =
@@ -146,6 +151,9 @@ EventsScraperController _getInitializedEventsScraperController({
       LoadPulainfoEventsUseCase(eventsLoaderRepository: eventsLoaderRepository);
   final LoadEventimEventsUseCase loadEventimEventsUseCase =
       LoadEventimEventsUseCase(eventsLoaderRepository: eventsLoaderRepository);
+  final LoadValliEventsUseCase loadValliEventsUseCase = LoadValliEventsUseCase(
+    eventsLoaderRepository: eventsLoaderRepository,
+  );
 
   // controller
   final EventsScraperController eventsScraperController =
@@ -160,6 +168,7 @@ EventsScraperController _getInitializedEventsScraperController({
         loadSpEventsUseCase: loadSpEventsUseCase,
         loadPulainfoEventsUseCase: loadPulainfoEventsUseCase,
         loadEventimEventsUseCase: loadEventimEventsUseCase,
+        loadValliEventsUseCase: loadValliEventsUseCase,
       );
 
   return eventsScraperController;
