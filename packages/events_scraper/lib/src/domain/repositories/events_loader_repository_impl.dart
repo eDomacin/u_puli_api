@@ -131,4 +131,17 @@ class EventsLoaderRepositoryImpl implements EventsLoaderRepository {
 
     await _eventsStorerDataSource.storeEvents(storeEntityValues);
   }
+
+  @override
+  Future<void> loadEventimEvents() async {
+    final Set<ScrapedEventEntity> events =
+        await _eventsScraperDataSource.getEventimEvents();
+
+    final List<StoreEventEntityValue> storeEntityValues =
+        EventsConverter.storeEntityValuesFromScrapedEntities(
+          scrapedEventEntities: events,
+        );
+
+    await _eventsStorerDataSource.storeEvents(storeEntityValues);
+  }
 }

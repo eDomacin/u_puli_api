@@ -3,6 +3,8 @@ import 'package:event_scraper/src/wrappers/puppeteer/puppeteer_scraper_wrapper.d
 import 'package:event_scraper/src/wrappers/timezone/timezone_wrapper.dart';
 import 'package:puppeteer/puppeteer.dart';
 
+/* TODO shoukld not be using this - this is also an agregator - better use direct sources  */
+
 class PulainfoPuppeteerScraperWrapper extends PuppeteerScraperWrapper {
   @override
   // TODO: implement name

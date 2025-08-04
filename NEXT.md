@@ -1,4 +1,2 @@
-1. truncate description strings to 500 char
-- when scraping 
-- when updating event via api
-- when creating event via api
+1. probably need some dev database
+- so we need env vars for dev database

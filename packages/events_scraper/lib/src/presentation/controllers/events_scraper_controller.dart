@@ -1,3 +1,4 @@
+import 'package:event_scraper/src/domain/use_cases/load_eventim_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_gkpu_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_hnl_events_use_case.dart';
 import 'package:event_scraper/src/domain/use_cases/load_ink_events_use_case.dart';
@@ -19,6 +20,7 @@ class EventsScraperController {
     required LoadHnlEventsUseCase loadHnlEventsUseCase,
     required LoadSpEventsUseCase loadSpEventsUseCase,
     required LoadPulainfoEventsUseCase loadPulainfoEventsUseCase,
+    required LoadEventimEventsUseCase loadEventimEventsUseCase,
   }) : _loadNarancaEventsUseCase = loadNarancaEventsUseCase,
        _loadGkpuEventsUseCase = loadGkpuEventsUseCase,
        _loadInkEventsUseCase = loadInkEventsUseCase,
@@ -27,7 +29,8 @@ class EventsScraperController {
        _loadHnlEventsUseCase = loadHnlEventsUseCase,
        _loadPDPUEventsUseCase = loadPDPUEventsUseCase,
        _loadSpEventsUseCase = loadSpEventsUseCase,
-       _loadPulainfoEventsUseCase = loadPulainfoEventsUseCase;
+       _loadPulainfoEventsUseCase = loadPulainfoEventsUseCase,
+       _loadEventimEventsUseCase = loadEventimEventsUseCase;
 
   final LoadNarancaEventsUseCase _loadNarancaEventsUseCase;
   final LoadGkpuEventsUseCase _loadGkpuEventsUseCase;
@@ -38,8 +41,10 @@ class EventsScraperController {
   final LoadHnlEventsUseCase _loadHnlEventsUseCase;
   final LoadSpEventsUseCase _loadSpEventsUseCase;
   final LoadPulainfoEventsUseCase _loadPulainfoEventsUseCase;
+  final LoadEventimEventsUseCase _loadEventimEventsUseCase;
 
   Future<void> run() async {
+    await _handleLoadEventimEvents();
     await _handleLoadNarancaEvents();
     await _handleLoadGkpuEvents();
     await _handleLoadInkEvents();
@@ -47,7 +52,8 @@ class EventsScraperController {
     await _handleLoadRojcEvents();
     await _handleLoadHnlEvents();
     await _handleLoadSpEvents();
-    await _handleLoadPulainfoEvents();
+    /* TODO not scraping this because it is also an aggregator */
+    // await _handleLoadPulainfoEvents();
     await _handleLoadPDPUEvents();
   }
 
@@ -121,6 +127,14 @@ class EventsScraperController {
       await _loadPulainfoEventsUseCase();
     } catch (e) {
       print("Failed scraping Pulainfo events with error: $e");
+    }
+  }
+
+  Future<void> _handleLoadEventimEvents() async {
+    try {
+      await _loadEventimEventsUseCase();
+    } catch (e) {
+      print("Failed scraping Eventim events with error: $e");
     }
   }
 }

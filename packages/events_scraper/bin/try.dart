@@ -1,3 +1,4 @@
+import 'package:event_scraper/src/wrappers/puppeteer/eventim_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/hnl_puppeteer_scraper_wraper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/pdpu_puppeteer_scraper_wrapper.dart';
 import 'package:event_scraper/src/wrappers/puppeteer/pulainfo_puppeteer_scraper_wrapper.dart';
@@ -30,7 +31,15 @@ Future<void> main(List<String> args) async {
   // _someDecodedUrlStuff();
 
   // await _scrapePDPUEvents();
-  await _scrapeRojcEvents();
+  // await _scrapeRojcEvents();
+  await scrapeEventimEvents();
+}
+
+Future<void> scrapeEventimEvents() async {
+  final eventimScraper = EventimPuppeteerScraperWrapper();
+  final events = await eventimScraper.getEvents();
+
+  print('Events: $events');
 }
 
 Future<void> _scrapeRojcEvents() async {
