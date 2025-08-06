@@ -82,6 +82,7 @@ class EventsDataSourceImpl implements EventsDataSource {
   }) async {
     // filters
     // final DateTime nowDate = DateTime.now();
+    // TODO this should actually using utc datetime now
     final DateTime fromDate = filter.fromDate ?? DateTime.now();
     final List<int>? eventIds = filter.eventIds;
 

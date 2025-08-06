@@ -58,8 +58,9 @@ class EventsScraperController {
     await _handleLoadSpEvents();
     await _handleLoadPDPUEvents();
     await _handleLoadValliEvents();
+    /* TODO lets keep eventim, and add entrio too */
+    await _handleLoadEventimEvents();
     /* TODO not scraping this because it is also an aggregator */
-    // await _handleLoadEventimEvents();
     // await _handleLoadPulainfoEvents();
   }
 
