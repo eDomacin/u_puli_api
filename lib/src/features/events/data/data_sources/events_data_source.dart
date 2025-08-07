@@ -1,7 +1,7 @@
 import 'package:u_puli_api/src/features/events/domain/values/create_event_value.dart';
 import 'package:u_puli_api/src/features/events/domain/values/event_entity_value.dart';
 import 'package:u_puli_api/src/features/events/domain/values/update_event_value.dart';
-import 'package:u_puli_api/src/features/events/utils/values/get_events_filter_value.dart';
+import 'package:u_puli_api/src/features/events/domain/values/get_events_filter_value.dart';
 
 abstract interface class EventsDataSource {
   /*  TODO all these should convert its dates to utc

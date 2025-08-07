@@ -5,7 +5,7 @@ import 'package:u_puli_api/src/features/events/domain/values/create_event_value.
 import 'package:u_puli_api/src/features/events/domain/values/event_entity_value.dart';
 import 'package:u_puli_api/src/features/events/domain/values/update_event_value.dart';
 import 'package:u_puli_api/src/features/events/utils/converters/events_converter.dart';
-import 'package:u_puli_api/src/features/events/utils/values/get_events_filter_value.dart';
+import 'package:u_puli_api/src/features/events/domain/values/get_events_filter_value.dart';
 
 /* TODO repositories should ne moved to domain */
 class EventsRepositoryImpl implements EventsRepository {
