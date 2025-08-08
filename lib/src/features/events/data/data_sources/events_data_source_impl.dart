@@ -4,15 +4,15 @@ import 'package:u_puli_api/src/features/events/domain/values/create_event_value.
 import 'package:u_puli_api/src/features/events/domain/values/event_entity_value.dart';
 import 'package:u_puli_api/src/features/events/domain/values/update_event_value.dart';
 import 'package:u_puli_api/src/features/events/utils/converters/events_converter.dart';
-import 'package:u_puli_api/src/features/events/utils/values/get_events_filter_value.dart';
+import 'package:u_puli_api/src/features/events/domain/values/get_events_filter_value.dart';
 // import 'package:u_puli_api/src/wrappers/database/database_wrapper.dart';
 // import 'package:u_puli_api/src/wrappers/drift/drift_wrapper.dart';
 
 class EventsDataSourceImpl implements EventsDataSource {
+  final DatabaseWrapper _databaseWrapper;
+
   const EventsDataSourceImpl({required DatabaseWrapper databaseWrapper})
     : _databaseWrapper = databaseWrapper;
-
-  final DatabaseWrapper _databaseWrapper;
 
   @override
   Future<void> updateEvent(UpdateEventValue value) async {

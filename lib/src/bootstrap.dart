@@ -36,6 +36,14 @@ import 'package:u_puli_api/src/features/events/presentation/router/events_router
 import 'package:u_puli_api/src/features/events/utils/helpers/middleware/middleware_helper/validate_create_event_request_body_middleware_helper.dart';
 import 'package:u_puli_api/src/features/events/utils/helpers/middleware/middleware_helper/validate_get_events_request_middleware_helper.dart';
 import 'package:u_puli_api/src/features/events/utils/helpers/middleware/middleware_helper/validate_update_event_request_body_middleware_helper.dart';
+import 'package:u_puli_api/src/features/search/data/data_sources/search_data_source.dart';
+import 'package:u_puli_api/src/features/search/data/data_sources/search_data_source_impl.dart';
+import 'package:u_puli_api/src/features/search/data/repositories/search_repository_impl.dart';
+import 'package:u_puli_api/src/features/search/domain/repositories/search_repository.dart';
+import 'package:u_puli_api/src/features/search/domain/use_cases/searh_use_case.dart';
+import 'package:u_puli_api/src/features/search/presentation/controllers/search_controller.dart';
+import 'package:u_puli_api/src/features/search/presentation/router/search_router.dart';
+import 'package:u_puli_api/src/features/search/utils/helpers/middleware/middleware_helpers/validate_search_request_middleware_helper.dart';
 import 'package:u_puli_api/src/wrappers/dart_jsonwebtoken/dart_jsonwebtoken_wrapper.dart';
 import 'package:u_puli_api/src/wrappers/get_id/get_it_wrapper.dart';
 import 'package:u_puli_api/src/wrappers/hashlib/hashlib_wrapper.dart';
@@ -131,12 +139,18 @@ AppRouter _getInitializedAppRouter({
   final ValidateGetEventsRequestMiddlewareHelper
   validateGetEventsRequestMiddlewareHelper =
       ValidateGetEventsRequestMiddlewareHelper();
+  final ValidateSearchRequestMiddlewareHelper
+  validateSearchRequestMiddlewareHelper =
+      ValidateSearchRequestMiddlewareHelper();
 
   // data surces
   final EventsDataSource eventsDataSource = EventsDataSourceImpl(
     databaseWrapper: databaseWrapper,
   );
   final AuthDataSource authDataSource = AuthDataSourceImpl(
+    databaseWrapper: databaseWrapper,
+  );
+  final SearchDataSource searchDataSource = SearchDataSourceImpl(
     databaseWrapper: databaseWrapper,
   );
 
@@ -147,21 +161,18 @@ AppRouter _getInitializedAppRouter({
   final AuthRepository authRepository = AuthRepositoryImpl(
     authDataSource: authDataSource,
   );
+  final SearchRepository searchRepository = SearchRepositoryImpl(
+    searchDataSource: searchDataSource,
+  );
 
   // use cases
+
+  // events
   final GetEventUseCase getEventUseCase = GetEventUseCase(
     eventsRepository: eventsRepository,
   );
   final GetEventsUseCase getEventsUseCase = GetEventsUseCase(
     eventsRepository: eventsRepository,
-  );
-  final RegisterWithUserAndPasswordUseCase registerWithUserAndPasswordUseCase =
-      RegisterWithUserAndPasswordUseCase(authRepository: authRepository);
-  final GetAuthByEmailUseCase getAuthByEmailUseCase = GetAuthByEmailUseCase(
-    authRepository: authRepository,
-  );
-  final GetAuthUserUseCase getAuthUserUseCase = GetAuthUserUseCase(
-    authRepository: authRepository,
   );
   final CreateEventUseCase createEventUseCase = CreateEventUseCase(
     eventsRepository: eventsRepository,
@@ -170,13 +181,37 @@ AppRouter _getInitializedAppRouter({
     eventsRepository: eventsRepository,
   );
 
+  // auth
+  final RegisterWithUserAndPasswordUseCase registerWithUserAndPasswordUseCase =
+      RegisterWithUserAndPasswordUseCase(authRepository: authRepository);
+  final GetAuthByEmailUseCase getAuthByEmailUseCase = GetAuthByEmailUseCase(
+    authRepository: authRepository,
+  );
+  final GetAuthUserUseCase getAuthUserUseCase = GetAuthUserUseCase(
+    authRepository: authRepository,
+  );
+
+  // search
+  final SearchUseCase searchUseCase = SearchUseCase(
+    searchRepository: searchRepository,
+  );
+
   // controllers
+  // events
   final GetEventController getEventController = GetEventController(
     getEventUseCase: getEventUseCase,
   );
   final GetEventsController getEventsController = GetEventsController(
     getEventsUseCase: getEventsUseCase,
   );
+  final CreateEventController createEventController = CreateEventController(
+    createEventUseCase: createEventUseCase,
+  );
+  final UpdateEventController updateEventController = UpdateEventController(
+    updateEventUseCase: updateEventUseCase,
+  );
+
+  // auth
   final RegisterWithEmailAndPasswordController
   registerWithEmailAndPasswordController =
       RegisterWithEmailAndPasswordController(
@@ -196,11 +231,9 @@ AppRouter _getInitializedAppRouter({
     cookiesHelper: cookiesHelper,
   );
 
-  final CreateEventController createEventController = CreateEventController(
-    createEventUseCase: createEventUseCase,
-  );
-  final UpdateEventController updateEventController = UpdateEventController(
-    updateEventUseCase: updateEventUseCase,
+  // search
+  final SearchController searchController = SearchController(
+    searchUseCase: searchUseCase,
   );
 
   // routers
@@ -227,10 +260,16 @@ AppRouter _getInitializedAppRouter({
     validateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper:
         validateLoginWithEmailAndPasswordRequestBodyMiddlewareHelper,
   );
+  final SearchRouter searchRouter = SearchRouter(
+    searchController: searchController,
+    validateSearchRequestMiddlewareHelper:
+        validateSearchRequestMiddlewareHelper,
+  );
 
   final AppRouter appRouter = AppRouter(
     eventsRouter: eventsRouter,
     authRouter: authRouter,
+    searchRouter: searchRouter,
   );
 
   return appRouter;

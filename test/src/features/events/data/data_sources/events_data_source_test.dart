@@ -6,7 +6,7 @@ import 'package:u_puli_api/src/features/events/data/data_sources/events_data_sou
 import 'package:u_puli_api/src/features/events/data/data_sources/events_data_source_impl.dart';
 import 'package:u_puli_api/src/features/events/domain/values/event_entity_value.dart';
 import 'package:u_puli_api/src/features/events/utils/converters/events_converter.dart';
-import 'package:u_puli_api/src/features/events/utils/values/get_events_filter_value.dart';
+import 'package:u_puli_api/src/features/events/domain/values/get_events_filter_value.dart';
 
 import '../../../../../helpers/database/test_database_wrapper.dart';
 

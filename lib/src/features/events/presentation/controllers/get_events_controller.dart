@@ -48,6 +48,7 @@ class GetEventsController {
 
     // --------------------------
 
+    /* TODO possible this can be unified in a single function or a class that handles thsi case, and then reused everywhere */
     final Map<String, dynamic>? validatedQueryParamsData =
         request.getValidatedQueryParamsData();
     if (validatedQueryParamsData == null) {
