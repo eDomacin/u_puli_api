@@ -7,7 +7,7 @@ import 'package:u_puli_api/src/features/events/domain/values/update_event_value.
 import 'package:u_puli_api/src/features/events/utils/converters/events_converter.dart';
 import 'package:u_puli_api/src/features/events/domain/values/get_events_filter_value.dart';
 
-/* TODO repositories should ne moved to domain */
+/* TODO repositories should be moved to data layer */
 class EventsRepositoryImpl implements EventsRepository {
   const EventsRepositoryImpl({required EventsDataSource eventsDataSource})
     : _eventsDataSource = eventsDataSource;
