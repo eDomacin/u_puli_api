@@ -48,7 +48,6 @@ class EventsScraperController {
   final LoadValliEventsUseCase _loadValliEventsUseCase;
 
   Future<void> run() async {
-    /* TODO maaybe not even these from aggregators - lets collect directly from institutions */
     await _handleLoadNarancaEvents();
     await _handleLoadGkpuEvents();
     await _handleLoadInkEvents();
@@ -58,10 +57,9 @@ class EventsScraperController {
     await _handleLoadSpEvents();
     await _handleLoadPDPUEvents();
     await _handleLoadValliEvents();
-    /* TODO lets keep eventim, and add entrio too */
-    await _handleLoadEventimEvents();
-    /* TODO not scraping this because it is also an aggregator */
-    // await _handleLoadPulainfoEvents();
+    await _handleLoadPulainfoEvents();
+    /* TODO lets not use eventim, because its events are on Pulainfo */
+    // await _handleLoadEventimEvents();
   }
 
   // TODO maybe this can be unified somehow - but i want to be able to log which one failed - so need some field on the use case, if possile
@@ -145,6 +143,7 @@ class EventsScraperController {
     }
   }
 
+  /* TODO events here seem to covered by pula info */
   Future<void> _handleLoadEventimEvents() async {
     try {
       await _loadEventimEventsUseCase();

@@ -159,9 +159,12 @@ Future<Set<ScrapedEventEntity>> _getSingleMovieProjections({
           .toString()
           .replaceAll('url("', "")
           .replaceAll('")', "")
+          .replaceAll('center center / cover no-repeat', "")
           .trim();
 
   final imageUrl = "https://www.kinovalli.net$imageUrlComponent";
+
+  print('Image URL: $imageUrl');
 
   /* title */
   final titleContainerSelector = "div.movie-content > h2.h3";
