@@ -2,6 +2,7 @@ import 'package:database_wrapper/database_wrapper.dart' hide EventsConverter;
 import 'package:u_puli_api/src/features/events/utils/converters/events_converter.dart';
 import 'package:u_puli_api/src/features/search/data/data_sources/search_data_source.dart';
 import 'package:u_puli_api/src/features/search/domain/values/search_results_entity_value.dart';
+import 'package:u_puli_api/src/wrappers/timezone/timezone_wrapper.dart';
 
 class SearchDataSourceImpl implements SearchDataSource {
   final DatabaseWrapper _databaseWrapper;
@@ -12,6 +13,15 @@ class SearchDataSourceImpl implements SearchDataSource {
   @override
   Future<SearchResultsEntityValue> search(String query) async {
     final queryLower = query.toLowerCase();
+    final nowDateTime = DateTime.now();
+    final fromDateTimeZoned = TimezoneWrapper.toLocationDateInUTC(
+      TimezoneLocation.croatia,
+      year: nowDateTime.year,
+      month: nowDateTime.month,
+      day: nowDateTime.day,
+      hours: 0,
+      minutes: 0,
+    );
     /* lets first get events */
     /* TODO for levenstein, we will have to do migration to install fuzzystr */
     /* 
@@ -21,6 +31,11 @@ class SearchDataSourceImpl implements SearchDataSource {
 
     final eventsSelect = _databaseWrapper.eventsRepo.select();
 
+    // only want stuff from today
+    final Expression<bool> fromDateExpression = _databaseWrapper.eventsRepo.date
+        .isBiggerOrEqualValue(fromDateTimeZoned);
+    eventsSelect.where((tbl) => fromDateExpression);
+
     // for now, lets use custom expression
     // final isSimilar = select.customExpression(
     //   'LOWER(title) LIKE ? OR LOWER(description) LIKE ?',
@@ -29,17 +44,17 @@ class SearchDataSourceImpl implements SearchDataSource {
 
     // TODO: i hope this sanitizes the input
     final queryVariable = Variable.withString(queryLower);
-    final isSimilarExpression = CustomExpression<bool>(
-      // 'LOWER(title) LIKE ? OR LOWER(description) LIKE ?',
-      // [queryVariable, queryVariable],
-      /* TODO description might be too much */
-      // "lower(title) LIKE '${queryVariable.value}' OR description LIKE '${queryVariable.value}' OR location LIKE '${queryVariable.value}'",
-      "lower(title) like '%${queryVariable.value}%' OR "
-      "lower(location) like '%${queryVariable.value}%' OR "
-      "lower(description) like '%${queryVariable.value}%'",
-      // no idea what this does
-      precedence: Precedence.primary,
-    );
+    // final isSimilarExpression = CustomExpression<bool>(
+    //   // 'LOWER(title) LIKE ? OR LOWER(description) LIKE ?',
+    //   // [queryVariable, queryVariable],
+    //   /* TODO description might be too much */
+    //   // "lower(title) LIKE '${queryVariable.value}' OR description LIKE '${queryVariable.value}' OR location LIKE '${queryVariable.value}'",
+    //   "lower(title) like '%${queryVariable.value}%' OR "
+    //   "lower(location) like '%${queryVariable.value}%' OR "
+    //   "lower(description) like '%${queryVariable.value}%'",
+    //   // no idea what this does
+    //   precedence: Precedence.primary,
+    // );
 
     /* this is levensein use
     
@@ -58,11 +73,28 @@ class SearchDataSourceImpl implements SearchDataSource {
     
      */
 
+    // eventsSelect.where((tbl) => isSimilarExpression);
+
+    // final combinedExpression = Expression.and([
+    //   isSimilarExpression,
+    //   fromDateExpression,
+    // ]);
+
+    final isSimilarExpression =
+        _databaseWrapper.eventsRepo.title.lower().like(
+          '%${queryVariable.value}%',
+        ) |
+        _databaseWrapper.eventsRepo.location.lower().like(
+          '%${queryVariable.value}%',
+        ) |
+        _databaseWrapper.eventsRepo.description.lower().like(
+          '%${queryVariable.value}%',
+        );
+
     eventsSelect.where((tbl) => isSimilarExpression);
 
     eventsSelect.orderBy([
-      (tbl) =>
-          OrderingTerm(expression: isSimilarExpression, mode: OrderingMode.asc),
+      (tbl) => OrderingTerm(expression: tbl.date, mode: OrderingMode.asc),
     ]);
 
     final events = await eventsSelect.get();

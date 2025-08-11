@@ -5,6 +5,7 @@ import 'package:u_puli_api/src/features/events/domain/values/event_entity_value.
 import 'package:u_puli_api/src/features/events/domain/values/update_event_value.dart';
 import 'package:u_puli_api/src/features/events/utils/converters/events_converter.dart';
 import 'package:u_puli_api/src/features/events/domain/values/get_events_filter_value.dart';
+import 'package:u_puli_api/src/wrappers/timezone/timezone_wrapper.dart';
 // import 'package:u_puli_api/src/wrappers/database/database_wrapper.dart';
 // import 'package:u_puli_api/src/wrappers/drift/drift_wrapper.dart';
 
@@ -80,10 +81,20 @@ class EventsDataSourceImpl implements EventsDataSource {
   Future<List<EventEntityValue>> getEvents({
     required GetEventsFilterValue filter,
   }) async {
+    final nowDateTime = DateTime.now();
+    final fromDateTimeZoned = TimezoneWrapper.toLocationDateInUTC(
+      TimezoneLocation.croatia,
+      year: filter.fromDate?.year ?? nowDateTime.year,
+      month: filter.fromDate?.month ?? nowDateTime.month,
+      day: filter.fromDate?.day ?? nowDateTime.day,
+      hours: 0,
+      minutes: 0,
+    );
+
     // filters
     // final DateTime nowDate = DateTime.now();
     // TODO this should actually using utc datetime now
-    final DateTime fromDate = filter.fromDate ?? DateTime.now();
+    // final DateTime fromDate = filter.fromDate ?? DateTime.now();
     final List<int>? eventIds = filter.eventIds;
 
     SimpleSelectStatement<$EventEntityTable, EventEntityData> select =
@@ -93,7 +104,7 @@ class EventsDataSourceImpl implements EventsDataSource {
     // final DateTime fromDate = nowDate;
 
     final Expression<bool> fromDateExpression = _databaseWrapper.eventsRepo.date
-        .isBiggerOrEqualValue(fromDate);
+        .isBiggerOrEqualValue(fromDateTimeZoned);
     // filter by fromDate
     // this works as well
     // select = select..where((tbl) => fromDateExpression);

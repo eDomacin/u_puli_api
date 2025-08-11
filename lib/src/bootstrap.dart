@@ -47,8 +47,10 @@ import 'package:u_puli_api/src/features/search/utils/helpers/middleware/middlewa
 import 'package:u_puli_api/src/wrappers/dart_jsonwebtoken/dart_jsonwebtoken_wrapper.dart';
 import 'package:u_puli_api/src/wrappers/get_id/get_it_wrapper.dart';
 import 'package:u_puli_api/src/wrappers/hashlib/hashlib_wrapper.dart';
+import 'package:u_puli_api/src/wrappers/timezone/timezone_wrapper.dart';
 
 Future<void> bootstrap() async {
+  TimezoneWrapper.initializeTimeZones();
   final EnvVarsWrapper envVarsWrapper = EnvVarsWrapper();
 
   final DatabaseWrapper databaseWrapper = _getInitializedDatabaseWrapper(
