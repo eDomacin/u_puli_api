@@ -6,6 +6,7 @@ import 'package:u_puli_api/src/features/events/utils/constants/events_request_ur
 import 'package:u_puli_api/src/features/events/utils/constants/update_event_request_body_constants.dart';
 import 'package:u_puli_api/src/utils/extensions/request_extension.dart';
 import 'package:u_puli_api/src/utils/helpers/middleware/middleware_helper/middleware_helper.dart';
+import 'package:u_puli_api/src/wrappers/timezone/timezone_wrapper.dart';
 
 /* TODO maybe these should not specify in their name what is it that they really validate  */
 // maybe this should be called ValidateUpdateEventRequestMiddlewareHelper
@@ -72,6 +73,18 @@ class ValidateUpdateEventRequestBodyMiddlewareHelper
           return response;
         }
 
+        final eventUtcDateTime = switch (date) {
+          null => null,
+          _ => TimezoneWrapper.toLocationDateInUTC(
+            TimezoneLocation.croatia,
+            year: DateTime.fromMillisecondsSinceEpoch(date).year,
+            month: DateTime.fromMillisecondsSinceEpoch(date).month,
+            day: DateTime.fromMillisecondsSinceEpoch(date).day,
+            hours: DateTime.fromMillisecondsSinceEpoch(date).hour,
+            minutes: DateTime.fromMillisecondsSinceEpoch(date).minute,
+          ),
+        };
+
         final dynamic uri =
             requestBody[UpdateEventRequestBodyConstants.URI.value];
         if (uri is! String?) {
@@ -126,7 +139,7 @@ class ValidateUpdateEventRequestBodyMiddlewareHelper
             .getChangedRequestWithValidatedBodyData({
               UpdateEventRequestBodyConstants.TITLE.value: title,
               UpdateEventRequestBodyConstants.LOCATION.value: location,
-              UpdateEventRequestBodyConstants.DATE.value: date,
+              UpdateEventRequestBodyConstants.DATE.value: eventUtcDateTime,
               UpdateEventRequestBodyConstants.URI.value: uri,
               UpdateEventRequestBodyConstants.IMAGE_URI.value: imageUri,
               UpdateEventRequestBodyConstants.DESCRIPTION.value: description,

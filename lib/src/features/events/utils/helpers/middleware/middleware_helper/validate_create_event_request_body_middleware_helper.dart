@@ -5,6 +5,7 @@ import 'package:shelf/shelf.dart';
 import 'package:u_puli_api/src/features/events/utils/constants/create_event_request_body_constants.dart';
 import 'package:u_puli_api/src/utils/extensions/request_extension.dart';
 import 'package:u_puli_api/src/utils/helpers/middleware/middleware_helper/middleware_helper.dart';
+import 'package:u_puli_api/src/wrappers/timezone/timezone_wrapper.dart';
 
 class ValidateCreateEventRequestBodyMiddlewareHelper
     implements MiddlewareHelper {
@@ -57,9 +58,35 @@ class ValidateCreateEventRequestBodyMiddlewareHelper
             );
             return response;
           }
+
+          // these are default times
           final DateTime dateValue = DateTime.fromMillisecondsSinceEpoch(date);
           final DateTime now = DateTime.now();
-          if (dateValue.isBefore(now)) {
+
+          // we need to convert to utc
+          final eventUtcDateTime = TimezoneWrapper.toLocationDateInUTC(
+            TimezoneLocation.croatia,
+            year: dateValue.year,
+            month: dateValue.month,
+            day: dateValue.day,
+            hours: dateValue.hour,
+            minutes: dateValue.minute,
+          );
+          final nowUtcDateTime = TimezoneWrapper.toLocationDateInUTC(
+            TimezoneLocation.croatia,
+            year: now.year,
+            month: now.month,
+            day: now.day,
+            hours: now.hour,
+            minutes: now.minute,
+          );
+
+          print("dateValue: $dateValue");
+          print("now: $now");
+          print("eventUtcDateTime: $eventUtcDateTime");
+          print("nowUtcDateTime: $nowUtcDateTime");
+
+          if (eventUtcDateTime.isBefore(nowUtcDateTime)) {
             final Response response = _generateFailureResponse(
               message: "Event date must be in the future",
               statusCode: HttpStatus.badRequest,
@@ -154,7 +181,8 @@ class ValidateCreateEventRequestBodyMiddlewareHelper
           final Request validatedRequest = request
               .getChangedRequestWithValidatedBodyData({
                 CreateEventRequestBodyConstants.TITLE.value: title,
-                CreateEventRequestBodyConstants.DATE.value: dateValue,
+                // CreateEventRequestBodyConstants.DATE.value: dateValue,
+                CreateEventRequestBodyConstants.DATE.value: eventUtcDateTime,
                 CreateEventRequestBodyConstants.LOCATION.value: location,
                 CreateEventRequestBodyConstants.URI.value: uriValue,
                 CreateEventRequestBodyConstants.IMAGE_URI.value: imageUriValue,
