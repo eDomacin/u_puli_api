@@ -85,9 +85,9 @@ class ValidateUpdateEventRequestBodyMiddlewareHelper
           ),
         };
 
-        final dynamic uri =
-            requestBody[UpdateEventRequestBodyConstants.URI.value];
-        if (uri is! String?) {
+        final dynamic url =
+            requestBody[UpdateEventRequestBodyConstants.URL.value];
+        if (url is! String?) {
           final Response response = _generateFailureResponse(
             message: "Invalid 'uri' parameter",
             statusCode: HttpStatus.badRequest,
@@ -95,9 +95,10 @@ class ValidateUpdateEventRequestBodyMiddlewareHelper
           return response;
         }
 
-        final dynamic imageUri =
-            requestBody[UpdateEventRequestBodyConstants.IMAGE_URI.value];
-        if (imageUri is! String?) {
+        final dynamic imageUrl =
+            requestBody[UpdateEventRequestBodyConstants.IMAGE_URL.value];
+
+        if (imageUrl is! String?) {
           final Response response = _generateFailureResponse(
             message: "Invalid 'imageUri' parameter",
             statusCode: HttpStatus.badRequest,
@@ -113,13 +114,13 @@ class ValidateUpdateEventRequestBodyMiddlewareHelper
           return dateValidationResponse;
         }
 
-        final Response? uriValidationResponse = _validateUri(uri: uri);
+        final Response? uriValidationResponse = _validateUri(uri: url);
         if (uriValidationResponse != null) {
           return uriValidationResponse;
         }
 
         final Response? imageUriValidationResponse = _validateImageUri(
-          imageUri: imageUri,
+          imageUri: imageUrl,
         );
         if (imageUriValidationResponse != null) {
           return imageUriValidationResponse;
@@ -140,8 +141,10 @@ class ValidateUpdateEventRequestBodyMiddlewareHelper
               UpdateEventRequestBodyConstants.TITLE.value: title,
               UpdateEventRequestBodyConstants.LOCATION.value: location,
               UpdateEventRequestBodyConstants.DATE.value: eventUtcDateTime,
-              UpdateEventRequestBodyConstants.URI.value: uri,
-              UpdateEventRequestBodyConstants.IMAGE_URI.value: imageUri,
+              UpdateEventRequestBodyConstants.URL.value:
+                  url == null ? null : Uri.tryParse(url),
+              UpdateEventRequestBodyConstants.IMAGE_URL.value:
+                  imageUrl == null ? null : Uri.tryParse(imageUrl),
               UpdateEventRequestBodyConstants.DESCRIPTION.value: description,
             })
             .getChangedRequestWithValidatedUrlParamsData({
@@ -164,16 +167,17 @@ class ValidateUpdateEventRequestBodyMiddlewareHelper
   Response? _validateDate({required int? dateMilliseconds}) {
     if (dateMilliseconds == null) return null;
 
-    final DateTime date = DateTime.fromMillisecondsSinceEpoch(dateMilliseconds);
-    final DateTime now = DateTime.now();
+    // TODO event data when update does not need to be in future - we should be able to set date befoere
+    // final DateTime date = DateTime.fromMillisecondsSinceEpoch(dateMilliseconds);
+    // final DateTime now = DateTime.now();
 
-    if (date.isBefore(now)) {
-      final Response response = _generateFailureResponse(
-        message: "Event date must be in the future",
-        statusCode: HttpStatus.badRequest,
-      );
-      return response;
-    }
+    // if (date.isBefore(now)) {
+    //   final Response response = _generateFailureResponse(
+    //     message: "Event date must be in the future",
+    //     statusCode: HttpStatus.badRequest,
+    //   );
+    //   return response;
+    // }
 
     return null;
   }

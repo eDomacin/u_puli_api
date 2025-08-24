@@ -111,23 +111,23 @@ class ValidateCreateEventRequestBodyMiddlewareHelper
             return response;
           }
 
-          final dynamic uri =
-              requestBody[CreateEventRequestBodyConstants.URI.value];
-          if (uri == null) {
+          final dynamic url =
+              requestBody[CreateEventRequestBodyConstants.URL.value];
+          if (url == null) {
             final Response response = _generateFailureResponse(
               message: "Missing 'uri' parameter",
               statusCode: HttpStatus.badRequest,
             );
             return response;
           }
-          if (uri is! String) {
+          if (url is! String) {
             final Response response = _generateFailureResponse(
               message: "Invalid 'uri' parameter",
               statusCode: HttpStatus.badRequest,
             );
             return response;
           }
-          final Uri? uriValue = Uri.tryParse(uri);
+          final Uri? uriValue = Uri.tryParse(url);
           if (uriValue == null) {
             final Response response = _generateFailureResponse(
               message: "Invalid 'uri' format",
@@ -136,23 +136,23 @@ class ValidateCreateEventRequestBodyMiddlewareHelper
             return response;
           }
 
-          final dynamic imageUri =
-              requestBody[CreateEventRequestBodyConstants.IMAGE_URI.value];
-          if (imageUri == null) {
+          final dynamic imageUrl =
+              requestBody[CreateEventRequestBodyConstants.IMAGE_URL.value];
+          if (imageUrl == null) {
             final Response response = _generateFailureResponse(
               message: "Missing 'imageUri' parameter",
               statusCode: HttpStatus.badRequest,
             );
             return response;
           }
-          if (imageUri is! String) {
+          if (imageUrl is! String) {
             final Response response = _generateFailureResponse(
               message: "Invalid 'imageUri' parameter",
               statusCode: HttpStatus.badRequest,
             );
             return response;
           }
-          final Uri? imageUriValue = Uri.tryParse(imageUri);
+          final Uri? imageUriValue = Uri.tryParse(imageUrl);
           if (imageUriValue == null) {
             final Response response = _generateFailureResponse(
               message: "Invalid 'imageUri' format",
@@ -184,8 +184,8 @@ class ValidateCreateEventRequestBodyMiddlewareHelper
                 // CreateEventRequestBodyConstants.DATE.value: dateValue,
                 CreateEventRequestBodyConstants.DATE.value: eventUtcDateTime,
                 CreateEventRequestBodyConstants.LOCATION.value: location,
-                CreateEventRequestBodyConstants.URI.value: uriValue,
-                CreateEventRequestBodyConstants.IMAGE_URI.value: imageUriValue,
+                CreateEventRequestBodyConstants.URL.value: uriValue,
+                CreateEventRequestBodyConstants.IMAGE_URL.value: imageUriValue,
                 CreateEventRequestBodyConstants.DESCRIPTION.value: description,
               });
 

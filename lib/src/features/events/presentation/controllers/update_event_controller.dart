@@ -132,9 +132,9 @@ _getUpdateEventDataFromValidatedRequestBody(
       validatedBodyData[UpdateEventRequestBodyConstants.LOCATION.value];
   final DateTime? date =
       validatedBodyData[UpdateEventRequestBodyConstants.DATE.value];
-  final Uri? uri = validatedBodyData[UpdateEventRequestBodyConstants.URI.value];
+  final Uri? uri = validatedBodyData[UpdateEventRequestBodyConstants.URL.value];
   final Uri? imageUri =
-      validatedBodyData[UpdateEventRequestBodyConstants.IMAGE_URI.value];
+      validatedBodyData[UpdateEventRequestBodyConstants.IMAGE_URL.value];
   final String? description =
       validatedBodyData[UpdateEventRequestBodyConstants.DESCRIPTION.value];
 

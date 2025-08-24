@@ -2,8 +2,8 @@ enum CreateEventRequestBodyConstants {
   TITLE._('title'),
   DATE._('date'),
   LOCATION._('location'),
-  URI._('uri'),
-  IMAGE_URI._('imageUri'),
+  URL._('url'),
+  IMAGE_URL._('imageUrl'),
   DESCRIPTION._('description');
 
   const CreateEventRequestBodyConstants._(this.value);
